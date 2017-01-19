@@ -1,0 +1,43 @@
+<md-dialog>
+  <form name="bookAddForm" ng-submit="saveBook()">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2>添加一本书</h2>
+      </div>
+    </md-toolbar>
+    <md-dialog-content style="max-width:800px;max-height:810px;width: 600px; height: 320px">
+    	<md-card>
+    		<md-card-content layout-padding>
+    		<md-input-container class="md-icon-float md-block">
+		      <md-icon class="name">book</md-icon>
+		      <input ng-model="book.bookName" type="text" placeholder="书名">
+		    </md-input-container>
+		    <md-input-container class="md-block">
+		      <md-icon>info</md-icon>
+		      <textarea ng-model="book.bookIntro" placeholder="介绍"></textarea>
+		    </md-input-container>
+			<div class="md-icon-float md-block no-padding" layout="column" layout-align="space-around center">
+		      	<md-icon class="name" style="color: rgba(0,0,0,0.87);">image</md-icon>
+			    <md-button name="file" ngf-max-size="2MB" ngf-select="selectImage($file)" ng-model="picFile">选择封面</md-button>
+		        <div ngf-drop ng-model="picFile">
+		            <img-crop image="picFile | ngfDataUrl" result-image="croppedDataUrl" ng-init="croppedDataUrl=''">
+		            </img-crop>
+		        </div>
+		        <div>
+		            <img ngf-src="picFile"  class="cropArea"/>
+		        </div>
+		    </div>
+	    </md-card>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button type="submit" class="md-primary md-raised">
+       	 保存
+      </md-button>
+      <md-button ng-click="cancel()" style="margin-right:20px;" >
+                       取消
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>首页</title>
+<!-- bower:css -->
+<link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
+<link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css" />
+<link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
+<link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css" />
+<!-- endbower -->
+<link rel="stylesheet" href="bower_components/integralui/css/integralui.css"/>
+<link rel="stylesheet" href="bower_components/integralui/css/integralui.checkbox.css"/>
+<link rel="stylesheet" href="bower_components/integralui/css/integralui.treeview.css"/>
+<link rel="stylesheet" href="bower_components/integralui/css/themes/theme-windows10.css"/>
+<link rel="stylesheet" href="style/main.css" />
+<link rel="stylesheet" href="bower_components/editor.md/css/editormd.min.css" />
+</head>
+<body ng-app="jianbo" layout="column" ng-cloak>
+	<header style="z-index:2">
+		<md-toolbar class="md-hue-2">
+		<div class="md-toolbar-tools">
+			<md-button class="md-icon-button" aria-label="Settings"
+				ng-disabled="true"> <md-icon>book</md-icon> </md-button>
+			<h2>
+				<span>简博</span>
+			</h2>
+			<span flex></span>
+			<my-account-menu>
+				<!-- <md-button class="md-fab md-primary md-mini" ng-if="isAuthenticated()" ng-click="showAccountMenu()">
+					<md-icon>account_circle</md-icon>
+				</md-button> -->
+			</my-account-menu>
+			<!-- <md-button ng-click="logout()">登出</md-button> -->
+		</div>
+		</md-toolbar>
+	</header>
+	<main flex style="overflow: auto">
+		<article ui-view layout="row" flex class="height-100-percent" ng-cloak></article>
+	</main>
+	<!-- bower:js -->
+	<script src="bower_components/angular/angular.js"></script>
+	<script src="bower_components/angular-resource/angular-resource.js"></script>
+	<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+	<script src="bower_components/angular-messages/angular-messages.js"></script>
+	<script src="bower_components/angular-animate/angular-animate.js"></script>
+	<script src="bower_components/angular-aria/angular-aria.js"></script>
+	<script src="bower_components/angular-route/angular-route.js"></script>
+	<script src="bower_components/angular-material/angular-material.js"></script>
+	<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+	<script src="bower_components/angular-ui-validate/dist/validate.js"></script>
+	<script src="bower_components/codemirror/lib/codemirror.js"></script>
+	<script src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
+	<script src="bower_components/angular-loading-bar/build/loading-bar.js"></script>
+	<script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
+	<script src="bower_components/moment/moment.js"></script>
+	<script src="bower_components/angular-moment/angular-moment.js"></script>
+	<script src="bower_components/Chart.js/Chart.js"></script>
+	<script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+	<script src="bower_components/angular-filter/dist/angular-filter.min.js"></script>
+	<script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
+	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<!-- endbower -->
+	<!-- 解析树需要的插件 -->
+	<script src="bower_components/integralui/js/angular.integralui.min.js"></script>
+	<script src="bower_components/integralui/js/angular.integralui.lists.min.js"></script>
+	<script src="bower_components/integralui/js/angular.integralui.checkbox.min.js"></script>
+	<script src="bower_components/integralui/js/angular.integralui.treeview.min.js"></script>
+  	<!-- 解析markdown所需的插件 -->
+  	<script src="bower_components/editor.md/editormd.min.js"></script>
+  	<script src="bower_components/angular-i18n/angular-locale_zh-cn.js"></script>
+  	<script src="bower_components/moment/locale/zh-cn.js"></script>
+  	<script src="bower_components/editor.md/lib/marked.min.js"></script>
+  	<script src="bower_components/editor.md/lib/prettify.min.js"></script>
+  	<script src="bower_components/editor.md/lib/raphael.min.js"></script>
+  	<script src="bower_components/editor.md/lib/underscore.min.js"></script>
+  	<script src="bower_components/editor.md/lib/sequence-diagram.min.js"></script>
+  	<script src="bower_components/editor.md/lib/flowchart.min.js"></script>
+  	<script src="bower_components/editor.md/lib/jquery.flowchart.min.js"></script>
+  	
+  	<!-- mine -->
+	<script src="scripts/app.js"></script>
+	<script src="scripts/config.js"></script>
+	<script src="scripts/constants.js"></script>
+	<script src="scripts/router.js"></script>
+	
+	<!-- service -->
+	<script src="scripts/services/interceptor.js"></script>
+	<script src="scripts/services/auth.js"></script>
+	<script src="scripts/services/principal.js"></script>
+	<script src="scripts/services/account.js"></script>
+	<script src="scripts/services/register.js"></script>
+	<script src="scripts/services/book.js"></script>
+	<script src="scripts/services/article.js"></script>
+	<script src="scripts/services/chapter.js"></script>
+	
+	<!-- controllers -->
+	<script src="scripts/controllers/dashboard.js"></script>
+	<script src="scripts/controllers/blog.js"></script>
+	<script src="scripts/controllers/blog.add.js"></script>
+	<script src="scripts/controllers/book.add.js"></script>
+	<script src="scripts/controllers/login.js"></script>
+	<script src="scripts/controllers/article.js"></script>
+	
+	<!-- directive -->
+	<script src="scripts/directives/my_directive.js"></script>
+	<script src="scripts/directives/my_book_tree.js"></script>
+</body>
+</html>

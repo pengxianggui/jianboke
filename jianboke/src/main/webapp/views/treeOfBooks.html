@@ -1,0 +1,73 @@
+<div layout="row" flex>
+	<md-card flex>
+		<md-toolbar layout="row" class="md-hue-2" style="background: white; height: 40px; min-height: 30px;">
+			<md-input-container md-no-float class="margin-left-right-10" flex style="color: black">
+		        <md-select ng-model="selectedBook" placeholder="归类书籍">
+		            <md-option ng-value="book" ng-repeat="book in books">{{book.bookName}}</md-option>
+		        </md-select>
+		      </md-input-container>
+		      <div style="height: 40px; background: #999">
+				<md-button class="md-icon-button" ng-click="refreshTree()">
+		          <md-tooltip>刷新</md-tooltip>
+		          <md-icon>refresh</md-icon>
+		        </md-button>
+		        <md-button class="md-icon-button" ng-click="expandAll()">
+		          <md-tooltip>全部展开</md-tooltip>
+		          <md-icon>expand_more</md-icon>
+		        </md-button>
+		        <md-button class="md-icon-button" ng-click="collapseAll()">
+		          <md-tooltip>全部合起</md-tooltip>
+		          <md-icon>expand_less</md-icon>
+		        </md-button>
+		        <span flex></span>
+		        <md-button class="md-icon-button" ng-click="saveToBook()">
+		          <md-tooltip>保存</md-tooltip>
+		          <md-icon>save</md-icon>
+		        </md-button>
+			</div>
+		</md-toolbar>
+		<md-content flex class="md-padding" layout="column">
+			    <iui-treeview style="z-index:10" flex name="{{treeName}}" class="category-tree" items="nodes" load-complete="onLoadComplete()" template-settings="customItemTemplate"
+			                  allow-focus="false" allow-drag="true" allow-drop="true" drag-drop="treeDrop(e)" >
+			    </iui-treeview>
+		</md-content>
+	</md-card>
+	<md-card flex>
+		<md-toolbar layout="row" class="md-hue-2" style="background: rgb(140,158,255); height: 40px; min-height: 30px">
+			章节名
+		</md-toolbar>
+		<md-content flex class="md-padding">
+			文章列表
+		</md-content>
+	</md-card>
+	<script  type="text/ng-template" id="'item-template.html'">
+	<div class="category-item" layout="row">
+		<span class="item-text">{{obj.groupName}}</span>
+		<span flex></span>
+		<md-button class="md-icon-button" ng-click="obj.events.addClick(obj)" has_Authority="ROLE_PRODUCT_MANAGEMENT_CATALOG_BUTTON">
+	  		<md-icon>add</md-icon>
+	  		<md-tooltip>添加子栏目</md-tooltip>
+		</md-button>
+		<!--<md-button class="md-icon-button" ng-click="obj.events.insertClick(obj)" >-->
+	  	<!--<md-icon>border_top</md-icon>-->
+	  	<!--<md-tooltip>在前插入</md-tooltip>-->
+		<!--</md-button>-->
+		<!--<md-button class="md-icon-button" ng-click="obj.events.appendClick(obj)" >-->
+	  	<!--<md-icon>border_bottom</md-icon>-->
+	  	<!--<md-tooltip>在后插入</md-tooltip>-->
+		<!--</md-button>-->
+		<md-button class="md-icon-button" ng-click="obj.events.editClick(obj)" has_Authority="ROLE_PRODUCT_MANAGEMENT_CATALOG_BUTTON">
+	  		<md-icon>edit</md-icon>
+	  		<md-tooltip>编辑</md-tooltip>
+		</md-button>
+		<md-button class="md-icon-button" confirm="你确认要删除类别【{{obj.groupName}}】吗？" ng-click="obj.events.deleteClick(obj)" has_Authority="ROLE_PRODUCT_MANAGEMENT_CATALOG_BUTTON">
+	 		<md-icon>delete</md-icon>
+	  		<md-tooltip>删除</md-tooltip>
+		</md-button>
+		<md-button class="md-icon-button" ng-click="obj.events.listClick(obj)">
+	  		<md-icon>list</md-icon>
+	 		<md-tooltip>表</md-tooltip>
+		</md-button>
+	</div>
+	</script>
+</div>

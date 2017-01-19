@@ -1,0 +1,23 @@
+<form name="articleForm" ng-submit="saveArticle()" flex layout="column">
+	<md-content flex layout="column" style="overflow: hidden">
+		<md-card layout="row" class="white-card-toolbar" style="padding: 0 10px">
+			<md-input-container class="set-margin" md-no-float flex>
+				<input ng-model="article.title" placeholder="标题" type="text" name="articleTitle" required>
+			</md-input-container>
+		  	<md-chips id="article-marks" ng-model="labels" md-separator-keys="keys" placeholder="添加标签" md-max-chips="5">
+		  	</md-chips>
+			  <md-input-container style="margin: auto">
+				  <md-button class="md-icon-button no-padding" type="submit">
+				  	<md-icon style="font-size:30px">save</md-icon>
+				  </md-button>
+			  </md-input-container>
+		</md-card>
+		
+		<my-mark-down ng-model="article.content"></my-mark-down>
+		
+		<!-- <show-tree-block if-show = "showTreeBlock"></show-tree-block> -->
+		<md-card layout="row" ng-if="ifOpenSet" style="height: 300px; box-shadow: 0px -10px 10px 1px rgba(0, 0, 0, 0.2); z-index: 1; margin-bottom: 0;">
+			<my-book-tree></my-book-tree>
+		</md-card>
+	</md-content>
+</form>

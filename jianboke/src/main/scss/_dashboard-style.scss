@@ -1,0 +1,18 @@
+.article-list {
+	padding: 10px;
+	overflow: auto;
+	md-list-item{
+		min-height: 50px;
+		height: 60px;
+		padding: 3px 10px;
+	}
+}
+div.nail-float-write {
+	display: inline-table;
+	position: fixed;
+	right: 10px;
+	bottom: 10px;
+}
+md-grid-tile.book-add-grid-item {
+	border: 1px solid #BFBCBC;
+}

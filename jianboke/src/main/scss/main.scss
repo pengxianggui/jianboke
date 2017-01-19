@@ -1,0 +1,110 @@
+$material-font-path: "../fonts";
+// bower:scss
+// endbower
+@import "material-design-icons",
+"material-design-colors",
+"material-design-add-bymyself",
+"book",
+"dashboard-style";
+
+// 全局css定义
+html, body {
+	font-family: "Microsoft Yahei";
+}
+.height-100-percent {
+	height: 100% !important;
+}
+.width-100-percent {
+	width: 100% !important;
+}
+.md-bg-gray {
+	background-color: gray !important;
+}
+.md-bg-purple {
+	background-color: #D744ED !important;
+}
+.md-bg-green {
+	background-color: #00FF00 !important;
+}
+.md-bg-blue {
+	background-color: #0000FF !important;
+}
+.md-bg-black {
+	background-color: #000000 !important;
+}
+#little-sidenav {
+	max-width: 100% !important;
+}
+md-card.white-card-toolbar {
+	min-height: 50px; 
+	height: 50px; 
+	background-color: white;
+}
+.set-margin{
+	margin: 6px;
+}
+#article-marks {
+	font-family: 'Microsoft Yahei';
+	margin: 0 20px;
+	&>md-chips-wrap{
+		padding:0;
+	}
+}
+.no-margin{
+	margin: 0 !important;
+}
+.margin-left-right-10{
+	margin: 0px 10px;
+}
+.no-padding{
+	padding: 0 !important;
+}
+// 定义$mdToast的主题样式
+md-toast.md-success-theme .md-toast-content {
+  background-color: #4CAF50;
+}
+md-toast.md-error-theme .md-toast-content {
+  background-color: #F44336;
+}
+#account_menu {
+    position: fixed;
+    right: 15px;
+    padding: 5px 0;
+    margin: 12px 0 0 0;
+    color: black;
+    border-radius: 10px;
+    font-size: 16px;
+    background: white;
+    box-shadow: -2px 4px 10px 1px rgba(0, 0, 0, 0.2);
+}
+#account_menu::before {
+	content: '';
+	transform: rotate(45deg);
+	position: absolute;
+	margin-left: 50%;
+	margin-top: -12px;
+	display: block;
+	background: white;
+	width: 20px;
+	height: 20px;
+}
+.account_menu_listener {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	background-color: transparent;
+	z-index: 0;
+}
+.h2 {
+	font-size: 1.5em;
+	font-weight: bold;
+}
+.category-tree .iui-treeview-expand-box {
+	margin: 12px 0 12px 8px;
+}
+.category-tree .category-item .item-text {
+	line-height: 24px;
+    padding: 8px;
+}

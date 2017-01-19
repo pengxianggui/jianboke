@@ -1,0 +1,19 @@
+.cropArea {
+    background: #E4E4E4;
+    overflow: hidden;
+    width:100px;
+    height:160px;
+}
+form .progress {
+    line-height: 15px;
+}
+.progress {
+    display: inline-block;
+    width: 100px;
+    border: 3px groove #CCC;
+}
+.progress div {
+    font-size: smaller;
+    background: orange;
+    width: 0;
+}
