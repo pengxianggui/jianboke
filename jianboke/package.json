@@ -1,0 +1,16 @@
+{
+  "name": "jianbo",
+  "version": "0.1.0-SNAPSHOT",
+  "description": "A blog platform",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-sass": "^3.0.0",
+    "gulp-util": "^3.0.7",
+    "wiredep": "^3.0.0",
+    "gulp-flatten": "^0.2.0",
+    "browser-sync": "^2.11.1",
+    "http-proxy-middleware": "^0.9.1"
+  }
+}
