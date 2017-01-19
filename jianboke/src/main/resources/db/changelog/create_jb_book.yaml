@@ -1,0 +1,81 @@
+databaseChangeLog:
+  - property:
+      name: autoIncrement
+      value: true
+      dbms: mysql,h2,postgresql,sqlserver
+  - property:
+      name: now
+      value: now()
+      dbms: mysql, h2
+  - property:
+      name: now
+      value: sysdate
+      dbms: oracle
+  - property:
+      name: now
+      value: getdate()
+      dbms: sqlserver
+  - changeSet:
+      id: create_jb_book
+      author: pengxg
+      changes:
+        - createTable:
+            tableName: books
+            remarks: 书籍
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: ${autoIncrement}
+                  remarks: 标识
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: book_name
+                  type: varchar(20)
+                  remarks: 书名
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: book_intro
+                  type: varchar(50)
+                  remarks: 书籍简介
+                  constraints: 
+                    unique: false
+                    nullable: true
+              - column:
+                  name: author_id
+                  type: bigint
+                  remarks: 作者id
+                  constraints:
+                    nullable: false
+              - column:
+                  name: book_cover_path
+                  type: varchar(100)
+                  remarks: 书籍封面图片的存储路径
+                  constraints: 
+                    nullable: true
+              - column: 
+                  name: second_author_id
+                  type: bigint
+                  remarks: 第二作者(联合创作作者)的id。当一本书设置了第二作者，那么这本书下面所有的article的第二作者也就被设置了
+                  constraints:
+                    unique: false 
+                    nullable: true
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValueDate: ${now}
+                  remarks: 创建时间
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  remarks: 最后修改时间
+        - loadData: 
+            encoding: UTF-8
+            file: db/data/jb_books.csv
+            tableName: books

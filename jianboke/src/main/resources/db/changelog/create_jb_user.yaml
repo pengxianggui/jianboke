@@ -1,0 +1,83 @@
+databaseChangeLog:
+  - property:
+      name: autoIncrement
+      value: true
+      dbms: mysql,h2,postgresql,sqlserver
+  - property:
+      name: now
+      value: now()
+      dbms: mysql, h2
+  - property:
+      name: now
+      value: sysdate
+      dbms: oracle
+  - property:
+      name: now
+      value: getdate()
+      dbms: sqlserver
+  - changeSet:
+      id: create_jb_user
+      author: pengxg
+      changes:
+        - createTable:
+            tableName: users
+            remarks: 系统的用户
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: ${autoIncrement}
+                  remarks: 标识
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(20)
+                  remarks: 用户名
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(100)
+                  remarks: 密码，长度在6和16之间。由于可能加密，因此允许保存长度设为100
+                  constraints: 
+                    unique: false
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(50)
+                  remarks: 邮箱，用于密码找回以及登录
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: phone_num
+                  type: varchar(11)
+                  remarks: 电话号码，可以为空。可用于密码找回，以及登录
+                  constraints: 
+                    unique: true
+                    nullable: true
+              - column:
+                  name: avatar_path
+                  type: varchar(100)
+                  remarks: 头像存储路径
+                  constraints: 
+                    unique: true
+                    nullable: true
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValueDate: ${now}
+                  remarks: 创建时间
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  remarks: 最后修改时间
+        - loadData:
+            encoding: UTF-8
+            file: db/data/jb_users.csv
+            tableName: users

@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - include:
+      file: classpath:db/changelog/create_jb_user.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: classpath:db/changelog/create_jb_book.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: classpath:db/changelog/create_jb_chapter.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: classpath:db/changelog/create_jb_article.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: classpath:db/changelog/create_jb_book_chapter_article.yaml
+      relativeToChangelogFile: false
+  - include: 
+      file: classpath:db/changelog/create_jb_union_book_article.yaml
+      relativeToChangelogFile: false      

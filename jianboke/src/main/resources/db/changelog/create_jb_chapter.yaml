@@ -1,0 +1,74 @@
+databaseChangeLog:
+  - property:
+      name: autoIncrement
+      value: true
+      dbms: mysql,h2,postgresql,sqlserver
+  - property:
+      name: now
+      value: now()
+      dbms: mysql, h2
+  - property:
+      name: now
+      value: sysdate
+      dbms: oracle
+  - property:
+      name: now
+      value: getdate()
+      dbms: sqlserver
+  - changeSet:
+      id: create_jb_chapter
+      author: pengxg
+      changes:
+        - createTable:
+            tableName: chapters
+            remarks: 章节对象
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: ${autoIncrement}
+                  remarks: 标识
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(20)
+                  remarks: 章节名
+                  constraints:
+                    nullable: false
+              - column:
+                  name: book_id
+                  type: bigint
+                  remarks: 书籍id，标注此章节对象从属于哪本书籍
+                  constraints: 
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(200)
+                  remarks: 章节描述
+                  constraints: 
+                    nullable: true
+              - column:
+                  name: parent_id
+                  type: bigint
+                  remarks: 父章节的id，标示从属于哪个章节。如果为null，则表示改章节就是book(顶结点)
+              - column:
+                  name: sort_num
+                  type: tinyint
+                  remarks: 章节排序的序号，该序号作用于同级章节
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValueDate: ${now}
+                  remarks: 创建时间
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  remarks: 最后修改时间
+        - loadData: 
+            encoding: UTF-8
+            file: db/data/jb_chapters.csv
+            tableName: chapters

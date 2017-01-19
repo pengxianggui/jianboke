@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - property:
+      name: autoIncrement
+      value: true
+      dbms: mysql,h2,postgresql,sqlserver
+  - property:
+      name: now
+      value: now()
+      dbms: mysql, h2
+  - property:
+      name: now
+      value: sysdate
+      dbms: oracle
+  - property:
+      name: now
+      value: getdate()
+      dbms: sqlserver
+  - changeSet:
+      id: create_jb_union_book_article
+      author: pengxg
+      changes:
+        - createTable:
+            tableName: union_book_articles
+            remarks: book-article联合表。多对多关系
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: ${autoIncrement}
+                  remarks: 标识
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: book_id
+                  type: bigint
+                  remarks: 书本id
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: article_id
+                  type: bigint
+                  remarks: 博客id
+                  constraints: 
+                    unique: false
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValueDate: ${now}
+                  remarks: 创建时间
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  remarks: 最后修改时间
+        - loadData: 
+            encoding: UTF-8
+            file: db/data/jb_union_book_articles.csv
+            tableName: union_book_articles

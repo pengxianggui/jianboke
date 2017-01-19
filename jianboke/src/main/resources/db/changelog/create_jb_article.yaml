@@ -1,0 +1,87 @@
+databaseChangeLog:
+  - property:
+      name: autoIncrement
+      value: true
+      dbms: mysql,h2,postgresql,sqlserver
+  - property:
+      name: now
+      value: now()
+      dbms: mysql, h2
+  - property:
+      name: now
+      value: sysdate
+      dbms: oracle
+  - property:
+      name: now
+      value: getdate()
+      dbms: sqlserver
+  - changeSet:
+      id: create_jb_article
+      author: pengxg
+      changes:
+        - createTable:
+            tableName: articles
+            remarks: 博客正文
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: ${autoIncrement}
+                  remarks: 标识
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(50)
+                  remarks: 标题
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: content
+                  type: text
+                  remarks: 博客正文，存储为text格式
+                  constraints: 
+                    unique: false
+                    nullable: false
+              - column:
+                  name: labels
+                  type: varchar(50)
+                  remarks: 文章标签，用逗号分隔。暂定一篇博客最多添加5个标签，每个标签最多10字。
+                  constraints: 
+                    nullable: true
+              - column:
+                  name: author_id
+                  type: bigint
+                  remarks: 作者id
+                  constraints:
+                    nullable: false
+#              - column:
+#                  name: book_id
+#                  type: bigint
+#                  remarks: 书籍id，标注这篇博客从属于哪本书籍。一篇博客只可以属于一本书。可以拷贝一份至另一本书
+#                  constraints: 
+#                    nullable: false
+              - column: 
+                  name: second_author_id
+                  type: bigint
+                  remarks: 第二作者(联合创作作者)的id
+                  constraints:
+                    unique: false 
+                    nullable: true
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValueDate: ${now}
+                  remarks: 创建时间
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  remarks: 最后修改时间
+        - loadData: 
+            encoding: UTF-8
+            file: db/data/jb_articles.csv
+            tableName: articles

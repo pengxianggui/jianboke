@@ -1,0 +1,6 @@
+id,name,book_id,description,parent_id,sort_num
+1,Angular从零开始,1,介绍angular相关知识,null,0
+2,Spring-Boot入门,2,介绍springBoot相关知识,null,0
+3,指令,1,angular指令内容,1,0
+4,依赖注入,1,angular依赖注入,1,1
+5,spring和angular,2,如何将angular整合到springboot项目中,2,0
