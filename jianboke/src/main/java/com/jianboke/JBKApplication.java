@@ -1,4 +1,4 @@
-package org.jianboke;
+package com.jianboke;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
