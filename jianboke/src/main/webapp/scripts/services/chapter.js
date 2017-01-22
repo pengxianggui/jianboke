@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	.factory('Chapter', function($resource) {
 		return $resource('api/chapter', {}, {
 			getTree: {

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	// book章节树Block
 	.directive('myBookTree', function(Book, IntegralUITreeViewService, $rootScope, Chapter) {
 		return {

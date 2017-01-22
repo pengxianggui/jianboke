@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	.controller('DashBoardCtrl', function($scope, $timeout, $mdSidenav, $log, $state, $mdDialog, Book, Article) {
 		console.log('DashBoardCtrl');
 		$scope.books;

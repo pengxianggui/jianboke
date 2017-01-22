@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	/**
 	 * 存在bug: 通过顶端工具栏改变textarea内容时，无法将最新变动传递给conent，需要在点击、keyup等途径触发传递。
 	 * 如何监听 textarea value的改变(包括通过js改变)成为解决bug的思路之一！ 网上优选方案是input 和 propertychange 事件结合

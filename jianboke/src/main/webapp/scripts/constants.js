@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	.constant('ACCESS_LEVELS', {
 		user: 'ROLE_USER',
 		admin: 'ROLE_ADMIN',

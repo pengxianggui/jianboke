@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	.controller('NewBlogCtrl', function($scope, $element, $mdConstant, Book, $mdDialog, Article, $rootScope, IntegralUITreeViewService) {
 		console.log('NewBlogCtrl');
 		$scope.ifOpenSet = false;

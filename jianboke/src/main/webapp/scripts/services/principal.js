@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	.factory('Principal', function($q, Account) {
 		var _identity, //账户对象
 			_authenticated = false; // 是否已经认证，默认为false。

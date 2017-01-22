@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
   .factory('Account', function($resource) {
     return $resource('api/account', {}, {});
   });

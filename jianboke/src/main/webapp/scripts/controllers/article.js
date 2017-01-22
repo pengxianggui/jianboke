@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	.controller('ArticleCtrl', function($scope) {
 		console.log('ArticleCtrl');
 	});

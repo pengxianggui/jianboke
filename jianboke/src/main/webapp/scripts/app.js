@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo', [
+angular.module('jianboke', [
      'ngAnimate',
      'ngAria',
      'chart.js',
@@ -31,7 +31,7 @@ angular.module('jianbo', [
           $rootScope.previousStateParams = fromParams;
         }
         if (toState.data && toState.data.title) {
-          $window.document.title = '简博 － ' + toState.data.title;
+          $window.document.title = '简博客 － ' + toState.data.title;
         }
       });
     

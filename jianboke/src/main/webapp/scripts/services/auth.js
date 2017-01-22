@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	.factory('Auth', function(AuthServerProvider, $state, $q, Principal, $rootScope, ACCESS_LEVELS, localStorageService, Register) {
 		return {
 			login: function(credentials) { //登录方法

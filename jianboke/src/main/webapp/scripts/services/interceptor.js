@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	.factory('authExpiredInterceptor', function($rootScope, $injector, $q) { // 权限过期拦截器
 		return {
 			responseError: function(response) {

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	.controller('BookAddCtrl', function($scope, $mdDialog, Upload, $timeout, Entity, Book, $rootScope, $state) {
 		console.log('BookAddCtrl');
 		$scope.book = Entity;

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	.controller('LoginCtrl', function($scope, $cookies, Auth, $mdToast, $state, $rootScope) {
 		console.log('LoginCtrl');
 		$scope.user = {};

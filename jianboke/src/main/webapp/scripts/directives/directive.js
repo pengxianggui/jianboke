@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('app')
+angular.module('jianboke')
 /**
  * 伸缩版块
  */

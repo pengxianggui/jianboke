@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('jianbo')
+angular.module('jianboke')
 	.config(function($stateProvider, $urlRouterProvider, ACCESS_LEVELS) {
 		$urlRouterProvider.otherwise('/dashboard');
 		$stateProvider.state('dashboard', {
