@@ -38,6 +38,7 @@ angular.module('jianbo')
 	          rememberMe: $scope.rememberMe
 	        }).then(function(data) {
 	          //提示登录成功，并定向到dashboard路由；
+	        	console.log(data);
 	        	$rootScope.popMessage("登录成功", true);
 	        	$state.go('dashboard');
 	        }).catch(function() {

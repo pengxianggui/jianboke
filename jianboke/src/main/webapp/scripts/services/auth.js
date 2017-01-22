@@ -8,7 +8,6 @@ angular.module('jianbo')
 				AuthServerProvider.login(credentials).then(function(data) {
 					Principal.identity(true).then(function(account) {
 						console.log(account);
-						console.log(account);
 						deferred.resolve(data);
 					})
 				}).catch(function(error) {

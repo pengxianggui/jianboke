@@ -21,6 +21,7 @@ angular.module('jianbo')
 		        }
 		        // 否则，向后端查询
 		        Account.get().$promise.then(function(account) { //查询
+		        	console.log(account);
 		        	_identity = account;
 		        	_authenticated = true;// 已认证
 		        	deferred.resolve(_identity);
