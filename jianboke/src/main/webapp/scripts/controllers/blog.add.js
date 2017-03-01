@@ -29,15 +29,19 @@ angular.module('jianboke')
 				return;
 			}
 			$scope.article.labels = $scope.labels.join(','); // 处理labels
-			console.log($scope.article.labels);
-			if ($scope.selectedBooks == null || $scope.selectedBooks.length == 0) {
-				
-			}
-			return;
-			Article.save($scope.article).$promise.then(function(resp) {
-				// 保存成功后提示用户去选择要归入Book的章节，跳转页面去进行操作。如果用户没有选择归类书籍，则直接在点击保存的时候提示用户即可。
-				console.log(resp);
-			});
+			Article
+//			if ($scope.selectedBooks == null || $scope.selectedBooks.length == 0) {
+//				$rootScope.confirmMessage('确定不归档至书籍中？', '', false, '嗯，确定', '等慢，考虑下', null)
+//				    .then(function() {
+//				        console.log('确定');
+//                        Article.save($scope.article).$promise.then(function(resp) {
+//                            // 保存成功后提示用户去选择要归入Book的章节，跳转页面去进行操作。如果用户没有选择归类书籍，则直接在点击保存的时候提示用户即可。
+//                            console.log(resp);
+//                        });
+//				    }, function() {
+//				        console.log('等慢');
+//				    });
+//			}
 		}
 		
 		
