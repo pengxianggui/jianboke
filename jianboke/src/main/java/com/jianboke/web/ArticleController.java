@@ -36,7 +36,7 @@ public class ArticleController {
 	 * @param filter
 	 * @return
 	 */
-	@RequestMapping(value = "/article/{filter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/articles/{filter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<Article> queryByFilter(@PathVariable String filter) {
 		 List<Article> articleList = new ArrayList<Article>();
 		 User user = userService.getUserWithAuthorities(); // 获取当前用户
@@ -57,5 +57,11 @@ public class ArticleController {
 		Article a = articleRepository.save(article);
 		System.out.println(a.toString());
 		return a;
+	}
+
+	@RequestMapping(value = "/article/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Article get(@PathVariable Long id) {
+		log.debug("REST request to get a Article by id:{}", id);
+		return articleRepository.findOne(id);
 	}
 }

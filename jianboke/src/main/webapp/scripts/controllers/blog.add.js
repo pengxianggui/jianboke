@@ -1,17 +1,10 @@
 'use strict';
 
 angular.module('jianboke')
-	.controller('NewBlogCtrl', function($scope, $element, $mdConstant, Book, $mdDialog, Article, $rootScope, IntegralUITreeViewService) {
+	.controller('NewBlogCtrl', function($scope, $element, $mdConstant, entity, Book, $mdDialog, Article, $rootScope, $state) {
 		console.log('NewBlogCtrl');
 		$scope.ifOpenSet = false;
-		$scope.article = {
-				id: null,
-				title: '',
-				content: '',
-				labels: '',
-				authorId: null,
-				bookId: null
-		}
+		$scope.article = entity;
 		$scope.labels = [];
 		$scope.keys = [$mdConstant.KEY_CODE.ENTER, $mdConstant.KEY_CODE.COMMA];
 		// The md-select directive eats keydown events for some quick select
@@ -29,22 +22,14 @@ angular.module('jianboke')
 				return;
 			}
 			$scope.article.labels = $scope.labels.join(','); // 处理labels
-			Article
-//			if ($scope.selectedBooks == null || $scope.selectedBooks.length == 0) {
-//				$rootScope.confirmMessage('确定不归档至书籍中？', '', false, '嗯，确定', '等慢，考虑下', null)
-//				    .then(function() {
-//				        console.log('确定');
-//                        Article.save($scope.article).$promise.then(function(resp) {
-//                            // 保存成功后提示用户去选择要归入Book的章节，跳转页面去进行操作。如果用户没有选择归类书籍，则直接在点击保存的时候提示用户即可。
-//                            console.log(resp);
-//                        });
-//				    }, function() {
-//				        console.log('等慢');
-//				    });
-//			}
+			Article.save($scope.article).$promise.then(function(resp) {
+                // 保存成功后提示用户去选择要归入Book的章节，跳转页面去进行操作。如果用户没有选择归类书籍，则直接在点击保存的时候提示用户即可。
+                $rootScope.confirmMessage('温馨提示: ','是否去归档此文章？', false, '去归档', '算了吧', null)
+                    .then(function() { // 去归档
+                        $state.go('blog.addToBook', {id: resp.id});
+                    }, function() { // 不归档，回到首页
+                        $state.go('dashboard');
+                    });
+            });
 		}
-		
-		
-		
-		
 	})

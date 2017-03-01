@@ -72,6 +72,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
+      <!-- hibernate -->
+      <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-envers</artifactId>
+      </dependency>
   </dependencies>
   
   <build>

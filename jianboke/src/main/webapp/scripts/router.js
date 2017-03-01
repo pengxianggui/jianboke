@@ -38,7 +38,19 @@ angular.module('jianboke')
 				title: '新建Blog',
 			},
 			controller: 'NewBlogCtrl',
-			templateUrl: 'views/newBlog.html'
+			templateUrl: 'views/newBlog.html',
+			resolve: {
+			    entity: function() {
+			        return {
+                        id: null,
+                        title: '',
+                        content: '',
+                        labels: '',
+                        authorId: null,
+                        bookId: null
+                    }
+			    }
+			}
 		})
 		.state('blog.readblog', {
 			url: '/readblog',
@@ -48,6 +60,20 @@ angular.module('jianboke')
 			},
 			controller: 'ReadBlogCtrl',
 			templateUrl: 'views/readBlog.html'
+		})
+		.state('blog.addToBook', {
+		    url: '/addToBook/{id}',
+		    data: {
+		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+		        title: '文章归档'
+		    },
+		    controller: 'AddToBookCtrl',
+		    templateUrl: 'views/addToBook.html',
+		    resolve: {
+		        entity: function($stateParams, Article) {
+		            return Article.get({id: $stateParams.id}).$promise;
+		        }
+		    }
 		})
 		.state('，mycollection', {
 			url: '/mycollection',

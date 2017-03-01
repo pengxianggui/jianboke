@@ -61,7 +61,7 @@ gulp.task('watch', function() {
  * 问题： material-icon在代理窗口下未生效。和'fonts'任务有关系。未解决
  */
 gulp.task('serve', ['html', 'sass', 'watch'],  function() {
-	var baseUri = 'http://localhost:' + 8089;
+	var baseUri = 'http://localhost:' + 6969;
 	browserSync.init({
 		open: true,
 		port: 9004,

@@ -5,7 +5,7 @@ angular.module('jianboke')
 	.directive('myBookTree', function(Book, IntegralUITreeViewService, $rootScope, Chapter) {
 		return {
 			restrict: 'AE',
-			templateUrl: 'views/treeOfBooks.html',
+			templateUrl: 'views/template/treeOfBooks.html',
 			replace: true,
 			controller: function($scope) {
 				$scope.treeName = 'categoryTree';

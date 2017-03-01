@@ -1,0 +1,14 @@
+<md-card flex>
+    <md-content flex layout="column">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h3 ng-bind="article.title"></h3>
+                <span flex></span>
+                <span>created-date: <span ng-bind="article.createdDate"></span></span>
+            </div>
+        </md-toolbar>
+        <div flex>
+            <my-book-tree></my-book-tree>
+        </div>
+    </md-content>
+</md-card>
