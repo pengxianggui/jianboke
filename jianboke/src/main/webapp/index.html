@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="bower_components/editor.md/css/editormd.min.css" />
 </head>
 <body ng-app="jianboke" layout="column" ng-cloak>
-	<header style="z-index:2">
+	<header style="z-index:1">
 		<md-toolbar class="md-hue-2">
 		<div class="md-toolbar-tools">
 			<md-button class="md-icon-button" aria-label="Settings"
@@ -35,7 +35,7 @@
 		</div>
 		</md-toolbar>
 	</header>
-	<main flex style="overflow: auto">
+	<main flex style="overflow: auto; z-index: 0">
 		<article ui-view layout="row" flex class="height-100-percent" ng-cloak></article>
 	</main>
 	<!-- bower:js -->
@@ -105,5 +105,8 @@
 	<!-- directive -->
 	<script src="scripts/directives/my_directive.js"></script>
 	<script src="scripts/directives/my_book_tree.js"></script>
+
+	<!-- filter -->
+	<script src="scripts/filters/dataTypeExchangeFilter.js"></script>
 </body>
 </html>

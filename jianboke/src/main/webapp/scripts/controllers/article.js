@@ -7,5 +7,4 @@ angular.module('jianboke')
 	.controller('AddToBookCtrl', function($scope, entity) {
 	    console.log('AddToBookCtrl');
 	    $scope.article = entity;
-	    console.log(entity);
 	});

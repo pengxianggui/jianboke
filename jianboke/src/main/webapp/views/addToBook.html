@@ -4,7 +4,9 @@
             <div class="md-toolbar-tools">
                 <h3 ng-bind="article.title"></h3>
                 <span flex></span>
-                <span>created-date: <span ng-bind="article.createdDate"></span></span>
+                <span style="font-style: italic; font-size: 15px;">created-date:
+                    <span ng-bind="article.createdDate | localDateTimeToStr"></span>
+                </span>
             </div>
         </md-toolbar>
         <div flex>
