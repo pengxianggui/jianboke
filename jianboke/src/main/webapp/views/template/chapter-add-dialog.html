@@ -1,0 +1,50 @@
+<md-dialog>
+    <form class="md-inline-form" name="form" novalidate ng-submit="save($event)">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>章节目录编辑</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon>clear</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <md-input-container class="md-block">
+                    <label>名称</label>
+                    <input type="text" name="groupName" ng-model="group.groupName" required md-maxlength="20">
+                    <div class="hint" ng-if="form.groupName.$untouched">必输项，名称</div>
+                    <div ng-messages="form.groupName.$error">
+                        <div ng-message="required">请输入名称</div>
+                        <div ng-message="minlength">名称必须少于20字符</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>书本ID</label>
+                    <input type="text" name="bookId" ng-model="group.bookId" required md-maxlength="20" ng-readonly="group.bookId != null">
+                    <div class="hint" ng-if="form.bookId.$untouched">必输项，产品ID</div>
+                    <div ng-messages="form.bookId.$error">
+                        <div ng-message="required">请输入产品ID</div>
+                        <div ng-message="minlength">书本ID必须少于20字符</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block" >
+                    <label>父级</label>
+                    <input type="text" name="parentName" ng-model="group.parentName" readonly>
+                </md-input-container>
+                <md-input-container class="md-block" >
+                    <label>说明</label>
+                    <input type="text" name="description" ng-model="group.description" maxlength="5000">
+                    <div ng-messages="form.description.$error">
+                        <div ng-message="minlength">说明最多5000个字符</div>
+                    </div>
+                </md-input-container>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <md-button type="submit" class="md-primary md-raised" >保存</md-button>
+            <md-button ng-click="cancel()" class="md-warn md-raised">取消</md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

@@ -7,7 +7,7 @@ angular.module('jianboke')
 			restrict: 'AE',
 			templateUrl: 'views/template/treeOfBooks.html',
 			replace: true,
-			controller: function($scope) {
+			controller: function($scope, $mdDialog) {
 				$scope.treeName = 'categoryTree';
 				$scope.selectedBook;
 				$scope.nodes = [];
@@ -64,12 +64,12 @@ angular.module('jianboke')
 			      if (obj) {
 			        console.log(obj);
 			        $mdDialog.show({
-			          templateUrl: 'group_edit.html',
+			          templateUrl: 'views/template/chapter-add-dialog.html',
 			          controller: DialogController,
 			          locals: {
 			            group: {
 			              groupName: obj.groupName,
-			              cpId: obj.cpId,
+			              bookId: obj.bookId,
 			              id: obj.id,
 			              parentName: obj.parentName,
 			              description: obj.description,
@@ -140,10 +140,12 @@ angular.module('jianboke')
 			      node.parentName = obj.parentName;
 			      $scope.listTable(node);
 			    };
+
 			    var clearList = function () {
 			    	IntegralUITreeViewService.clearItems($scope.treeName);
 			    };
 			    $scope.customItemTemplate = {url: '\'item-template.html\''};
+
 			    var addItem = function (parent, chapterGroup) {
 			        var node = {
 			          groupName: chapterGroup.groupName,
@@ -177,7 +179,7 @@ angular.module('jianboke')
 			        }
 			      };
 				// 加载树
-				$scope.refreshTree = function (event) {
+				$scope.refreshTree = function () {
 			      IntegralUITreeViewService.beginLoad($scope.treeName, null, {type: 'linear', speed: 'fast', opacity: 0.25});
 			      Chapter.getTree({"bookId": $scope.selectedBook.id}).$promise.then(function (value, responseHeaders) {
 			        $scope.chaptersTree = value;
@@ -192,11 +194,104 @@ angular.module('jianboke')
 			        $rootScope.popMessage('加载失败', false);
 			      });
 			    };
+
+                // 展开所有节点
+                $scope.expandAll = function() {
+                    IntegralUITreeViewService.expand($scope.treeName);
+                }
+
+                // 收起所有节点
+                $scope.collapseAll = function() {
+                    IntegralUITreeViewService.collapse($scope.treeName);
+                }
+
+                // 添加一个空的章节
+                var showAddDialog = function (obj, sortNum) {
+                      console.log(obj);
+                      console.log(sortNum);
+                      $mdDialog.show({
+                        templateUrl: 'views/template/chapter-add-dialog.html',
+                        controller: DialogController,
+                        //parent: angular.element(document.body),
+                        locals: {
+                          group: {
+                            groupName: null,
+                            bookId: obj.bookId,
+                            parentName: obj.groupName,
+                            parentId: obj.id,
+                            description: null,
+                            sortNum: sortNum
+                          }
+                        }
+                      }).then(function (result) {
+                        console.log(result);
+                        var item = {
+                          id: result.id,
+                          text: result.groupName,
+                          groupName: result.groupName,
+                          cpId: result.cpId,
+                          description: result.description,
+                          parentId: result.parentId,
+                          parentName: result.parentName,
+                          sortNum: result.sortNum,
+                          templateObj: {
+                            id: result.id,
+                            text: result.groupName,
+                            groupName: result.groupName,
+                            cpId: result.cpId,
+                            description: result.description,
+                            parentId: result.parentId,
+                            parentName: result.parentName,
+                            sortNum: result.sortNum,
+                            events: objEvents
+                          },
+                          expanded: true
+                        };
+                        var selItem = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
+                        IntegralUITreeViewService.addItem($scope.treeName, item, selItem);
+                      }).catch(function (e) {
+                        console.log(e);
+                      })
+                    };
+
 			    $scope.$watch('selectedBook', function(newValue, oldValue) {
 			    	if (newValue != null) {
 			    		$scope.refreshTree();
 			    	}
 			    });
+
+
+			    // 添加/编辑节点时的弹出框对应的控制器
+                function DialogController($stateParams, $scope, $rootScope, $mdToast, $mdDialog, group) {
+                    $scope.group = group;
+                    $scope.hide = function () {
+                        $mdDialog.hide();
+                    };
+                    $scope.cancel = function () {
+                        $mdDialog.cancel();
+                    };
+                    $scope.save = function (event) {
+                        event.preventDefault();
+                        angular.forEach($scope.form.$error.required, function (field) {
+                          field.$setTouched();
+                        });
+                        if ($scope.form.$valid) {
+                            Chapter.save($scope.group).$promise.then(
+                              function (result, responseHeaders) {
+                                $mdToast.show(
+                                  $mdToast.simple()
+                                    .content('保存成功。')
+                                    .theme('success')
+                                );
+                                $mdDialog.hide(result);
+                              }
+                            ).catch(function (httpResponse) {
+                              $rootScope.showResult('失败', '保存失败', false, false, httpResponse);
+                              //$scope.hide();
+                            });
+                        }
+                    }
+                }
 			}
 		}
 	})
