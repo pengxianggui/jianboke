@@ -21,7 +21,7 @@ import com.jianboke.repository.ArticleRepository;
 import com.jianboke.service.UserService;
 
 @RestController
-@RequestMapping("api/")
+@RequestMapping("/api")
 public class ArticleController {
 	private static final Logger log = LoggerFactory.getLogger(ArticleController.class);
 	

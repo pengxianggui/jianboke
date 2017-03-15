@@ -33,11 +33,27 @@
 		</md-content>
 	</md-card>
 	<md-card flex>
-		<md-toolbar layout="row" class="md-hue-2" style="background: rgb(140,158,255); height: 40px; min-height: 30px">
-			章节名
+		<md-toolbar layout="row" class="md-hue-2" style="background: rgb(140,158,255); height: 40px; min-height: 30px;">
+			<div class="md-toolbar-tools" style="height: 40px; min-height: 30px;">
+				<span ng-if="currentChapter == null">章节名</span>
+				<span ng-if="currentChapter != null" ng-bind="currentChapter.groupName"></span>
+			</div>
 		</md-toolbar>
-		<md-content flex class="md-padding">
-			文章列表
+		<md-content flex>
+			<md-list>
+				<md-list-item class="" ng-repeat="article in articles | orderBy:'sortNum'">
+					<md-button class="md-icon-button" ng-click="deleteTable(table)">
+						<md-tooltip>删除</md-tooltip>
+						<md-icon>delete</md-icon>
+					</md-button>
+					<span >序号:{{article.sortNum}}----《{{article.articleTitle}}》</span>
+					<md-button class="md-icon-button md-secondary" ng-click="sortNum(table)">
+						<md-tooltip>排序</md-tooltip>
+						<md-icon>sort</md-icon>
+					</md-button>
+					<md-divider></md-divider>
+				</md-list-item>
+			</md-list>
 		</md-content>
 	</md-card>
 

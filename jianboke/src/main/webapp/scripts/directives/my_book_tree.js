@@ -2,7 +2,7 @@
 
 angular.module('jianboke')
 	// book章节树Block
-	.directive('myBookTree', function(Book, IntegralUITreeViewService, $rootScope, Chapter) {
+	.directive('myBookTree', function(Book, IntegralUITreeViewService, $rootScope, Chapter, BookChapterArticle) {
 		return {
 			restrict: 'AE',
 			templateUrl: 'views/template/treeOfBooks.html',
@@ -38,6 +38,7 @@ angular.module('jianboke')
 				 * 添加一个子栏目
 				 */
 				var addClick = function (obj) {
+				  console.log(obj);
 			      if (obj) {
 			        var selItem = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
 			        var sortNum = 0;
@@ -45,13 +46,14 @@ angular.module('jianboke')
 			          sortNum = selItem.items.length;
 			          showAddDialog(obj, sortNum);
 			        } else {
-			          GroupItem.groupItemsList({
-			            groupId: obj.id
+			          // 判断当前节点下是否存在资源(文章)，若存在，则提示不能添加
+			          BookChapterArticle.listByParentId({
+			            parentId: obj.id
 			          }).$promise.then(function (result) {
 			            if (result == null || result.length == 0) {
 			              showAddDialog(obj, sortNum);
 			            } else {
-			              $rootScope.showResult('添加失败', '该产品组已有表或资源，不能添加子产品。', false, false);
+			              $rootScope.tipMessage('该产品组已有表或资源，不能添加子产品。', null);
 			            }
 			          });
 			        }
@@ -91,53 +93,65 @@ angular.module('jianboke')
 			      }
 			    };
 			    /**
-			     * 删除当前栏目
+			     * 删除当前章节
 			     */
 			    var deleteClick = function (obj) {
 			      if (obj) {
-			        var item = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
-			        console.log(item);
-			        if (item.items && item.items.length > 0) {
-			          $rootScope.showResult('删除失败', '【' + item.groupName + '】下面还有产品，不能删除。', false, false);
-			          return;
+			        // 根节点
+			        if (obj.parentId == null || obj.parentId == undefined) {
+                        $rootScope.tipMessage('根节点不允许删除。', null);
+                        return;
 			        }
-			        GroupItem.groupItemsList({
-			          groupId: obj.id
-			        }).$promise.then(function (value) {
-			          if (value.length != 0) {
-			            $rootScope.showResult('删除失败', '产品【' + obj.groupName + '】包含表或资源，删除失败。', false, false);
-			          }
-			          else {
-			            //删除组
-			            ProductGroup.remove({
-			              id: obj.id
-			            }).$promise.then(function () {
-			              $rootScope.showResult('删除成功', '产品【' + obj.groupName + '】删除成功。', true, false);
-			              var item = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
-			              if (item) {
-			                IntegralUITreeViewService.removeItem($scope.treeName, item);
-			                IntegralUITreeViewService.refresh($scope.treeName, obj.id);
-			              }
-			            }).catch(function (httpResponse) {
-			              $rootScope.showResult('删除失败', '【' + obj.groupName + '】删除失败。', false, false);
-			            });
-			          }
-			        });
+			        var item = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
+			        // 删除操作的具体执行逻辑
+			        var deleteAction = function(title, content) {
+                        $rootScope.confirmMessage(title, content, false, '确定', '取消', null).then(function() {
+                            // TODO 执行强删除操作(包括该章节下所有的BookChapterArticle和chapter)
+                            return;
+                            Chapter.remove({id: obj.id}).$promise.then(function(result) {
+                                $rootScope.popMessage('删除成功', true);
+                                var item = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
+                                if (item) {
+                                    IntegralUITreeViewService.removeItem($scope.treeName, item);
+                                    IntegralUITreeViewService.refresh($scope.treeName, obj.id);
+                                }
+                            })
+                        }, function() {}).catch(function(httpResponse) {
+                            $rootScope.popMessage('删除失败', false);
+                        });
+			        }
+
+                    Chapter.getArticlesById({id: obj.id}).$promise.then(function(result) {
+                        console.log(result);
+                        console.log(result.length);
+                        var title, content;
+                        if ((item.items && item.items.length > 0)) { // 章节下存在子章节
+                            title = '警告！';
+                            content = '【' + obj.groupName + '】章节下包含了子章节,并且这些子章节中可能存在文章。删除会导致子章节也全部删除！并且无法撤销。但这些文章不会被删除，只是会被撤销归档，您可以在您的文章列表下找到它们。您确认操作吗？';
+                        } else if (result.length > 0) { // result.length>0表明章节下存在文章
+                            title = '警告';
+                            content = '【' + obj.groupName + '】章节下包含了' + result.length + '篇文章，此操作不会删除这些文章，但是会导致这些文章撤销归档且无法依靠程序恢复，您确定此操作吗？'
+                        } else {
+                            title = '提示:';
+                            content = '此操作无法恢复，您确定要删除【' + obj.groupName + '】吗?';
+                        }
+                        deleteAction(title, content);
+                    })
 			      }
 			    };
 			    /**
 			     * 列出当前栏目下所有的表
 			     */
 			    var listClick = function (obj) {
-
 			      console.log(obj);
 			      var node = {};
 			      node.id = obj.id;
-			      node.cpId = obj.cpId;
-			      node.groupName = obj.name;
-			      node.sortNum = obj.sortNum;
+			      node.bookId = obj.bookId;
+			      node.groupName = obj.groupName;
 			      node.parentId = obj.parentId;
+			      node.sortNum = obj.sortNum;
 			      node.parentName = obj.parentName;
+			      node.description = obj.description;
 			      $scope.listTable(node);
 			    };
 
@@ -145,6 +159,7 @@ angular.module('jianboke')
 			    	IntegralUITreeViewService.clearItems($scope.treeName);
 			    };
 			    $scope.customItemTemplate = {url: '\'item-template.html\''};
+//			    $scope.customItemTemplate = {url: 'template/tree-item-template.html'};
 
 			    var addItem = function (parent, chapterGroup) {
 			        var node = {
@@ -154,7 +169,7 @@ angular.module('jianboke')
 			          bookId: chapterGroup.bookId,
 			          description: chapterGroup.description,
 			          parentId: chapterGroup.parentId,
-//			          parentName: chapterGroup.parentName,
+			          parentName: chapterGroup.parentName,
 			          //items:category.nodes,
 			          sortNum: chapterGroup.sortNum,
 			          templateObj: {
@@ -163,7 +178,7 @@ angular.module('jianboke')
 			            groupName: chapterGroup.groupName,
 			            bookId: chapterGroup.bookId,
 			            parentId: chapterGroup.parentId,
-//			            parentName: chapterGroup.parentName,
+			            parentName: chapterGroup.parentName,
 			            description: chapterGroup.description,
 			            //items:category.nodes,
 			            sortNum: chapterGroup.sortNum,
@@ -207,29 +222,29 @@ angular.module('jianboke')
 
                 // 添加一个空的章节
                 var showAddDialog = function (obj, sortNum) {
-                      console.log(obj);
-                      console.log(sortNum);
-                      $mdDialog.show({
+                    console.log(obj);
+                    console.log(sortNum);
+                    $mdDialog.show({
                         templateUrl: 'views/template/chapter-add-dialog.html',
                         controller: DialogController,
                         //parent: angular.element(document.body),
                         locals: {
-                          group: {
-                            groupName: null,
-                            bookId: obj.bookId,
-                            parentName: obj.groupName,
-                            parentId: obj.id,
-                            description: null,
-                            sortNum: sortNum
-                          }
+                            group: {
+                                groupName: null,
+                                bookId: obj.bookId,
+                                parentName: obj.groupName,
+                                parentId: obj.id,
+                                description: null,
+                                sortNum: sortNum
+                            }
                         }
-                      }).then(function (result) {
+                    }).then(function (result) {
                         console.log(result);
                         var item = {
                           id: result.id,
                           text: result.groupName,
                           groupName: result.groupName,
-                          cpId: result.cpId,
+                          bookId: result.bookId,
                           description: result.description,
                           parentId: result.parentId,
                           parentName: result.parentName,
@@ -238,7 +253,7 @@ angular.module('jianboke')
                             id: result.id,
                             text: result.groupName,
                             groupName: result.groupName,
-                            cpId: result.cpId,
+                            bookId: result.bookId,
                             description: result.description,
                             parentId: result.parentId,
                             parentName: result.parentName,
@@ -249,10 +264,56 @@ angular.module('jianboke')
                         };
                         var selItem = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
                         IntegralUITreeViewService.addItem($scope.treeName, item, selItem);
-                      }).catch(function (e) {
+                    }).catch(function (e) {
                         console.log(e);
-                      })
-                    };
+                    })
+                };
+                // 列出当前node节点下所有的表
+                $scope.listTable = function (node) {
+                    console.log(node);
+                    $scope.articles = [];
+                    $scope.currentChapter = IntegralUITreeViewService.findItemById($scope.treeName, node.id);
+                    Chapter.getArticlesById({id: node.id}).$promise.then(function (value) {
+                        console.log(value);
+                        $scope.articles = value;
+                    })
+                };
+
+                // 撤销某个文章的归档。即将文章移出该书
+                $scope.deleteArticle = function (article) {
+                  var articleTitle = article.articleTitle;
+                  var title = '确认操作';
+                  var content = '你确定将【' + articleTitle + '】从本书中移出吗？';
+                  $rootScope.confirmMessage(title, content, false, '确定', '取消', null).then(function() {
+                    BookChapterArticle.remove({ id: article.id }).$promise.then(function (value) {
+                      $rootScope.popMessage('《' + articleTitle + '》移除成功。', true);
+                      $scope.listTable($scope.currentChapter);
+                    }).catch(function (httpResponse) {
+                      $rootScope.popMessage('《' + articleTitle + '》移除失败。', false);
+                    });
+                  });
+                  }, function() {});
+                };
+
+                // 更改排序
+                $scope.sortNum = function (node) {
+                    // TODO 更改排序
+                  //console.log(table);
+//                  $mdDialog.show({
+//                    controller: SortNumController,
+//                    templateUrl: 'sort_num.html',
+//                    parent: angular.element(document.body),
+//                    clickOutsideToClose: true,
+//                    locals: {
+//                      node: node
+//                    }
+//                  }).then(function (result) {
+//                    $scope.listTable($scope.currentGroup);
+//                  }).catch(function (data) {
+//                    $scope.listTable($scope.currentGroup);
+//                  });
+                };
+
 
 			    $scope.$watch('selectedBook', function(newValue, oldValue) {
 			    	if (newValue != null) {
@@ -264,6 +325,7 @@ angular.module('jianboke')
 			    // 添加/编辑节点时的弹出框对应的控制器
                 function DialogController($stateParams, $scope, $rootScope, $mdToast, $mdDialog, group) {
                     $scope.group = group;
+                    console.log(group);
                     $scope.hide = function () {
                         $mdDialog.hide();
                     };

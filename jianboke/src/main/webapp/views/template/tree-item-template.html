@@ -1,0 +1,20 @@
+<div class="category-item" layout="row">
+    <span class="item-text">{{obj.groupName}}</span>
+    <span flex></span>
+    <md-button class="md-icon-button" ng-click="obj.events.addClick(obj)">
+        <md-icon>add</md-icon>
+        <md-tooltip>添加子栏目</md-tooltip>
+    </md-button>
+    <md-button class="md-icon-button" ng-click="obj.events.editClick(obj)">
+        <md-icon>edit</md-icon>
+        <md-tooltip>编辑</md-tooltip>
+    </md-button>
+    <md-button class="md-icon-button" confirm="你确认要删除类别【{{obj.groupName}}】吗？" ng-click="obj.events.deleteClick(obj)">
+        <md-icon>delete</md-icon>
+        <md-tooltip>删除</md-tooltip>
+    </md-button>
+    <md-button class="md-icon-button" ng-click="obj.events.listClick(obj)">
+        <md-icon>list</md-icon>
+        <md-tooltip>表</md-tooltip>
+    </md-button>
+</div>

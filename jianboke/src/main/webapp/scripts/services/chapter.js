@@ -6,6 +6,11 @@ angular.module('jianboke')
 			getTree: {
 				url: 'api/chapter/listChapterTreeWithoutArticle/:bookId',
 				method: 'GET'
+			},
+			getArticlesById: {
+			    url: 'api/chapter/listArticlesById/:id',
+			    method: 'GET',
+			    isArray: true
 			}
 		});
 	});
