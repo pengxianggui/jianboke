@@ -106,8 +106,6 @@ angular.module('jianboke')
 			        // 删除操作的具体执行逻辑
 			        var deleteAction = function(title, content) {
                         $rootScope.confirmMessage(title, content, false, '确定', '取消', null).then(function() {
-                            // TODO 执行强删除操作(包括该章节下所有的BookChapterArticle和chapter)
-                            return;
                             Chapter.remove({id: obj.id}).$promise.then(function(result) {
                                 $rootScope.popMessage('删除成功', true);
                                 var item = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
@@ -121,24 +119,26 @@ angular.module('jianboke')
                         });
 			        }
 
-                    Chapter.getArticlesById({id: obj.id}).$promise.then(function(result) {
-                        console.log(result);
-                        console.log(result.length);
+			        BookChapterArticle.listByChapterIdDeeply({chapterId: obj.id}).$promise.then(function(result) {
                         var title, content;
                         if ((item.items && item.items.length > 0)) { // 章节下存在子章节
                             title = '警告！';
-                            content = '【' + obj.groupName + '】章节下包含了子章节,并且这些子章节中可能存在文章。删除会导致子章节也全部删除！并且无法撤销。但这些文章不会被删除，只是会被撤销归档，您可以在您的文章列表下找到它们。您确认操作吗？';
+                            content = '【' + obj.groupName + '】章节下包含了子章节，删除会导致子章节也全部删除！并且无法撤销。';
+                            if (result.length > 0) {
+                                content += '另外这些子章节下分布了' + result.length + '篇文章，此操作不会删除这些文章，但是会导致这些文章撤销归档且无法依靠程序恢复，您确定此操作吗？';
+                            }
                         } else if (result.length > 0) { // result.length>0表明章节下存在文章
                             title = '警告';
                             content = '【' + obj.groupName + '】章节下包含了' + result.length + '篇文章，此操作不会删除这些文章，但是会导致这些文章撤销归档且无法依靠程序恢复，您确定此操作吗？'
                         } else {
                             title = '提示:';
-                            content = '此操作无法恢复，您确定要删除【' + obj.groupName + '】吗?';
+                            content = '此操作无法恢复，您确定要删除【' + obj.groupName + '】章节吗?';
                         }
                         deleteAction(title, content);
                     })
 			      }
 			    };
+
 			    /**
 			     * 列出当前栏目下所有的表
 			     */
@@ -270,7 +270,6 @@ angular.module('jianboke')
                 };
                 // 列出当前node节点下所有的表
                 $scope.listTable = function (node) {
-                    console.log(node);
                     $scope.articles = [];
                     $scope.currentChapter = IntegralUITreeViewService.findItemById($scope.treeName, node.id);
                     Chapter.getArticlesById({id: node.id}).$promise.then(function (value) {
@@ -292,7 +291,6 @@ angular.module('jianboke')
                       $rootScope.popMessage('《' + articleTitle + '》移除失败。', false);
                     });
                   });
-                  }, function() {});
                 };
 
                 // 更改排序
@@ -314,13 +312,29 @@ angular.module('jianboke')
 //                  });
                 };
 
-
 			    $scope.$watch('selectedBook', function(newValue, oldValue) {
 			    	if (newValue != null) {
 			    		$scope.refreshTree();
 			    	}
 			    });
 
+                // 归档文章
+                $scope.publishArticle = function(article, currentChapter) {
+                    var articleModel = {
+                        bookId : $scope.selectedBook.id,
+                        parentId : currentChapter.id,
+                        articleId : article.id,
+                        articleTitle : article.title,
+                        sortNum : $scope.articles.length
+                    };
+                    BookChapterArticle.save(articleModel).$promise.then(function(result) {
+                        $rootScope.popMessage('归档成功！', true);
+                        $scope.listTable({id: currentChapter.id});
+                    }).catch(function(httpResponse) {
+                        $rootScope.popMessage('归档失败！', false);
+                        $scope.listTable({id: currentChapter.id});
+                    })
+                }
 
 			    // 添加/编辑节点时的弹出框对应的控制器
                 function DialogController($stateParams, $scope, $rootScope, $mdToast, $mdDialog, group) {

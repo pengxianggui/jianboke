@@ -7,6 +7,11 @@ angular.module('jianboke')
             url: 'api/bookChapterArticle/list/:parentId',
             method: 'GET',
             isArray: true
+        },
+        listByChapterIdDeeply: {
+            url: 'api/bookChapterArticle/listdeeply/:chapterId',
+            method: 'GET',
+            isArray: true
         }
     })
 });

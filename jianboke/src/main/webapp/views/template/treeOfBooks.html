@@ -39,14 +39,17 @@
 				<span ng-if="currentChapter != null" ng-bind="currentChapter.groupName"></span>
 			</div>
 		</md-toolbar>
-		<md-content flex>
+		<md-content class="md-padding" flex ng-if="currentChapter.items && currentChapter.items.length > 0">
+			对不起，当前章节下嵌套了其他章节，文章与章节无法共处同一层，因此您无法在此处归档《{{article.title}}》。
+		</md-content>
+		<md-content flex ng-if="!(currentChapter.items && currentChapter.items.length > 0)">
 			<md-list>
-				<md-list-item class="" ng-repeat="article in articles | orderBy:'sortNum'">
+				<md-list-item class="" ng-repeat="a in articles | orderBy:'sortNum'">
 					<md-button class="md-icon-button" ng-click="deleteTable(table)">
 						<md-tooltip>删除</md-tooltip>
 						<md-icon>delete</md-icon>
 					</md-button>
-					<span >序号:{{article.sortNum}}----《{{article.articleTitle}}》</span>
+					<span >序号:{{a.sortNum}}----《{{a.articleTitle}}》</span>
 					<md-button class="md-icon-button md-secondary" ng-click="sortNum(table)">
 						<md-tooltip>排序</md-tooltip>
 						<md-icon>sort</md-icon>
@@ -55,6 +58,10 @@
 				</md-list-item>
 			</md-list>
 		</md-content>
+		<md-card-actions ng-if="currentChapter != null" layout="row" layout-align="end center">
+			<md-button class="md-primary md-raised" ng-disabled="currentChapter.items && currentChapter.items.length > 0"
+					   ng-click="publishArticle(article, currentChapter)">归档此处</md-button>
+		</md-card-actions>
 	</md-card>
 
 	<!-- 模板树节点 -->
@@ -64,7 +71,7 @@
 			<span flex></span>
 			<md-button class="md-icon-button" ng-click="obj.events.addClick(obj)">
 				<md-icon>add</md-icon>
-				<md-tooltip>添加子栏目</md-tooltip>
+				<md-tooltip>添加子章节</md-tooltip>
 			</md-button>
 			<md-button class="md-icon-button" ng-click="obj.events.editClick(obj)">
 				<md-icon>edit</md-icon>
@@ -76,7 +83,7 @@
 			</md-button>
 			<md-button class="md-icon-button" ng-click="obj.events.listClick(obj)">
 				<md-icon>list</md-icon>
-				<md-tooltip>表</md-tooltip>
+				<md-tooltip>显示文章</md-tooltip>
 			</md-button>
 		</div>
 	</script>
