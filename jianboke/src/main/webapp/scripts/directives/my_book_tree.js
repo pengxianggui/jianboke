@@ -2,7 +2,7 @@
 
 angular.module('jianboke')
 	// book章节树Block
-	.directive('myBookTree', function(Book, IntegralUITreeViewService, $rootScope, Chapter, BookChapterArticle) {
+	.directive('myBookTree', function(Book, IntegralUITreeViewService, $rootScope, Chapter, BookChapterArticle, $state) {
 		return {
 			restrict: 'AE',
 			templateUrl: 'views/template/treeOfBooks.html',
@@ -38,7 +38,6 @@ angular.module('jianboke')
 				 * 添加一个子栏目
 				 */
 				var addClick = function (obj) {
-				  console.log(obj);
 			      if (obj) {
 			        var selItem = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
 			        var sortNum = 0;
@@ -64,7 +63,6 @@ angular.module('jianboke')
 			     */
 			    var editClick = function (obj) {
 			      if (obj) {
-			        console.log(obj);
 			        $mdDialog.show({
 			          templateUrl: 'views/template/chapter-add-dialog.html',
 			          controller: DialogController,
@@ -80,16 +78,13 @@ angular.module('jianboke')
 			            }
 			          }
 			        }).then(function (result) {
-			          console.log(result)
 			          var item = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
 			          item.groupName = result.groupName;
 			          item.templateObj.groupName = result.groupName;
 			          item.description = result.description;
 			          item.templateObj.description = result.description;
 			          IntegralUITreeViewService.refresh($scope.treeName, obj.id);
-			        }, function (e) {
-			          console.log(e);
-			        });
+			        }, function (e) {});
 			      }
 			    };
 			    /**
@@ -143,7 +138,6 @@ angular.module('jianboke')
 			     * 列出当前栏目下所有的表
 			     */
 			    var listClick = function (obj) {
-			      console.log(obj);
 			      var node = {};
 			      node.id = obj.id;
 			      node.bookId = obj.bookId;
@@ -198,7 +192,6 @@ angular.module('jianboke')
 			      IntegralUITreeViewService.beginLoad($scope.treeName, null, {type: 'linear', speed: 'fast', opacity: 0.25});
 			      Chapter.getTree({"bookId": $scope.selectedBook.id}).$promise.then(function (value, responseHeaders) {
 			        $scope.chaptersTree = value;
-			        console.log($scope.chaptersTree);
 			        IntegralUITreeViewService.suspendLayout($scope.treeName);
 			        clearList();
 			        addItem(null, $scope.chaptersTree);
@@ -222,8 +215,6 @@ angular.module('jianboke')
 
                 // 添加一个空的章节
                 var showAddDialog = function (obj, sortNum) {
-                    console.log(obj);
-                    console.log(sortNum);
                     $mdDialog.show({
                         templateUrl: 'views/template/chapter-add-dialog.html',
                         controller: DialogController,
@@ -239,7 +230,6 @@ angular.module('jianboke')
                             }
                         }
                     }).then(function (result) {
-                        console.log(result);
                         var item = {
                           id: result.id,
                           text: result.groupName,
@@ -264,17 +254,14 @@ angular.module('jianboke')
                         };
                         var selItem = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
                         IntegralUITreeViewService.addItem($scope.treeName, item, selItem);
-                    }).catch(function (e) {
-                        console.log(e);
-                    })
+                    }).catch(function (e) {})
                 };
                 // 列出当前node节点下所有的表
                 $scope.listTable = function (node) {
-                    $scope.articles = [];
+                    $scope.articleModels = [];
                     $scope.currentChapter = IntegralUITreeViewService.findItemById($scope.treeName, node.id);
                     Chapter.getArticlesById({id: node.id}).$promise.then(function (value) {
-                        console.log(value);
-                        $scope.articles = value;
+                        $scope.articleModels = value;
                     })
                 };
 
@@ -294,22 +281,20 @@ angular.module('jianboke')
                 };
 
                 // 更改排序
-                $scope.sortNum = function (node) {
-                    // TODO 更改排序
-                  //console.log(table);
-//                  $mdDialog.show({
-//                    controller: SortNumController,
-//                    templateUrl: 'sort_num.html',
-//                    parent: angular.element(document.body),
-//                    clickOutsideToClose: true,
-//                    locals: {
-//                      node: node
-//                    }
-//                  }).then(function (result) {
-//                    $scope.listTable($scope.currentGroup);
-//                  }).catch(function (data) {
-//                    $scope.listTable($scope.currentGroup);
-//                  });
+                $scope.sortNum = function (articleModel) {
+                  $mdDialog.show({
+                    controller: SortNumController,
+                    templateUrl: 'views/template/sort_num.html',
+                    parent: angular.element(document.body),
+                    clickOutsideToClose: false,
+                    locals: {
+                      articleModel: articleModel
+                    }
+                  }).then(function (result) {
+                    $scope.listTable($scope.currentChapter);
+                  }).catch(function (data) {
+                    $scope.listTable($scope.currentChapter);
+                  });
                 };
 
 			    $scope.$watch('selectedBook', function(newValue, oldValue) {
@@ -325,21 +310,26 @@ angular.module('jianboke')
                         parentId : currentChapter.id,
                         articleId : article.id,
                         articleTitle : article.title,
-                        sortNum : $scope.articles.length
+                        sortNum : $scope.articleModels.length
                     };
                     BookChapterArticle.save(articleModel).$promise.then(function(result) {
-                        $rootScope.popMessage('归档成功！', true);
-                        $scope.listTable({id: currentChapter.id});
+                        if (result.id) {
+                            $rootScope.popMessage('归档成功！', true);
+                            $scope.listTable({id: currentChapter.id});
+                        } else {
+                            $rootScope.tipMessage('当前文章已经存在于该章节下，不能重复添加', null);
+                        }
                     }).catch(function(httpResponse) {
                         $rootScope.popMessage('归档失败！', false);
                         $scope.listTable({id: currentChapter.id});
                     })
                 }
 
+
+
 			    // 添加/编辑节点时的弹出框对应的控制器
                 function DialogController($stateParams, $scope, $rootScope, $mdToast, $mdDialog, group) {
                     $scope.group = group;
-                    console.log(group);
                     $scope.hide = function () {
                         $mdDialog.hide();
                     };
@@ -367,6 +357,37 @@ angular.module('jianboke')
                             });
                         }
                     }
+                }
+
+                // 排序
+                function SortNumController($stateParams, $scope, $rootScope, $mdToast, $mdDialog, BookChapterArticle, articleModel) {
+                  $scope.articleModel = articleModel;
+                  $scope.hide = function () {
+                    $mdDialog.hide();
+                  };
+                  $scope.cancel = function () {
+                    $mdDialog.cancel();
+                  };
+                  $scope.save = function (event) {
+                    event.preventDefault();
+                    angular.forEach($scope.form.$error.required, function (field) {
+                      field.$setTouched();
+                    });
+                    if ($scope.form.$valid) {
+                      BookChapterArticle.updateSortNum({
+                        id: articleModel.id,
+                        newSortNum: $scope.index
+                      }).$promise.then(function (result) {
+                        if (result) {
+                            $rootScope.popMessage('保存成功', true);
+                        } else {
+                            $rootScope.popMessage('保存失败', false);
+                        }
+                      }).catch(function () {
+                        $rootScope.popMessage('保存失败', false);
+                      })
+                    }
+                  }
                 }
 			}
 		}

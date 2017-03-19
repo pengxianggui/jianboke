@@ -21,4 +21,10 @@ public interface BookChapterArticleRepository extends JpaRepository<BookChapterA
     public int getCountByParentId(@Param("parentId") Long parentId);
 
     public List<BookChapterArticle> findAllByParentId(Long parentId);
+
+    @Query(value = "select * from book_chapter_articles bca where bca.parent_id =:parentId order by bca.sort_num", nativeQuery = true)
+    public List<BookChapterArticle> findAllByParentIdOrderly(@Param("parentId") Long parentId);
+
+    @Query(value = "select * from book_chapter_articles bca where bca.article_id =:articleId and bca.parent_id =:parentId", nativeQuery = true)
+    public List<BookChapterArticle> getByArticleIdAndParentId(@Param("articleId") Long articleId, @Param("parentId") Long parentId);
 }

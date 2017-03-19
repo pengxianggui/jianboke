@@ -12,6 +12,10 @@ angular.module('jianboke')
             url: 'api/bookChapterArticle/listdeeply/:chapterId',
             method: 'GET',
             isArray: true
+        },
+        updateSortNum: {
+            url: 'api/bookChapterArticle/updateSortNum/:id/:newSortNum',
+            method: 'GET'
         }
     })
 });

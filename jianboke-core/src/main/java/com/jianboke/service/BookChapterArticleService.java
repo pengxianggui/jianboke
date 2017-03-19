@@ -1,5 +1,6 @@
 package com.jianboke.service;
 
+import com.jianboke.domain.Book;
 import com.jianboke.domain.BookChapterArticle;
 import com.jianboke.domain.Chapter;
 import com.jianboke.repository.BookChapterArticleRepository;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,4 +93,74 @@ public class BookChapterArticleService {
         }
         return returnList;
     }
+
+    /**
+     * 更新一篇articleModeld的sortNum。排序变更的原则是插队式而非调换式。
+     * 即：a b c d e, 将e 的sortNum改为1,则新的排序为a e b c d。
+     * @param id
+     * @param newSortNum
+     * @return 返回这个更新过articleModel
+     */
+    @Transactional
+    public BookChapterArticle updateArticleModelSortNum(Long id, Integer newSortNum) {
+        log.info("update a articleModel's sortNum, the articleModel id is :{}", id);
+        // 非法
+        BookChapterArticle articleModel = bookChapterArticleRepository.findOne(id);
+        if (articleModel == null) return null;
+        List<BookChapterArticle> articleModelBrothers = bookChapterArticleRepository.findAllByParentId(articleModel.getParentId());
+        Integer oldSortNum = articleModel.getSortNum();
+        if (newSortNum == oldSortNum) return articleModel; // 原序号和新序号一样
+        boolean moveToFront = newSortNum < oldSortNum ? true : false; //是否是向前移动
+        if (newSortNum == null || newSortNum >= articleModelBrothers.size()) {
+            newSortNum = articleModelBrothers.size() - 1;
+        }
+        for(BookChapterArticle item : articleModelBrothers) {
+            if (item.getId() == id) {
+                item.setSortNum(newSortNum);
+                articleModel = item;
+                continue;
+            }
+            if (moveToFront) { // 向前移
+                if (newSortNum <= item.getSortNum() && item.getSortNum() < oldSortNum) {
+                    item.setSortNum(item.getSortNum() + 1);
+                }
+            } else { // 后移
+                if (oldSortNum < item.getSortNum() && item.getSortNum() <= newSortNum) {
+                    item.setSortNum(item.getSortNum() - 1);
+                }
+            }
+        }
+        bookChapterArticleRepository.save(articleModelBrothers);
+        return articleModel;
+    }
+
+    /**
+     * 从章节中移除一篇文章，返回移除的对象。其中考虑移除文章后的重新排序
+     * @param id
+     * @return
+     */
+    public BookChapterArticle deleteArticleModelById(Long id) {
+        BookChapterArticle articleModel = bookChapterArticleRepository.findOne(id);
+        if (articleModel != null) {
+            bookChapterArticleRepository.delete(articleModel);
+            clearSortNumByParentId(articleModel.getParentId());
+        }
+        return articleModel;
+    }
+
+    /**
+     * 根据parentId清洗一个目录下所有的articleModel的排序
+     * @param parentId
+     */
+    public void clearSortNumByParentId(Long parentId) {
+        List<BookChapterArticle> allArticleModelList = bookChapterArticleRepository.findAllByParentIdOrderly(parentId);
+        int length = allArticleModelList.size(),
+            index = 0;
+        for (BookChapterArticle articleModel : allArticleModelList) {
+            articleModel.setSortNum(index);
+            index++;
+        }
+        bookChapterArticleRepository.save(allArticleModelList);
+    }
+
 }

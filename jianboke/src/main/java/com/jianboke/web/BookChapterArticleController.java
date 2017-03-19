@@ -3,10 +3,14 @@ package com.jianboke.web;
 import com.jianboke.domain.BookChapterArticle;
 import com.jianboke.repository.BookChapterArticleRepository;
 import com.jianboke.service.BookChapterArticleService;
+import com.jianboke.utils.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -56,8 +60,7 @@ public class BookChapterArticleController {
     public BookChapterArticle removeABookChapterArticle(@PathVariable Long id) {
         log.info("Request to delete a bookChapterArticle, the id is :{}", id);
         if (id == null) return null;
-        BookChapterArticle articleModel = bookChapterArticleRepository.findOne(id);
-        bookChapterArticleRepository.delete(articleModel);
+        BookChapterArticle articleModel = bookChapterArticleService.deleteArticleModelById(id);
         return articleModel;
     }
 
@@ -76,16 +79,43 @@ public class BookChapterArticleController {
 
     /**
      * 保存一个articleModel。即归档一篇文章
+     * 或者更新，包括sortNum的更新
      * @param articleModel
      * @return
      */
     @RequestMapping(value = "/bookChapterArticle", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public BookChapterArticle save(@Valid @RequestBody BookChapterArticle articleModel) {
+    public ResponseEntity<BookChapterArticle> save(@Valid @RequestBody BookChapterArticle articleModel) {
         log.info("Request to save a bookChapterArticle, the bookId is :{}, the parentId is :{}, the articleId is :{}",
                 articleModel.getBookId(), articleModel.getParentId(), articleModel.getArticleId());
         if (articleModel == null || articleModel.getBookId() == null || articleModel.getParentId() == null || articleModel.getArticleId() == null) {
-            return null;
+            return null; // 传入值有误
         }
-        return bookChapterArticleRepository.saveAndFlush(articleModel);
+        // 避免一篇文章在一个组下被重复归档
+        List<BookChapterArticle> temp = bookChapterArticleRepository.getByArticleIdAndParentId(articleModel.getArticleId(), articleModel.getParentId());
+        if (temp == null || temp.size() < 1) { // 当前组下没有这篇文章的归档，则可以保存
+            System.out.println("当前组下没有这篇文章的归档，则可以保存");
+            BookChapterArticle returnResult = bookChapterArticleRepository.saveAndFlush(articleModel);
+            return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert("bookChapterArticle", returnResult.getId().toString()))
+                    .body(returnResult);
+        } else {
+            System.out.println("出错了，当前章节下已经归档这篇文章或者重复归档了这篇文章");
+            return ResponseEntity.ok(null); // 出错了，当前章节下已经归档这篇文章或者重复归档了这篇文章
+        }
+    }
+
+    /**
+     * 传入一个更新过sortNum的articleModel，重新排序并更新数据库
+     * @param id
+     * @param newSortNum
+     * @return
+     */
+    @RequestMapping(value = "/bookChapterArticle/updateSortNum/{id}/{newSortNum}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookChapterArticle> updateSortNum(@PathVariable Long id, @PathVariable Integer newSortNum) {
+        log.info("update sortNum of the articleModel ,the id is :{}, the new sortNum is :{}", id, newSortNum);
+        System.out.println("sbsbs");
+        // 非法
+        BookChapterArticle returnEntity = bookChapterArticleService.updateArticleModelSortNum(id, newSortNum);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("BookChapterArticle", id.toString()))
+                .body(returnEntity);
     }
 }

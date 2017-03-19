@@ -87,11 +87,11 @@ angular.module('jianboke', [
      * 提示信息
      */
     $rootScope.tipMessage = function(content, ev) {
-	    var confirm = $mdDialog.confirm()
+	    var alert = $mdDialog.alert()
 	        .textContent(content)
 	        .clickOutsideToClose(false)
 	        .targetEvent(ev)
-	        .ok("好的");
-		  return $mdDialog.show(confirm);
+	        .ok("知道了");
+		  return $mdDialog.show(alert);
     }
 });
