@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,13 +23,13 @@ public abstract class AbstractAuditingEntity implements Serializable{
 	
 	  @CreatedDate
 	  @Column(name = "created_date", nullable = false, updatable = false)
-//	  @JsonIgnore
+	  @JsonIgnore
 	  @ColumnComment("创建时间")
 	  private LocalDateTime createdDate = LocalDateTime.now();
 	  
 	  @LastModifiedDate
 	  @Column(name = "last_modified_date")
-//	  @JsonIgnore
+	  @JsonIgnore
 	  @ColumnComment("最后修改时间")
 	  private LocalDateTime lastModifiedDate = LocalDateTime.now();
 

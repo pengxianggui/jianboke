@@ -31,8 +31,8 @@ angular.module('jianboke')
 			templateUrl: 'views/blog.html',
 			controller: 'BlogCtrl'
 		})
-		.state('blog.newblog', {
-			url: '/newblog',
+		.state('blog.edit', {
+			url: '/{id}',
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
 				title: '新建Blog',
@@ -40,15 +40,21 @@ angular.module('jianboke')
 			controller: 'NewBlogCtrl',
 			templateUrl: 'views/newBlog.html',
 			resolve: {
-			    entity: function() {
-			        return {
+			    entity: function($stateParams, Article) {
+			        var obj;
+			        if($stateParams.id == 'new') {
+                      obj = {
                         id: null,
                         title: '',
                         content: '',
                         labels: '',
                         authorId: null,
                         bookId: null
-                    }
+                      }
+			        } else {
+			          obj = Article.get({id: $stateParams.id}).$promise;
+			        }
+			        return obj;
 			    }
 			}
 		})

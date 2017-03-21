@@ -12,7 +12,7 @@ angular.module('jianboke')
 	    $scope.isOpenRight = function(){
 	      return $mdSidenav('right').isOpen();
 	    };
-	    
+
 	    $scope.goToWrite = function() {
 	    	$state.go('blog.newblog');
 	    }
