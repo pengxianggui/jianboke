@@ -9,7 +9,8 @@ angular.module('jianboke')
 	.directive('myMarkDown', function() {
 		return {
 			restrict: 'E',
-			template: '<div flex style="z-index: 1">' +
+			template: '<div flex style="z-index: 1" data-ng-init="setValue()">' +
+//			            '<md-button ng-click="setValue()"></md-button>' +
 						'<div id="editormd" flex style="z-index: 89;"></div>' +
 						'<textarea ng-model="value" style="display:none"></textarea>' +
 					  '</div>',
@@ -18,7 +19,6 @@ angular.module('jianboke')
 				content: '=ngModel'
 			},
 			link: function(scope, iElement, iAttrs) {
-				scope.editor;
 				scope.editor = editormd({
 		            id   : "editormd",
 		            path : "bower_components/editor.md/lib/",
@@ -32,12 +32,15 @@ angular.module('jianboke')
 				}
 				iElement.on('change keyup blur input propertychange click', function() {
 					scope.$apply(scope.getValue);
-				})
-//				var textarea = $('#editormd>textarea')[0];
-//				console.log(textarea);
-//				$(textarea).bind('oninput onpropertychange', function() {
-//						console.log('sb');
-//				});
+				});
+		        var setValue = function(){
+                    scope.editor.setMarkdown(scope.content);
+                };
+                // TODO 如何改进，让页面完全渲染完毕后去执行此方法？好几种方法都尝试过，失败：
+                // 1. scope.$on('$viewContentLoaded',functon(){})
+                // 2. scope.$watch('$viewContentLoaded', function(){})
+                // 3. ng-init / data-ng-init都失败。
+                window.setTimeout(setValue, 1000);
 			}
 		}
 	})
@@ -86,7 +89,7 @@ angular.module('jianboke')
 							'<span ng-repeat="item in chipsData" ng-bind="item" ng-style="chipsStyle"></span>' +
 					  '</span>',
 			controller: function($scope) {
-				if(!Array.isArray($scope.chipsData)) {
+				if(!Array.isArray($scope.chipsData) && $scope.chipsData != '') {
 					$scope.chipsData = $scope.chipsData.split(",");
 				}
 				$scope.chipsStyle = $scope.chipStyle || {
