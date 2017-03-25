@@ -5,7 +5,8 @@ $material-font-path: "../fonts";
 "material-design-colors",
 "material-design-add-bymyself",
 "book",
-"dashboard-style";
+"dashboard-style",
+"article-style";
 
 // 全局css定义
 html, body {
@@ -107,4 +108,11 @@ md-toast.md-error-theme .md-toast-content {
 .category-tree .category-item .item-text {
 	line-height: 24px;
     padding: 8px;
+}
+
+.article-title {
+    text-decoration: none;
+    color: #000;
+    font-size: 1em;
+    cursor: pointer;
 }

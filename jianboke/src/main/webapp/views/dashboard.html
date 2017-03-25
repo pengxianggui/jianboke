@@ -79,7 +79,10 @@
 						<md-list-item class="md-2-line" layout="row" ng-repeat="article in articles" >
 							<div class="md-list-item-text" layout="column">
 								<div class="no-margin" layout="row">
-									<span class="h2" ng-bind="article.title"></span>
+									<span>
+										<a class="h2 article-title" ui-sref="blog.readBlog({id:article.id})" target="_blank"
+										   ng-bind="article.title"></a>
+									</span>
 									<span flex></span>
 									<my-chips-show chips-data="article.labels" chips-style="chipsStyle"></my-chips-show>
 								</div>
@@ -89,6 +92,10 @@
 								<md-button class="md-icon-button" ui-sref="blog.edit({id: article.id})">
 									<md-tooltip md-direction="bottom">编辑</md-tooltip>
 									<md-icon>edit</md-icon>
+								</md-button>
+								<md-button class="md-icon-button" ng-click="remove(article.id)">
+									<md-tooltip md-direction="bottom">删除</md-tooltip>
+									<md-icon>delete</md-icon>
 								</md-button>
 							</div>
 						</md-list-item> 

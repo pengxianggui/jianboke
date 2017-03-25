@@ -58,14 +58,19 @@ angular.module('jianboke')
 			    }
 			}
 		})
-		.state('blog.readblog', {
-			url: '/readblog',
+		.state('blog.readBlog', {
+			url: '/readblog/{id}',
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
 				title: '阅读Blog'
 			},
 			controller: 'ReadBlogCtrl',
-			templateUrl: 'views/readBlog.html'
+			templateUrl: 'views/readBlog.html',
+			resolve: {
+			    entity: function($stateParams, Article) {
+			        return Article.get({id: $stateParams.id}).$promise;
+			    }
+			}
 		})
 		.state('blog.addToBook', {
 		    url: '/addToBook/{id}',

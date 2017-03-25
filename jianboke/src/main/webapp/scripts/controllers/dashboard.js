@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('jianboke')
-	.controller('DashBoardCtrl', function($scope, $timeout, $mdSidenav, $log, $state, $mdDialog, Book, Article) {
+	.controller('DashBoardCtrl', function($scope, $timeout, $mdSidenav, $log, $state, $mdDialog, Book, Article, $rootScope) {
 		console.log('DashBoardCtrl');
 		$scope.books;
 		$scope.articles;
@@ -15,6 +15,17 @@ angular.module('jianboke')
 
 	    $scope.goToWrite = function() {
 	    	$state.go('blog.newblog');
+	    }
+	    $scope.remove = function(id) {
+	        $rootScope.confirmMessage("提示:", "删除文章会一并删除该文章的归档记录。确定要这样做吗？", true, "确定", "取消")
+	            .then(function() {
+                    Article.delete({id: id}).$promise.then(function() {
+                        $rootScope.popMessage("删除成功！", true);
+                        getAllArticle(); // 刷新list
+                    }).catch(function(httpResponse) {
+                        $rootScope.popMessage("删除失败！", false);
+                    });
+                }, function() {});
 	    }
 
 	    /**

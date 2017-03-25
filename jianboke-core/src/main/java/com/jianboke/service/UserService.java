@@ -89,4 +89,15 @@ public class UserService {
 	      log.debug("Changed avatarPath for User: {}", user);
 		  return user;
 	  }
+
+	/**
+	 * 根据用户id查找一个用户的用户名
+	 * @param id
+	 * @return
+	 */
+	public String findUsernameById(Long id) {
+		User user = userRepository.findOne(id);
+		if (user == null) return null;
+		return user.getUsername();
+	}
 }

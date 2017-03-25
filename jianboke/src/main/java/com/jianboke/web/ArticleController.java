@@ -64,4 +64,10 @@ public class ArticleController {
 		log.debug("REST request to get a Article by id:{}", id);
 		return articleRepository.findOne(id);
 	}
+
+	@RequestMapping(value = "/article/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public void remove(@PathVariable Long id) {
+		log.info("request to delete a article which id is :{}", id);
+		articleRepository.delete(id);
+	}
 }

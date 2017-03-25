@@ -1,0 +1,15 @@
+span.title {
+    font-size: 2em;
+    display: inline-block;
+}
+span.author-box {
+    height: 16px;
+    font-size: 12px;
+    & > .author-label {
+        color: #f50057;
+        display: inline-block;
+        padding: 2px;
+        border: 1px solid #f50057;
+        border-radius: 3px;
+    }
+}
