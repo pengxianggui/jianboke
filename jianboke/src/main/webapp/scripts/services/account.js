@@ -2,5 +2,10 @@
 
 angular.module('jianboke')
   .factory('Account', function($resource) {
-    return $resource('api/account', {}, {});
+    return $resource('api/account/:id', {}, {
+        getUsername: {
+            url: 'api/account/:id',
+            method: 'GET'
+        }
+    });
   });
