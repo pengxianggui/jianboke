@@ -66,7 +66,32 @@ databaseChangeLog:
                   name: last_modified_date
                   type: timestamp
                   remarks: 最后修改时间
-        - loadData: 
+          # 初始数据
+        - loadData:
             encoding: UTF-8
             file: db/data/jb_book_chapter_articles.csv
             tableName: book_chapter_articles
+    # 添加外键约束
+  - changeSet:
+      id: fk_book_chapter_article
+      author: pengxg
+      changes:
+      - addForeignKeyConstraint:
+          baseColumnNames: book_id
+          baseTableName: book_chapter_articles
+          constraintName: fd_book_chapter_articles_book_id
+          referencedColumnNames: id
+          referencedTableName: books
+#      - addForeignKeyConstraint:
+#          baseColumnNames: parent_id
+#          baseTableName: book_chapter_articles
+#          constraintName: fd_book_chapter_articles_parent_id
+#          referencedColumnNames: id
+#          referencedTableName: chapters
+      - addForeignKeyConstraint:
+          baseColumnNames: article_id
+          baseTableName: book_chapter_articles
+          constraintName: fd_book_chapter_articles_article_id
+          referencedColumnNames: id
+          referencedTableName: articles
+

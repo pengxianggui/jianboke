@@ -1,19 +1,21 @@
 package com.jianboke.web;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
+import com.jianboke.domain.criteria.ArticleCriteria;
+import com.jianboke.service.ArticleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 import com.jianboke.domain.Article;
 import com.jianboke.domain.User;
@@ -30,6 +32,28 @@ public class ArticleController {
 	
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private ArticleService articleService;
+
+	@RequestMapping(value = "/article", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public Map<String, Object> query(@ModelAttribute ArticleCriteria criteria) {
+		log.info("Rest request to get Articles by criteria :{}", criteria);
+		Map<String, Object> map = new HashMap<>();
+		try {
+			List<Article> articlesList = articleService.queryByCriteria(criteria);
+			map.put("result", "success");
+			map.put("data", articlesList);
+		} catch (SQLException e) {
+			if (log.isDebugEnabled()) {
+				e.printStackTrace();
+			}
+			map.put("result", "fail");
+			map.put("data", null);
+		}
+		return map;
+	}
 	
 	/**
 	 * 根据关键字过滤.关键字为-1时，搜索所有的Article
@@ -66,8 +90,10 @@ public class ArticleController {
 	}
 
 	@RequestMapping(value = "/article/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public void remove(@PathVariable Long id) {
+	public Article remove(@PathVariable Long id) {
 		log.info("request to delete a article which id is :{}", id);
-		articleRepository.delete(id);
+		Article article = articleRepository.findOne(id);
+		articleRepository.delete(article);
+		return article;
 	}
 }

@@ -85,3 +85,14 @@ databaseChangeLog:
             encoding: UTF-8
             file: db/data/jb_articles.csv
             tableName: articles
+    # 添加外键约束
+  - changeSet:
+      id: fk_article
+      author: pengxg
+      changes:
+      - addForeignKeyConstraint:
+          baseColumnNames: author_id
+          baseTableName: articles
+          constraintName: fd_articles_author_id
+          referencedColumnNames: id
+          referencedTableName: users

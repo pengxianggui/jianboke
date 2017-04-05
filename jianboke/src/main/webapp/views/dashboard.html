@@ -66,12 +66,33 @@
 		            class="md-primary md-icon-button" hide-gt-md style="margin: auto 4px">
 		            <md-icon>menu</md-icon>
 		        </md-button>
-				<md-button>全部</md-button>
-			 	<span flex></span>
-				<md-input-container style="margin: 4px;" md-no-float> 
-					<input placeholder="search" type="search" name="search" ng-model="filter">
-					<md-icon>search</md-icon>
+				<md-input-container md-no-float class="margin-left-right-10" style="color: black">
+					<md-select ng-model="query.findBy" placeholder="分类查询" style="margin-top: 8px;" ng-change="refreshArticleList()">
+						<md-option value="all">全部</md-option>
+						<md-option ng-repeat="book in books" value="{{book.id}}">{{book.bookName}}</md-option>
+						<md-option value="alone">未分类</md-option>
+					</md-select>
 				</md-input-container>
+				<!--<md-input-container md-no-float class="margin-left-right-10" style="color: black">-->
+					<!--<md-select ng-model="query.orderBy" placeholder="排序依据" style="margin-top: 8px;">-->
+						<!--<md-option value="lastModifiedDate">最后更新日期</md-option>-->
+						<!--<md-option value="createDate">创建日期</md-option>-->
+						<!--<md-option value="title">博客标题</md-option>-->
+					<!--</md-select>-->
+				<!--</md-input-container>-->
+				<span flex></span>
+				<form name="search" ng-submit="refreshArticleList()">
+					<md-input-container style="margin: 4px;" md-no-float>
+						<input id="article-search-input" placeholder="search" type="search" name="search" ng-model="query.filter">
+						<md-button class="md-icon-button" ng-if="query.filter" ng-click="clearFilter();">
+							<md-icon>clear</md-icon>
+						</md-button>
+						<md-button class="md-icon-button" ng-if="!query.filter">
+							<md-icon>search</md-icon>
+						</md-button>
+
+					</md-input-container>
+				</form>
 			</md-card>
 			<div class="article-list" flex>
 				<md-content flex> 
@@ -100,6 +121,10 @@
 							</div>
 						</md-list-item> 
 						<md-divider></md-divider>
+						<md-list-item>
+							<div class="load-more" ng-if="!end"><md-button ng-click="getMoreArticle()">加载更多...</md-button></div>
+							<div class="load-more" ng-if="end">已经到底了</div>
+						</md-list-item>
 					</md-list> 
 				</md-content>
 			</div>

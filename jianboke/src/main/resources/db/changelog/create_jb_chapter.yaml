@@ -72,3 +72,20 @@ databaseChangeLog:
             encoding: UTF-8
             file: db/data/jb_chapters.csv
             tableName: chapters
+    # 添加外键约束
+  - changeSet:
+      id: fk_chapters
+      author: pengxg
+      changes:
+      - addForeignKeyConstraint:
+          baseColumnNames: book_id
+          baseTableName: chapters
+          constraintName: fd_chapters_book_id
+          referencedColumnNames: id
+          referencedTableName: books
+      - addForeignKeyConstraint:
+          baseColumnNames: parent_id
+          baseTableName: chapters
+          constraintName: fd_chapters_parent_id
+          referencedColumnNames: id
+          referencedTableName: chapters

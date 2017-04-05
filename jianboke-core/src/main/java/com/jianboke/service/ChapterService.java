@@ -98,7 +98,7 @@ public class ChapterService {
      * @param id
      * @return boolean 返回删除操作的成功与否
      */
-    @Transactional
+//    @Transactional
     public boolean removeChapterByIdStrong(Long id) {
         Chapter chapter = chapterRepository.findOne(id);
         System.out.print(chapter.toString());
@@ -122,8 +122,8 @@ public class ChapterService {
         for (Chapter chapter : chapterList) {
             if (removeChapterByIdCycle(chapter.getId())) {
                 log.info("node -> delete the chapter:{}", chapter);
-                chapterRepository.delete(chapter); // 删除chapter
                 bookChapterArticleService.deleteAllByParentId(chapter.getId());
+                chapterRepository.delete(chapter); // 删除chapter
             }
         }
         return true;

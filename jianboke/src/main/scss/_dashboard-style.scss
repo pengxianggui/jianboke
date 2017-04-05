@@ -16,3 +16,20 @@ div.nail-float-write {
 md-grid-tile.book-add-grid-item {
 	border: 1px solid #BFBCBC;
 }
+#article-search-input {
+    width: 100px;
+    transition: width 0.3s;
+    &:focus {
+        width: 300px;
+    }
+}
+
+.load-more {
+    width: 80%;
+    height: 80%;
+    margin: auto;
+    text-align: center;
+    & > button {
+        width: 100%;
+    }
+}

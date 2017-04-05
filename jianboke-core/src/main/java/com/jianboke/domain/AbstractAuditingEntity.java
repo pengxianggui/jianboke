@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
+import javax.persistence.MappedSuperclass;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,9 +18,10 @@ import com.jianboke.annotation.ColumnComment;
 
 @SuppressWarnings("serial")
 @JsonInclude(Include.NON_NULL)
+//@MappedSuperclass
 @Audited
 @EntityListeners(AuditingEntityListener.class)
-public abstract class AbstractAuditingEntity implements Serializable{
+public abstract class AbstractAuditingEntity implements Serializable {
 	
 	  @CreatedDate
 	  @Column(name = "created_date", nullable = false, updatable = false)
