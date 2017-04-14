@@ -4,7 +4,7 @@ angular.module('jianboke')
 /**
  * 伸缩版块
  */
-.directive('myToggleBlock', function() { // 面板收缩/显示属性
+.directive('pxgToggleBlock', function() { // 面板收缩/显示属性
   return {
     restrict: 'EA',
     scope: {
@@ -29,7 +29,7 @@ angular.module('jianboke')
   };
 })
 
-.directive('myAccountMenu', function(ACCOUNT_MENU, $state, $rootScope) {
+.directive('pxgAccountMenu', function(ACCOUNT_MENU, $state, $rootScope) {
     return {
         restrict: 'E',
         templateUrl: 'views/account_menu.html',
@@ -68,7 +68,7 @@ angular.module('jianboke')
  * 如何监听 textarea value的改变(包括通过js改变)成为解决bug的思路之一！ 网上优选方案是input 和 propertychange 事件结合
  * 前者无法监听通过js改变的情况，后者虽然可以监听js改变的情况，但却是IE独有。
  */
-.directive('myMarkDown', function() {
+.directive('pxgMarkDown', function($timeout) {
 	return {
         restrict: 'E',
         template: '<div flex style="z-index: 1" data-ng-init="setValue()">' +
@@ -102,14 +102,17 @@ angular.module('jianboke')
             // 1. scope.$on('$viewContentLoaded',functon(){})
             // 2. scope.$watch('$viewContentLoaded', function(){})
             // 3. ng-init / data-ng-init都失败。
-            window.setTimeout(setValue, 1000);
+//            window.setTimeout(setValue, 1000);
+            $timeout(function() {
+                setValue();
+            }, 1000);
         }
     }
 })
 /**
  * markdown解析指令
  */
-.directive('myMarkdownParse', function($timeout){
+.directive('pxgMarkdownParse', function($timeout){
   return {
     scope: {
       mdId: '@', // 一个需要解析的md文件对应一个id
@@ -139,7 +142,7 @@ angular.module('jianboke')
 })
 
 //展示chips的指令，传入的chips-data可以使以逗号分隔的字符串或者数组，chipsStyle是css样式对象，不传入则使用默认值
-.directive('myChipsShow', function() {
+.directive('pxgChipsShow', function() {
     return {
         restrice: 'AE',
         scope: {

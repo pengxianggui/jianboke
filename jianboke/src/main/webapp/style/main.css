@@ -1688,6 +1688,37 @@ div.nail-float-write {
 md-grid-tile.book-add-grid-item {
   border: 1px solid #BFBCBC; }
 
+#article-search-input {
+  width: 100px;
+  transition: width 0.3s; }
+  #article-search-input:focus {
+    width: 300px; }
+
+.load-more {
+  width: 80%;
+  height: 80%;
+  margin: auto;
+  text-align: center; }
+  .load-more > button {
+    width: 100%; }
+
+span.title {
+  font-size: 2em;
+  display: inline-block; }
+
+span.author-box {
+  height: 16px;
+  font-size: 12px; }
+  span.author-box > .author-label {
+    color: #f50057;
+    display: inline-block;
+    padding: 2px;
+    border: 1px solid #f50057;
+    border-radius: 3px; }
+
+.editormd-fullscreen {
+  z-index: 99999; }
+
 html, body {
   font-family: "Microsoft Yahei"; }
 
@@ -1785,3 +1816,9 @@ md-toast.md-error-theme .md-toast-content {
 .category-tree .category-item .item-text {
   line-height: 24px;
   padding: 8px; }
+
+.article-title {
+  text-decoration: none;
+  color: #000;
+  font-size: 1em;
+  cursor: pointer; }
