@@ -44,11 +44,13 @@
 					</md-toolbar>
 					<md-content flex>
 						<md-grid-list  md-cols="6" md-cols-sm="6" md-cols-md="6" md-cols-gt-md="6"
-							 md-row-height="3:4" md-gutter-gt-sm="2px" >
+							 md-row-height="3:4" md-gutter-gt-sm="2px">
 						    <md-grid-tile ng-repeat="book in books"
 						                  md-rowspan="2"
 						                  md-colspan="2">
-						      <img style="width: 100%; height: 100%" ng-src="{{book.bookCoverPath}}"></img>
+							  <md-button class="height-100-percent width-100-percent no-padding no-margin" ui-sref="book({id: book.id})">
+								  <img style="width: 100%; height: 100%" ng-src="{{book.bookCoverPath}}"/>
+							  </md-button>
 						      <md-grid-tile-footer>
 						      	<h3 style="margin:0 auto">{{book.bookName}}</h3>
 						      </md-grid-tile-footer>

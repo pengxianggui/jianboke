@@ -74,11 +74,13 @@ public class BookController {
 	}
 	
 	/**
-	 * 删除一本书。是否存在把别人的book删除的系统漏洞？
+	 * 删除一本书。是否存在把别人的book删除的系统漏洞？-权限过滤
 	 * @param id
 	 */
 	@RequestMapping(value = "/book/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public void delete(@PathVariable Long id) {
+		// TODO 权限校验
+
 		Book book = bookRepository.findOne(id);
 		bookRepository.delete(book);
 		log.debug("REST request to delete a book : {}", book);
@@ -90,6 +92,8 @@ public class BookController {
 	 * @return
 	 */
 	public Book update(@Valid @RequestBody Book book) {
+		// TODO 权限校验
+
 		log.debug("REST request to update a book : {}", book);
 		if (bookRepository.getOne(book.getId()) != null) {
 			return bookRepository.save(book);

@@ -21,6 +21,15 @@ angular.module('jianboke')
 			controller: 'LoginCtrl',
 			templateUrl: 'views/login.html'
 		})
+		.state('register', {
+			url: '/register',
+			data: {
+				access_level: [ACCESS_LEVELS.pub],
+				title: '注册'
+			},
+			controller: 'RegisterCtrl',
+			templateUrl: 'views/register.html'
+		})
 		.state('blog', {
 			url: '/blog',
 			abstract: true,
@@ -83,6 +92,20 @@ angular.module('jianboke')
 		    resolve: {
 		        entity: function($stateParams, Article) {
 		            return Article.get({id: $stateParams.id}).$promise;
+		        }
+		    }
+		})
+		.state('book', {
+		    url: '/book/{id}',
+		    data: {
+		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+		        title: '书'
+		    },
+		    controller: 'BookCtrl',
+		    templateUrl: 'views/book.html',
+		    resolve: {
+		        entity: function($stateParams, Book) {
+		            return Book.get({id: $stateParams.id}).$promise;
 		        }
 		    }
 		})

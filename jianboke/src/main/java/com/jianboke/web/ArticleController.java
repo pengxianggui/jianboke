@@ -86,12 +86,14 @@ public class ArticleController {
 	@RequestMapping(value = "/article/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Article get(@PathVariable Long id) {
 		log.debug("REST request to get a Article by id:{}", id);
+		// TODO 权限校验
 		return articleRepository.findOne(id);
 	}
 
 	@RequestMapping(value = "/article/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Article remove(@PathVariable Long id) {
 		log.info("request to delete a article which id is :{}", id);
+		// TODO 权限校验
 		Article article = articleRepository.findOne(id);
 		articleRepository.delete(article);
 		return article;

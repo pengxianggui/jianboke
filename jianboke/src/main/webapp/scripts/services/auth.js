@@ -31,7 +31,7 @@ angular.module('jianboke')
 			},
 			register: function(account, callback) {
 				return Register.save(account).$promise.then(function(data) {
-					// do sth...暂不开发
+
 				}, function(error) {
 					// do sth
 				});
@@ -60,8 +60,8 @@ angular.module('jianboke')
 	}).factory('AuthServerProvider', function($http) {
 		return {
 			login: function(credentials) {
-				var data = 'jb_username=' + encodeURIComponent(credentials.username) +
-		          '&jb_password=' + encodeURIComponent(credentials.password); 
+				var data = 'jbk_email=' + encodeURIComponent(credentials.email) +
+		          '&jbk_password=' + encodeURIComponent(credentials.password);
 //		          + '&remember-me=' + credentials.rememberMe + '&submit=Login'; //暫時不用
 				return $http.post('api/authentication', data, { // api/authentication 这个路径由spring security配置并处理
 					headers: {

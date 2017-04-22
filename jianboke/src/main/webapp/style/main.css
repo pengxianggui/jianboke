@@ -1822,3 +1822,9 @@ md-toast.md-error-theme .md-toast-content {
   color: #000;
   font-size: 1em;
   cursor: pointer; }
+
+p.error {
+  background-color: #ff5722;
+  color: white;
+  border-radius: 5px;
+  padding: 10px; }

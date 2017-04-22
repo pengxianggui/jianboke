@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('jianboke')
-	.controller('LoginCtrl', function($scope, $cookies, Auth, $mdToast, $state, $rootScope) {
+	.controller('LoginCtrl', function($scope, $cookies, Auth, $state, $rootScope) {
 		console.log('LoginCtrl');
 		$scope.user = {};
 	    $scope.errors = {};
@@ -14,7 +14,7 @@ angular.module('jianboke')
 	        var serial = atob(atob($cookies.get("sSerial")));
 	        var userNameLength = serial.split(":")[0];
 	        var content = serial.substring(userNameLength.length+1);
-	        $scope.username = content.substring(0,userNameLength);
+	        $scope.email = content.substring(0,userNameLength);
 	        $scope.password = content.substring(userNameLength);
 	      }
 	     }else{
@@ -33,7 +33,7 @@ angular.module('jianboke')
 	      });
 	      if ($scope.form.$valid) {
 	        Auth.login({
-	          username: $scope.username,
+	          email: $scope.email,
 	          password: $scope.password,
 	          rememberMe: $scope.rememberMe
 	        }).then(function(data) {

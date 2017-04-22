@@ -26,12 +26,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	@Autowired
 	private UserRepository userRepository;
-	
+
+	/**
+	 * 其实是loadUserByEmail
+	 * @param username
+	 * @return
+	 * @throws UsernameNotFoundException
+	 */
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		String lowerUsername = username.toLowerCase(); // 忽略用户名的大小写
-		System.out.println("用户名：--------------" + lowerUsername);
-		Optional<User> userFromDatabase = userRepository.findOneByUsername(lowerUsername);
+		System.out.println("登录用户名（邮箱)：--------------" + lowerUsername);
+		Optional<User> userFromDatabase = userRepository.findOneByEmail(lowerUsername);
 		log.debug("user get from database: {}", userFromDatabase);
 		// 暂时不加授权，后期引入Role对象
 //		List<Role> authorities = new ArrayList<>();

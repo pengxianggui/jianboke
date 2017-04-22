@@ -35,8 +35,8 @@ public class BookChapterArticleController {
      */
     @RequestMapping(value = "/bookChapterArticle/list/{parentId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<BookChapterArticle> getBookChapterArticles(@PathVariable Long parentId) {
+        // TODO 权限校验: 判断此parentId是否是当前用户所属的
         log.info("REST request to get all bookChapterArticle, the parentId of which is:{}", parentId);
-        // TODO 根据parentId请求所有的BookChapterArticle
         // parentId下所有sortNum为null的
         List<BookChapterArticle> nullSortNumList = bookChapterArticleRepository.findNullSortNumByParentId(parentId);
         int count = bookChapterArticleRepository.getCountByParentId(parentId);
@@ -56,6 +56,7 @@ public class BookChapterArticleController {
      */
     @RequestMapping(value = "/bookChapterArticle/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public BookChapterArticle removeABookChapterArticle(@PathVariable Long id) {
+        // TODO 权限校验: 判断该文章是否是此用户所属的
         log.info("Request to delete a bookChapterArticle, the id is :{}", id);
         if (id == null) return null;
         BookChapterArticle articleModel = bookChapterArticleService.deleteArticleModelById(id);
@@ -69,6 +70,7 @@ public class BookChapterArticleController {
      */
     @RequestMapping(value = "/bookChapterArticle/listdeeply/{chapterId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<BookChapterArticle> getBookChapterArticlesDeeply(@PathVariable Long chapterId) {
+        // TODO 权限校验: 判断该文章是否是此用户所属
         log.info("Request to get All ArticleModel by chapterId deeply, the chapterId is :{}", chapterId);
         if (chapterId == null) return null;
         List<BookChapterArticle> articleModelList = bookChapterArticleService.getAllByChapterIdDeeply(chapterId);
@@ -109,8 +111,8 @@ public class BookChapterArticleController {
      */
     @RequestMapping(value = "/bookChapterArticle/updateSortNum/{id}/{newSortNum}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookChapterArticle> updateSortNum(@PathVariable Long id, @PathVariable Integer newSortNum) {
+        // TODO 权限校验： 判断id是否是此用户权限所有
         log.info("update sortNum of the articleModel ,the id is :{}, the new sortNum is :{}", id, newSortNum);
-        System.out.println("sbsbs");
         // 非法
         BookChapterArticle returnEntity = bookChapterArticleService.updateArticleModelSortNum(id, newSortNum);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("BookChapterArticle", id.toString()))

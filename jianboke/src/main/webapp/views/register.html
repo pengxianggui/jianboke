@@ -1,0 +1,70 @@
+<div flex>
+    <div layout="row" flex layout-align="center center">
+        <md-card flex-sm="100" flex-gt-sm="60" flex-gt-md="40">
+            <form name="form" novalidate ng-submit="register($event)">
+                <md-card-content>
+                    <h2 class="md-title" style="text-align: center">
+                        <md-button ui-sref="login">登录</md-button>
+                        <span>·</span>
+                        <md-button style="background-color: #989ecb; color: #fff">注册</md-button>
+                    </h2>
+                    <p class="error" ng-show="authenticationError">用户登录失败，请检查输入</p>
+                    <div class="inset"></div>
+                    <md-input-container class="md-block">
+                        <label>取一个用户名</label>
+                        <input type="text" name="username" ng-model="username" required md-maxlength="20"
+                               ui-validate-async="{alreadyExists: 'usernameExist($value)'}">
+                        <div ng-messages="form.username.$error">
+                            <div ng-message="required">请输入用户名</div>
+                            <div ng-message="md-maxlength">用户名不能多于20个字符</div>
+                            <div ng-message="alreadyExists">用户名已被使用</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container class="md-block">
+                        <label>注册邮箱</label>
+                        <input type="email" name="jbk_email" ng-model="email" pxg-if-exist required
+                               ng-pattern="/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/"
+                               ui-validate-async="{alreadyExists: 'emailExist($value)'}">
+                        <div ng-messages="form.jbk_email.$error">
+                            <div ng-message="required">请输入邮箱</div>
+                            <div ng-message="pattern">请确认格式</div>
+                            <div ng-message="alreadyExists">此邮箱已被注册</div>
+                        </div>
+                    </md-input-container>
+                    <!-- 邮箱通过校验即可允许验证码发送 -->
+                    <div layout="row" ng-if="!(form.jbk_email.$error.required)">
+                        <md-input-container class="md-block" flex>
+                            <label>请输入校验码</label>
+                            <input type="number" name="valid_code" ng-model="validCode" required>
+                            <div ng-messages="form.jbk_email.$error">
+                                <div ng-message="required">请输入校验码</div>
+                            </div>
+                        </md-input-container>
+                        <md-input-container>
+                            <pxg-count-down-button pxg-action="sendEmailVerificationCode()" pxg-time="60"
+                                  pxg-disabled="form.jbk_email.$error.required || form.jbk_email.$error.email || form.jbk_email.$error.pattern || !emailValide">
+                            </pxg-count-down-button>
+                        </md-input-container>
+                    </div>
+
+                    <md-input-container class="md-block">
+                        <label>密码</label>
+                        <input type="{{passwordType}}" onfocus="this.type = 'password'"
+                               name="jbk_password" ng-model="password" required>
+                        <div ng-messages="form.jbk_password.$error">
+                            <div ng-message="required">请输入密码</div>
+                        </div>
+                    </md-input-container>
+                </md-card-content>
+                <md-card-actions layout="row" layout-padding layout-align="space-between center">
+                    <!--<md-checkbox ng-model="rememberMe" class="md-primary">保存登录凭据</md-checkbox>-->
+                    <span></span>
+                    <div layout="row" layout-align="end center">
+                        <md-button type="submit" class="md-primary md-raised">注册</md-button>
+                    </div>
+                </md-card-actions>
+            </form>
+        </md-card>
+    </div>
+    <h5 style="text-align: center;font-weight: normal;">Powered by dongfangyihaolan ©2016–2017</h5>
+</div>

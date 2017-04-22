@@ -1,32 +1,32 @@
 <div layout="column" flex>
 	<div layout="row" flex layout-align="center center">
 		<md-card flex-sm="100" flex-gt-sm="60" flex-gt-md="40">
-		<form name="form" novalidate ng-submit="login($event)">
+		<form name="form" novalidate ng-submit="login($event)" autocomplete="off">
 			<md-card-content>
-				<h2 class="md-title">用户登录</h2>
+				<h2 class="md-title" style="text-align: center">
+					<md-button style="background-color: #989ecb; color: #fff">登录</md-button>
+					<span>·</span>
+					<md-button ui-sref="register">注册</md-button>
+				</h2>
 				<p class="error" ng-show="authenticationError">用户登录失败，请检查输入</p>
 				<div class="inset"></div>
-				<md-input-container class="md-block"> <label>用户名</label>
-				<input type="text" name="username" ng-model="username" required
-					md-maxlength="20" ng-pattern="/^[0-9a-zA-Z_]*$/">
-				<div ng-messages="form.username.$error">
-					<div ng-message="required">请输入用户名</div>
-					<div ng-message="pattern">用户名只能包含英文字母、数字和下划线</div>
-					<div ng-message="md-maxlength">用户名不能多于20个字符</div>
+				<md-input-container class="md-block"> <label>邮箱</label>
+				<input type="email" name="jbk_email" ng-model="email" required>
+				<div ng-messages="form.jbk_email.$error">
+					<div ng-message="required">请输入邮箱</div>
 				</div>
 				</md-input-container>
 				<md-input-container class="md-block"> 
 					<label>密码</label>
 					<input type="{{passwordType}}" onfocus="this.type = 'password'"
-						name="password" ng-model="password" required md-maxlength="20">
-				<div ng-messages="form.password.$error">
+						name="jbk_password" ng-model="password" required>
+				<div ng-messages="form.jbk_password.$error">
 					<div ng-message="required">请输入密码</div>
-					<div ng-message="md-maxlength">密码不能多于20个字符</div>
 				</div>
 				</md-input-container>
 			</md-card-content>
-			<md-card-actions layout="row" layout-padding layout-align="space-between center"> 
-				<md-checkbox ng-model="rememberMe" class="md-primary">保存用户名密码</md-checkbox> 
+			<md-card-actions layout="row" layout-padding layout-align="space-between center">
+				<md-checkbox ng-model="rememberMe" class="md-primary">保存登录凭据</md-checkbox>
 			 	<div layout="row" layout-align="end center">
 					<md-button type="submit" class="md-primary md-raised">登录</md-button>
 			 	</div>

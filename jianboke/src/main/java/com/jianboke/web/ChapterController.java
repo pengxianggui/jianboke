@@ -51,6 +51,8 @@ public class ChapterController {
 	
 	@RequestMapping(value = "/chapter/listChapterTreeWithoutArticle/{bookId}", method = RequestMethod.GET)
 	public ChapterModel listChapterTreeWithoutArticle(@PathVariable Long bookId) {
+		// todo 权限校验
+
 		log.info("REST Request to get A tree of Chapters that's bookId is: {}", bookId);
 		List<ChapterModel> chapterList = treeOfChapterService.getTreeWithoutArticle(bookId);
 		return chapterList.get(0);
@@ -80,11 +82,11 @@ public class ChapterController {
 	 */
 	@RequestMapping(value = "/chapter", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public  ResponseEntity<ChapterModel> update(@Valid @RequestBody ChapterModel model) throws URISyntaxException {
+		// todo 权限校验
 		log.info("Update a chapter, the name is :{}, bookId is :{}", model.getGroupName(), model.getBookId());
 		if (model.getId() == null) {
 			return create(model);
 		}
-		// TODO 更新一个chapter，并返回
 		return Optional.ofNullable(chapterRepository.findOne(model.getId())).map(chapter -> {
 			ChapterModel result = chapterService.saveChapterModel(model);
 			return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("chapter", result.getId().toString()))
@@ -99,6 +101,8 @@ public class ChapterController {
 	 */
 	@RequestMapping(value = "/chapter/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public boolean removeChapter(@PathVariable("id") Long id) {
+		// todo 权限校验
+
 		log.info("Request to remove a chapter, id is:{}, the sons of the chapter will be romove as well.", id);
 		System.out.println("Request to remove a chapter, id is:" + id + ", the sons of the chapter will be romove as well.");
 		boolean result = chapterService.removeChapterByIdStrong(id);
@@ -112,6 +116,8 @@ public class ChapterController {
 	 */
 	@RequestMapping(value = "/chapter/listArticlesById/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<BookChapterArticle> getArticlesById(@PathVariable Long id) {
+		// todo 权限校验
+
 		log.info("Request to get direct articles of chapter which id is :{}", id);
 		if (id == null) return null;
 		return bookChapterArticleService.getAllByParentId(id);

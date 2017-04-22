@@ -165,4 +165,41 @@ angular.module('jianboke')
             }
         }
     }
-});
+})
+
+// 倒计时按钮，用于发送验证码类似功能，可配置点击触发传入的操作。操作被执行后，倒计指定时间time，期间，按钮不点击，倒计时结束后，按钮可点击可重新触发该操作。
+.directive('pxgCountDownButton', function($interval) {
+    return {
+        restrice: 'AE',
+        scope: {
+            pxgAction: '&', // 传递引用
+            pxgTime: '@', // 传递字符串
+            pxgDisabled: '=' // 绑定
+        },
+        template: '<md-button ng-click="action()" class="md-primary md-raised" ng-disabled="pxgDisabled || countDowning">' +
+                    '<span>发送验证码<span ng-if="countDowning">({{timeLong}})</span></span>' +
+                  '</md-button>',
+        link: function(scope, ele, attrs) {
+            scope.countDowning = false; // 是否触发action操作
+            scope.pxgTime -= 0;
+            var countDownTimer; // 定时器
+            scope.action = function() {
+                scope.countDowning = true;
+                scope.timeLong = scope.pxgTime;
+                countDownTimer = $interval(function() {
+                    countDown();
+                }, 1000);
+                scope.pxgAction(); // 执行action
+            }
+            var countDown = function() {
+                if (scope.timeLong <= 0) {
+                scope.countDowning = false;
+                    $interval.cancel(countDownTimer);
+                } else {
+                    scope.timeLong--;
+                }
+            }
+        }
+    }
+})
+;
