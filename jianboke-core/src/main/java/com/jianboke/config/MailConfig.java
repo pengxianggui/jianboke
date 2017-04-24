@@ -2,7 +2,7 @@ package com.jianboke.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix="jianbokeEmail")
+@ConfigurationProperties(prefix="data.email")
 public class MailConfig {
 	public static final String ENCODEING = "UTF-8";  
 	  

@@ -2,7 +2,7 @@ package com.jianboke.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "bookCoverPathUploadConfig")
+@ConfigurationProperties(prefix = "data.bookCoverPathUploadConfig")
 public class BookCoverPathConfig {
 	private String baseUrl;
 
