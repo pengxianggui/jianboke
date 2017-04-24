@@ -1,13 +1,17 @@
 package com.jianboke.web;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.jianboke.domain.VerificationCode;
 import com.jianboke.model.EmailValidCodeModel;
 import com.jianboke.model.ValidationModel;
 import com.jianboke.model.ValidationResult;
 import com.jianboke.repository.UserRepository;
+import com.jianboke.repository.VerificationCodeRepository;
+import com.jianboke.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +35,9 @@ public class AccountController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private VerificationCodeRepository verificationCodeRepository;
     
     @RequestMapping(value = "/account", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -67,8 +74,21 @@ public class AccountController {
     }
 
     @RequestMapping(value = "/account/sendEmailValidCode", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Boolean> sendEmailValidCode(@RequestBody EmailValidCodeModel model) {
+    public ResponseEntity<ValidationResult> sendEmailValidCode(@RequestBody EmailValidCodeModel model) {
         log.info("发送邮件验证码 :{}", model.getEmail());
-        return null;
+        String code = StringUtils.randomNumberStr(6);
+        if (userService.sendEmailCodeForVaild(model.getEmail(), code)) {
+            // TODO 将code存储起来
+            return verificationCodeRepository.findOneByEmail(model.getEmail())
+            .map(vc -> {
+                vc.setCode(code);
+                verificationCodeRepository.saveAndFlush(vc);
+                return ResponseEntity.ok().body(ValidationResult.VALID);
+            }).orElseGet(() -> {
+                verificationCodeRepository.saveAndFlush(new VerificationCode(model.getEmail(), code));
+                return ResponseEntity.ok().body(ValidationResult.VALID);
+            });
+        }
+        return ResponseEntity.ok().body(ValidationResult.INVALID);
     }
 }

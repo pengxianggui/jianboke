@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - property:
+      name: autoIncrement
+      value: true
+      dbms: mysql,h2,postgresql,sqlserver
+  - property:
+      name: now
+      value: now()
+      dbms: mysql, h2
+  - property:
+      name: now
+      value: sysdate
+      dbms: oracle
+  - property:
+      name: now
+      value: getdate()
+      dbms: sqlserver
+  - changeSet:
+      id: create_jb_verification_code
+      author: pengxg
+      changes:
+        - createTable:
+            tableName: verification_code
+            remarks: 用户验证码
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: ${autoIncrement}
+                  remarks: 标识
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(100)
+                  remarks: 邮箱
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: code
+                  type: varchar(20)
+                  remarks: 验证码
+                  constraints:
+                    unique: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValueDate: ${now}
+                  remarks: 创建时间
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  remarks: 最后修改时间

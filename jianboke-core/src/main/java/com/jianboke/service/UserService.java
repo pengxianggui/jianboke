@@ -1,5 +1,7 @@
 package com.jianboke.service;
 
+import com.jianboke.domain.Mail;
+import com.jianboke.utils.MailUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,18 @@ import com.jianboke.security.SecurityUtils;
 @Transactional
 public class UserService {
 	  private final Logger log = LoggerFactory.getLogger(UserService.class);
-	  
+
+
+	  @Autowired
+	  private PasswordEncoder passwordEncoder;
+
 	  @Autowired
 	  private UserRepository userRepository;
-	  
-	  private PasswordEncoder passwordEncoder;
+
+	  @Autowired
+	  private MailUtil mailUtil;
+
+
 	  /**
 	   * 获取当前登录的用户的User对象。
 	   * @return
@@ -99,5 +108,25 @@ public class UserService {
 		User user = userRepository.findOne(id);
 		if (user == null) return null;
 		return user.getUsername();
+	}
+
+	/**
+	 * 验证邮箱
+	 * @param receiver
+	 * @param code 校验码
+	 * @return
+	 */
+	public boolean sendEmailCodeForVaild(String receiver, String code) {
+		Mail mail = mailUtil.getMail();
+		String subject = "验证码";
+		StringBuffer message = new StringBuffer();
+		message.append("^_^, 您终于来了！<br/>");
+		message.append("感谢您注册<b>简博客</b>, 你的验证码为<code>" + code + "</code>。");
+		message.append("请在30分钟完成注册，验证码过期失效。<br/>");
+		message.append("(ps: 如果这不是您本人操作，请忽略此邮件。)");
+		mail.setSubject(subject);
+		mail.setMessage(message.toString());
+		mail.setReceiver(receiver);
+		return mailUtil.send(mail);
 	}
 }

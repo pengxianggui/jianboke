@@ -54,4 +54,5 @@ public class MailUtil extends MailConfig {
 				this.getPassword(), this.getSubject());
 		return mail;
 	}
+
 }

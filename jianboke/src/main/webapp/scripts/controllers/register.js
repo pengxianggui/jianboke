@@ -46,8 +46,17 @@ angular.module('jianboke')
         // 发送邮箱验证码
         $scope.sendEmailVerificationCode = function() {
             console.log('sendEmailVerificationCode');
-            Account.sendEmailValidCode().$promise.then(function(result) {
-
-            }, function(resp) {});
+            var obj = {};
+            obj.username = $scope.username;
+            obj.email = $scope.email;
+            Account.sendEmailValidCode(obj).$promise.then(function(result) {
+                console.log(result);
+                if (result.valid)
+                    $rootScope.popMessage("验证码发送成功", true);
+                else
+                    $rootScope.popMessage("验证码发送失败", false);
+            }, function(resp) {
+               $rootScope.popMessage("验证码发送失败", false);
+            });
         }
     })
