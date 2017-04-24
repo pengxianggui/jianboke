@@ -14,11 +14,11 @@ import com.jianboke.annotation.ColumnComment;
 
 @Entity
 @Table(name = "chapters")
-public class Chapter extends AbstractAuditingEntity{
-	@Id
-	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+public class Chapter extends AbstractAuditingEntity {
+//	@Id
+//	@Column(name = "id", unique = true, nullable = false)
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	private Long id;
 	
 	@Column(name = "name", nullable = false)
 	@ColumnComment("章节名")
@@ -36,14 +36,14 @@ public class Chapter extends AbstractAuditingEntity{
 	
 	@Column(name = "sort_num")
 	private Integer sortNum;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+//
+//	public Long getId() {
+//		return id;
+//	}
+//
+//	public void setId(Long id) {
+//		this.id = id;
+//	}
 
 	public String getName() {
 		return name;

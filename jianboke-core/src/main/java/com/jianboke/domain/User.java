@@ -26,10 +26,10 @@ public class User extends AbstractAuditingEntity implements UserDetails {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "id", unique = true)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+//	@Id
+//	@Column(name = "id", unique = true)
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	private Long id;
 	
 	@Column(name = "username", unique = true, nullable = false)
 	private String username;
@@ -47,14 +47,14 @@ public class User extends AbstractAuditingEntity implements UserDetails {
 	@Column(name = "avatar_path", nullable = true)
 	@ColumnComment("头像存储路径")
 	private String avatarPath;
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
+//
+//	public Long getId() {
+//		return id;
+//	}
+//
+//	public void setId(Long id) {
+//		this.id = id;
+//	}
 
 	public String getUsername() {
 		return username;
@@ -95,12 +95,12 @@ public class User extends AbstractAuditingEntity implements UserDetails {
 	public void setAvatarPath(String avatarPath) {
 		this.avatarPath = avatarPath;
 	}
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email
-				+ ", phonenum=" + phonenum + ", avatarPath=" + avatarPath + "]";
-	}
+//
+//	@Override
+//	public String toString() {
+//		return "User [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email
+//				+ ", phonenum=" + phonenum + ", avatarPath=" + avatarPath + "]";
+//	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

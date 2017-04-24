@@ -12,10 +12,10 @@ import javax.persistence.*;
 @Table(name = "book_chapter_articles")
 public class BookChapterArticle extends AbstractAuditingEntity {
 
-    @Id
-    @Column(name = "id", unique = true, nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//    @Id
+//    @Column(name = "id", unique = true, nullable = false)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long id;
 
     @Column(name = "book_id", unique = false, nullable = false)
     private Long bookId;
@@ -31,14 +31,14 @@ public class BookChapterArticle extends AbstractAuditingEntity {
 
     @Column(name = "sort_num", unique = false, nullable = false)
     private Integer sortNum;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+//
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 
     public Long getBookId() {
         return bookId;
