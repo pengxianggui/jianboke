@@ -4,6 +4,7 @@ import com.jianboke.domain.Article;
 import com.jianboke.domain.criteria.ArticleCriteria;
 import com.jianboke.repository.ArticleRepository;
 import com.jianboke.utils.DBConfigUtils;
+import com.jianboke.utils.DateTimeUtils;
 import org.hibernate.Criteria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,6 +117,8 @@ public class ArticleService {
             a.setLabels(rs.getString("labels"));
             a.setAuthorId(rs.getLong("author_id"));
             a.setSecondAuthorId(rs.getLong("second_author_id"));
+            a.setCreatedDate(DateTimeUtils.toLdt(rs.getDate("created_date")));
+            a.setLastModifiedDate(DateTimeUtils.toLdt(rs.getDate("last_modified_date")));
             temp.add(a);
             System.out.println(a.toString());
         }

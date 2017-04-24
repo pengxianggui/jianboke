@@ -1,19 +1,20 @@
 package com.jianboke.web;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.validation.Valid;
 
 import com.jianboke.domain.criteria.ArticleCriteria;
+import com.jianboke.mapper.ArticleMapper;
+import com.jianboke.model.ArticleModel;
 import com.jianboke.service.ArticleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,15 +37,21 @@ public class ArticleController {
 	@Autowired
 	private ArticleService articleService;
 
+	@Autowired
+	private ArticleMapper articleMapper;
+
 	@RequestMapping(value = "/article", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
 	public Map<String, Object> query(@ModelAttribute ArticleCriteria criteria) {
 		log.info("Rest request to get Articles by criteria :{}", criteria);
 		Map<String, Object> map = new HashMap<>();
 		try {
-			List<Article> articlesList = articleService.queryByCriteria(criteria);
+			List<ArticleModel> modelList = new ArrayList<>();
+			articleService.queryByCriteria(criteria).forEach(article -> {
+				modelList.add(articleMapper.entityToModel(article));
+			});
 			map.put("result", "success");
-			map.put("data", articlesList);
+			map.put("data", modelList);
 		} catch (SQLException e) {
 			if (log.isDebugEnabled()) {
 				e.printStackTrace();
@@ -61,17 +68,21 @@ public class ArticleController {
 	 * @return
 	 */
 	@RequestMapping(value = "/articles/{filter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<Article> queryByFilter(@PathVariable String filter) {
-		 List<Article> articleList = new ArrayList<Article>();
+	public ResponseEntity<List<ArticleModel>> queryByFilter(@PathVariable String filter) {
+		 List<ArticleModel> articleModelList = new ArrayList<>();
 		 User user = userService.getUserWithAuthorities(); // 获取当前用户
 		 if (filter.endsWith("-1") || filter == null) {
 			 log.debug("User : {} REST request to query all his articles", user.getUsername());
-			 articleList = articleRepository.findAllByAuthorId(user.getId());
+			 articleRepository.findAllByAuthorId(user.getId()).forEach(article -> {
+				 articleModelList.add(articleMapper.entityToModel(article));
+			 });
 		 } else {
 			 log.debug("User : {} REST request to query articles by filter : {}", user.getUsername(), filter);
-			 articleList = articleRepository.queryByFilterAndAuthorId(filter, user.getId());
+			 articleRepository.queryByFilterAndAuthorId(filter, user.getId()).forEach(article -> {
+				 articleModelList.add(articleMapper.entityToModel(article));
+			 });
 		 }
-		 return articleList;
+		 return ResponseEntity.ok().body(articleModelList);
 	}
 	
 	@RequestMapping(value = "/article", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,10 +95,12 @@ public class ArticleController {
 	}
 
 	@RequestMapping(value = "/article/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Article get(@PathVariable Long id) {
+	public ResponseEntity<ArticleModel> get(@PathVariable Long id) {
 		log.debug("REST request to get a Article by id:{}", id);
 		// TODO 权限校验
-		return articleRepository.findOne(id);
+		return Optional.ofNullable(articleRepository.findOne(id)).map(articleMapper::entityToModel)
+				.map(model -> new ResponseEntity<>(model, HttpStatus.OK))
+				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	@RequestMapping(value = "/article/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
