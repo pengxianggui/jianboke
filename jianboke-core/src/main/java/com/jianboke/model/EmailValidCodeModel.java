@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 /**
  * Created by pengxg on 2017/4/22.
  */
-@JsonIgnoreProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EmailValidCodeModel {
     private String email;
     private String username;
