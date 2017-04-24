@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/jianboke?autoReconnect=true
+    driverClassName: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+logging:
+  file: target/jianboke.log
+  level:
+    com.jianboke: DEBUG
+server:
+  port: 6969
+data:
+  bookCoverPathUploadConfig:
+    baseUrl: E:/sts_workspace_other/jianboke/src/main/resources/static
+  email:
+    host: smtp.aliyun.com
+    sender: jianboke@aliyun.com
+    nickname: 简博客
+    username: jianboke@aliyun.com
+    password: jianboke,0919
+    subject:
+    receiver:
+    message:
+    #密钥过期时间，暂定30分钟
+    expireTime: 30
