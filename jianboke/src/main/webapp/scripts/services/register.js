@@ -2,5 +2,5 @@
 
 angular.module('jianboke')
 	.factory('Register', function($resource) {
-		return $resource('api/register', {}, {});
+		return $resource('api/account/register', {}, {});
 	})

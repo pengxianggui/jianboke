@@ -1,6 +1,8 @@
 package com.jianboke.service;
 
 import com.jianboke.domain.Mail;
+import com.jianboke.domain.VerificationCode;
+import com.jianboke.model.UsersModel;
 import com.jianboke.utils.MailUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jianboke.domain.User;
 import com.jianboke.repository.UserRepository;
 import com.jianboke.security.SecurityUtils;
+
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -128,5 +132,19 @@ public class UserService {
 		mail.setMessage(message.toString());
 		mail.setReceiver(receiver);
 		return mailUtil.send(mail);
+	}
+
+	/**
+	 * 校验验证码是否符合
+	 * @param model
+	 * @param verificationCode
+	 * @return
+	 */
+	public boolean verificationCodeValid(UsersModel model, VerificationCode verificationCode) {
+		LocalDateTime lastModifiedDate = verificationCode.getLastModifiedDate(),
+				      createdDate = verificationCode.getCreatedDate();
+		LocalDateTime ldt = lastModifiedDate != null ?lastModifiedDate : createdDate;
+		return LocalDateTime.now().isBefore(ldt.plusMinutes(30)) // 30min有效期
+				&& model.getValidCode().equals(verificationCode.getCode());
 	}
 }

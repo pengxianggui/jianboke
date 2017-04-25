@@ -70,6 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/api/account/usernameUniqueValid").permitAll()
 			.antMatchers("/api/account/emailUniqueValid").permitAll()
 			.antMatchers("/api/account/sendEmailValidCode").permitAll()
+			.antMatchers("/api/account/register").permitAll()
 			.anyRequest().authenticated(); // 其他路径都会被加上权限拦截
 	}
 	

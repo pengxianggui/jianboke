@@ -1,6 +1,7 @@
 package com.jianboke.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UsersModel {
 
     private Long id;
@@ -21,6 +23,7 @@ public class UsersModel {
     private String avatarPath;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
+    private String validCode; // 验证码
 
     public Long getId() {
         return id;
@@ -84,6 +87,14 @@ public class UsersModel {
 
     public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public String getValidCode() {
+        return validCode;
+    }
+
+    public void setValidCode(String validCode) {
+        this.validCode = validCode;
     }
 
     @Override

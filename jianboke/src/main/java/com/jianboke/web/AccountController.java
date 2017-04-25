@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.jianboke.domain.VerificationCode;
-import com.jianboke.model.EmailValidCodeModel;
-import com.jianboke.model.ValidationModel;
-import com.jianboke.model.ValidationResult;
+import com.jianboke.enumeration.HttpReturnCode;
+import com.jianboke.mapper.UsersMapper;
+import com.jianboke.model.*;
 import com.jianboke.repository.UserRepository;
 import com.jianboke.repository.VerificationCodeRepository;
 import com.jianboke.utils.StringUtils;
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,9 @@ public class AccountController {
 
     @Autowired
     private VerificationCodeRepository verificationCodeRepository;
+
+    @Autowired
+    private UsersMapper usersMapper;
     
     @RequestMapping(value = "/account", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -90,5 +94,23 @@ public class AccountController {
             });
         }
         return ResponseEntity.ok().body(ValidationResult.INVALID);
+    }
+
+    @RequestMapping(value = "/account/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RequestResult> register(@RequestBody UsersModel model) {
+        log.info("Rest Request to register a new user :{}", model);
+        // 校验username和email都在数据库中不存在
+        if (userRepository.findOneByEmail(model.getEmail()).isPresent()
+                || userRepository.findOneByUsername(model.getUsername()).isPresent()) {
+            return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_ACCOUNT_IS_EXIST));
+        }
+
+
+        System.out.println("test----------------------------");
+        return verificationCodeRepository.findOneByEmail(model.getEmail())
+            .filter(verificationCode -> userService.verificationCodeValid(model, verificationCode))
+            .map(verificationCode -> ResponseEntity.ok()
+                    .body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, userRepository.saveAndFlush(usersMapper.modelToEntity(model)))))
+            .orElse(ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_VERIFICATION_CODE_WRONG)));
     }
 }

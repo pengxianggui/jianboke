@@ -18,6 +18,10 @@ angular.module('jianboke')
         sendEmailValidCode: {
             url: 'api/account/sendEmailValidCode',
             method: 'POST'
+        },
+        register: {
+            url: 'api/account/register',
+            method: 'POST'
         }
     });
   });

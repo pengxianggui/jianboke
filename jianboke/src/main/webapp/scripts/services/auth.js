@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('jianboke')
-	.factory('Auth', function(AuthServerProvider, $state, $q, Principal, $rootScope, ACCESS_LEVELS, localStorageService, Register) {
+	.factory('Auth', function(AuthServerProvider, $state, $q, Principal, $rootScope, ACCESS_LEVELS, localStorageService, Account) {
 		return {
 			login: function(credentials) { //登录方法
 				var deferred = $q.defer();
@@ -30,11 +30,7 @@ angular.module('jianboke')
 				});
 			},
 			register: function(account, callback) {
-				return Register.save(account).$promise.then(function(data) {
-
-				}, function(error) {
-					// do sth
-				});
+				return Account.register(account).$promise;
 			},
 			authorize: function() { //授权验证，判断是否认证(登录)。每次路由改变都会触发验证
 				return Principal.identity().then(function(account) {

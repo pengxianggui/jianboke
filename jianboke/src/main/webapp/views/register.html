@@ -32,10 +32,10 @@
                         </div>
                     </md-input-container>
                     <!-- 邮箱通过校验即可允许验证码发送 -->
-                    <div layout="row" ng-if="!(form.jbk_email.$error.required)">
+                    <div layout="row" ng-show="!(form.jbk_email.$error.required)">
                         <md-input-container class="md-block" flex>
                             <label>请输入校验码</label>
-                            <input type="number" name="valid_code" ng-model="validCode" required>
+                            <input name="valid_code" ng-model="validCode" required>
                             <div ng-messages="form.jbk_email.$error">
                                 <div ng-message="required">请输入校验码</div>
                             </div>
