@@ -6,9 +6,11 @@ import java.util.*;
 import javax.validation.Valid;
 
 import com.jianboke.domain.criteria.ArticleCriteria;
+import com.jianboke.enumeration.ResourceName;
 import com.jianboke.mapper.ArticleMapper;
 import com.jianboke.model.ArticleModel;
 import com.jianboke.service.ArticleService;
+import com.jianboke.service.UserAuhtorityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,9 @@ public class ArticleController {
 
 	@Autowired
 	private ArticleMapper articleMapper;
+
+	@Autowired
+	private UserAuhtorityService userAuhtorityService;
 
 	@RequestMapping(value = "/article", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
@@ -98,17 +103,24 @@ public class ArticleController {
 	public ResponseEntity<ArticleModel> get(@PathVariable Long id) {
 		log.debug("REST request to get a Article by id:{}", id);
 		// TODO 权限校验
-		return Optional.ofNullable(articleRepository.findOne(id)).map(articleMapper::entityToModel)
-				.map(model -> new ResponseEntity<>(model, HttpStatus.OK))
-				.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		if(userAuhtorityService.ifHasAuthority(ResourceName.ARTICLE, id)) {
+			return Optional.ofNullable(articleRepository.findOne(id)).map(articleMapper::entityToModel)
+					.map(model -> new ResponseEntity<>(model, HttpStatus.OK))
+					.orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		}
+		return ResponseEntity.ok().body(null); // 不能把没有权限的资源返回
 	}
 
 	@RequestMapping(value = "/article/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Article remove(@PathVariable Long id) {
 		log.info("request to delete a article which id is :{}", id);
 		// TODO 权限校验
-		Article article = articleRepository.findOne(id);
-		articleRepository.delete(article);
-		return article;
+		if (userAuhtorityService.ifHasAuthority(ResourceName.ARTICLE, id)) {
+			Article article = articleRepository.findOne(id);
+			articleRepository.delete(article);
+			return article;
+		} else {
+			return null;
+		}
 	}
 }

@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css" />
 <link rel="stylesheet" href="bower_components/angular-loading-bar/build/loading-bar.css" />
 <link rel="stylesheet" href="bower_components/angular-chart.js/dist/angular-chart.css" />
+<link rel="stylesheet" href="bower_components/mdPickers/dist/mdPickers.min.css" />
 <!-- endbower -->
 <link rel="stylesheet" href="bower_components/integralui/css/integralui.css"/>
 <link rel="stylesheet" href="bower_components/integralui/css/integralui.checkbox.css"/>
@@ -17,16 +18,20 @@
 <link rel="stylesheet" href="bower_components/editor.md/css/editormd.min.css" />
 </head>
 <body ng-app="jianboke" layout="column" ng-cloak>
-	<header style="z-index:1">
+	<header style="z-index:1" ng-controller="HeaderCtrl">
 		<md-toolbar class="md-hue-2">
 		<div class="md-toolbar-tools">
 			<md-button class="md-icon-button" aria-label="Settings"
 				ng-disabled="true"> <md-icon>book</md-icon> </md-button>
-			<h2>
+			<h2 style="margin-right: 50px;">
 				<span>简博</span>
 			</h2>
+			<span ng-if="isAuthenticated()" style="height: 100%;">
+				<md-button class="nav" ng-class="{'md-raised md-warn': current=='index'}" style="height: 100%; margin: 0;" ng-click="go('index')">首页</md-button>
+				<md-button class="nav" ng-class="{'md-raised md-warn': current=='dashboard'}" style="height: 100%; margin: 0;" ng-click="go('dashboard')">个人主页</md-button>
+			</span>
 			<span flex></span>
-			<pxg-account-menu>
+			<pxg-account-menu ng-if="isAuthenticated()">
 				<!-- <md-button class="md-fab md-primary md-mini" ng-if="isAuthenticated()" ng-click="showAccountMenu()">
 					<md-icon>account_circle</md-icon>
 				</md-button> -->
@@ -60,6 +65,7 @@
 	<script src="bower_components/angular-filter/dist/angular-filter.min.js"></script>
 	<script src="bower_components/ng-file-upload/ng-file-upload.js"></script>
 	<script src="bower_components/jquery/dist/jquery.js"></script>
+	<script src="bower_components/mdPickers/dist/mdPickers.min.js"></script>
 	<!-- endbower -->
 	<!-- 解析树需要的插件 -->
 	<script src="bower_components/integralui/js/angular.integralui.min.js"></script>
@@ -102,7 +108,9 @@
 	<script src="scripts/controllers/login.js"></script>
 	<script src="scripts/controllers/register.js"></script>
 	<script src="scripts/controllers/article.js"></script>
-	
+	<script src="scripts/controllers/userSet.js"></script>
+	<script src="scripts/controllers/index_center.js"></script>
+
 	<!-- directive -->
 	<!--<script src="scripts/directives/my_directive.js"></script>-->
 	<script src="scripts/directives/my_book_tree.js"></script>

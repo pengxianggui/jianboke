@@ -16,8 +16,10 @@ angular.module('jianboke', [
      'ui.router',
      'ui.validate',
      'ngFileUpload',
-     "integralui"
+     "integralui",
+     "mdPickers"
 ]).run(function($rootScope, $state, $templateCache, Auth, $window, $mdDialog, $mdToast) {
+    console.log('run.js');
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) { 
         $templateCache.remove(toState.templateUrl); //清除路由缓存
         $rootScope.toState = toState;
@@ -27,14 +29,14 @@ angular.module('jianboke', [
 	
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
         if (toState.name !== 'login' && $rootScope.previousStateName) {
-          $rootScope.previousStateName = fromState.name;
-          $rootScope.previousStateParams = fromParams;
+            $rootScope.previousStateName = fromState.name;
+            $rootScope.previousStateParams = fromParams;
         }
         if (toState.data && toState.data.title) {
           $window.document.title = '简博客 － ' + toState.data.title;
         }
-      });
-    
+    });
+
 	$rootScope.goToDashboard = function() {
 		$state.go('dashboard');
 	}
@@ -93,5 +95,13 @@ angular.module('jianboke', [
 	        .targetEvent(ev)
 	        .ok("知道了");
 		  return $mdDialog.show(alert);
+    }
+})
+.controller('HeaderCtrl', function($scope, $state) {
+    console.log('HeaderCtrl');
+    $scope.current = 'dashboard';
+    $scope.go = function (router, param) {
+        $state.go(router, param);
+        $scope.current = router;
     }
 });

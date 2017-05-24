@@ -16,6 +16,10 @@ angular.module('jianboke')
         updateSortNum: {
             url: 'api/bookChapterArticle/updateSortNum/:id/:newSortNum',
             method: 'GET'
+        },
+        getTree: {
+            url: 'api/bookChapterArticle/listTreeWithArticle/:bookId/:articleId',
+            method: 'GET'
         }
     })
 });

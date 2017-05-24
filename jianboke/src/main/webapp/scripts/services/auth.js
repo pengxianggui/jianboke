@@ -11,8 +11,9 @@ angular.module('jianboke')
 						deferred.resolve(data);
 					})
 				}).catch(function(error) {
+				    this.logout();
 					deferred.reject(error);
-				});
+				}.bind(this));
 				return deferred.promise;
 			},
 			logout: function() { //登出方法
@@ -58,13 +59,15 @@ angular.module('jianboke')
 			login: function(credentials) {
 				var data = 'jbk_email=' + encodeURIComponent(credentials.email) +
 		          '&jbk_password=' + encodeURIComponent(credentials.password);
-//		          + '&remember-me=' + credentials.rememberMe + '&submit=Login'; //暫時不用
+		          + '&remember-me=' + credentials.rememberMe + '&submit=Login';
 				return $http.post('api/authentication', data, { // api/authentication 这个路径由spring security配置并处理
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'
 					},
 					ignoreLoadingBar: true
-		        })
+		        }).success(function(response) {
+                    return response;
+                });
 			},
 			logout: function() {
 				return $http.post('api/logout');

@@ -1,7 +1,12 @@
 'use strict';
 
 angular.module('jianboke')
-	.controller('BookAddCtrl', function($scope, $mdDialog, Upload, $timeout, Entity, Book, $rootScope, $state) {
+	.controller('AddToBookCtrl', function($scope, entity, IntegralUITreeViewService) { // 文章归档
+	    console.log('AddToBookCtrl');
+	    $scope.type = 'EDIT';
+	    $scope.article = entity;
+	})
+	.controller('BookAddCtrl', function($scope, $mdDialog, Upload, $timeout, Entity, Book, $rootScope, $state) { // 添加一本书
 		console.log('BookAddCtrl');
 		$scope.book = Entity;
 		console.log($scope.book);
@@ -50,6 +55,132 @@ angular.module('jianboke')
 			}
 		}
 	})
-	.controller('BookCtrl', function($scope, entity, Book) {
+	.controller('BookCtrl', function($scope, entity, Book, $timeout, $mdSidenav, $log, $state, $stateParams, $location, Chapter,Article) {
+	    $scope.type = 'READ';
+	    console.log(entity);
+	    console.log($location);
+	    $scope.book = entity.data;
 	    console.log('BookCtrl');
-	});
+        $scope.toggleLeft = buildDelayedToggler('left');
+        $scope.toggleRight = buildToggler('right');
+        $scope.treeName = 'bookTree';
+        $scope.nodes = [];
+        $scope.articleId;
+        $scope.currentchapOrArt = entity.data; //当前选中的chapter或article, 默认是当前书本
+        $state.go('book.content', {
+            type: $state.params.type?$state.params.type:'chapter',
+            resourceId: $state.params.resourceId?$state.params.resourceId:$scope.book.id
+        });
+        $scope.isOpenRight = function(){
+          return $mdSidenav('right').isOpen();
+        };
+        if ($state.params.type === 'article' && $state.params.resourceId) {
+            $scope.articleId = $state.params.resourceId;
+//            Book.getFirstBookByArticleId({articleId: $scope.articleId}).$promise.then(function(value) {
+//                console.log(value);
+//                $scope.book = value;
+//            });
+        }
+
+
+        console.log('sbsbsb');
+        $scope.treeEvents = {
+          itemClick: function (e) {
+            return $scope.onItemClick(e);
+          }
+        };
+
+        // 单击树list时
+        $scope.onItemClick = function(e) {
+            if (!e.item) {
+                return;
+            }
+            console.log(e.item);
+            console.log($state.params);
+            var type, resourceId;
+            if (e.item.isArticle) {
+                type = 'article';
+                $scope.articleId = e.item.id.split('-')[0];
+                $scope.currentchapOrArt = Article.get({id: $scope.articleId});
+            } else {
+                type = 'chapter';
+                $scope.currentchapOrArt = Chapter.get({id: e.item.id.split('-')[0]});
+            }
+            console.log($stateParams);
+            resourceId = e.item.id.split('-')[0];
+            $state.go('book.content', {type: type, resourceId: resourceId});
+        }
+        /**
+         * Supplies a function that will continue to operate until the
+         * time is up.
+         */
+        function debounce(func, wait, context) {
+          var timer;
+
+          return function debounced() {
+            var context = $scope,
+                args = Array.prototype.slice.call(arguments);
+            $timeout.cancel(timer);
+            timer = $timeout(function() {
+              timer = undefined;
+              func.apply(context, args);
+            }, wait || 10);
+          };
+        }
+
+        /**
+         * Build handler to open/close a SideNav; when animation finishes
+         * report completion in console
+         */
+        function buildDelayedToggler(navID) {
+          return debounce(function() {
+            // Component lookup should always be available since we are not using `ng-if`
+            $mdSidenav(navID)
+              .toggle()
+              .then(function () {
+                $log.debug("toggle " + navID + " is done");
+              });
+          }, 200);
+        }
+
+        function buildToggler(navID) {
+          return function() {
+            // Component lookup should always be available since we are not using `ng-if`
+            $mdSidenav(navID)
+              .toggle()
+              .then(function () {
+                $log.debug("toggle " + navID + " is done");
+              });
+          };
+        }
+      })
+      .controller('LeftCtrl', function ($scope, $timeout, $mdSidenav, $log) {
+        $scope.close = function () {
+          // Component lookup should always be available since we are not using `ng-if`
+          $mdSidenav('left').close()
+            .then(function () {
+              $log.debug("close LEFT is done");
+            });
+
+        };
+      })
+      .controller('RightCtrl', function ($scope, $timeout, $mdSidenav, $log) {
+        $scope.close = function () {
+          // Component lookup should always be available since we are not using `ng-if`
+          $mdSidenav('right').close()
+            .then(function () {
+              $log.debug("close RIGHT is done");
+            });
+        };
+      })
+      .controller('BookContentCtrl', function ($scope, entity, $stateParams, $state) {
+        console.log('BookContentCtrl');
+        $scope.type = $stateParams.type;
+        $scope.object = entity;
+        console.log($scope.object);
+        if ($scope.type === 'chapter') {
+            $scope.content = entity.description;
+        } else {
+            $scope.content = entity.content;
+        }
+      })

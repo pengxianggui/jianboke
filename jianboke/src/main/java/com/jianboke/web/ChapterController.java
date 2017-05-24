@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import com.jianboke.domain.Article;
 import com.jianboke.domain.BookChapterArticle;
+import com.jianboke.domain.Chapter;
+import com.jianboke.mapper.ChapterMapper;
 import com.jianboke.model.ChapterModel;
 import com.jianboke.repository.BookChapterArticleRepository;
 import com.jianboke.service.BookChapterArticleService;
@@ -48,6 +50,9 @@ public class ChapterController {
 
 	@Autowired
 	private BookChapterArticleService bookChapterArticleService;
+
+	@Autowired
+	private ChapterMapper chapterMapper;
 	
 	@RequestMapping(value = "/chapter/listChapterTreeWithoutArticle/{bookId}", method = RequestMethod.GET)
 	public ChapterModel listChapterTreeWithoutArticle(@PathVariable Long bookId) {
@@ -92,6 +97,12 @@ public class ChapterController {
 			return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("chapter", result.getId().toString()))
 					.body(result);
 		}).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+	}
+
+	@RequestMapping(value = "/chapter/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ChapterModel get(@PathVariable("id") Long id) {
+		Chapter c = chapterRepository.findOne(id);
+		return chapterMapper.entityToModel(c);
 	}
 
 	/**

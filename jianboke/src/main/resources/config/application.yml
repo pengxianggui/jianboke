@@ -8,8 +8,16 @@ logging:
   file: target/jianboke.log
   level:
     com.jianboke: DEBUG
+    org.springframework: INFO
+    org.hibernate: WARN
+    liquibase: WARN
 server:
   port: 6969
+app:
+  work:
+    directory: target/work
+  security:
+    key: 8a70f2e95f2f5184495a979a4e624a9e6e9ea821
 data:
   bookCoverPathUploadConfig:
     baseUrl: E:/sts_workspace_other/jianboke/src/main/resources/static
@@ -24,3 +32,4 @@ data:
     message:
     #密钥过期时间，暂定30分钟
     expireTime: 30
+

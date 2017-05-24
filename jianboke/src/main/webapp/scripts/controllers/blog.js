@@ -17,7 +17,11 @@ angular.module('jianboke')
       		$scope.ifOpenSet = false;
               $scope.article = entity;
       		if ($state.params.id != 'new') {
+      		    if ($scope.article == null || $scope.article.labels == null) {
+      		        $scope.labels = [];
+      		    } else {
                   $scope.labels = $scope.article.labels.split(',');
+      		    }
       		} else {
       		    $scope.labels = [];
       		}

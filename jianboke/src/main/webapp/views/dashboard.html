@@ -18,7 +18,7 @@
 							<span layout="column" layout-align="center center">
 								<md-button class="md-raised md-warn" style="width: 50%"  ui-sref="blog.edit({id: 'new'})">
 									<md-icon>edit</md-icon>
-									<span>写篇博客</span>
+									<span>写篇文档</span>
 								</md-button>
 							</span>
 						</span>
@@ -48,7 +48,7 @@
 						    <md-grid-tile ng-repeat="book in books"
 						                  md-rowspan="2"
 						                  md-colspan="2">
-							  <md-button class="height-100-percent width-100-percent no-padding no-margin" ui-sref="book({id: book.id})">
+							  <md-button class="height-100-percent width-100-percent no-padding no-margin" ui-sref="book({bookId: book.id})">
 								  <img style="width: 100%; height: 100%" ng-src="{{book.bookCoverPath}}"/>
 							  </md-button>
 						      <md-grid-tile-footer>
@@ -74,7 +74,7 @@
 		            class="md-primary md-icon-button" hide-gt-md style="margin: auto 4px">
 		            <md-icon>menu</md-icon>
 		        </md-button>
-				<md-input-container md-no-float class="margin-left-right-10" style="color: black">
+				<md-input-container md-no-float class="no-margin margin-left-right-10" style="color: black; padding: 0 10px">
 					<md-select ng-model="query.findBy" placeholder="分类查询" style="margin-top: 8px;" ng-change="refreshArticleList()">
 						<md-option value="all">全部</md-option>
 						<md-option ng-repeat="book in books" value="{{book.id}}">{{book.bookName}}</md-option>

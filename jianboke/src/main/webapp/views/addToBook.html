@@ -9,8 +9,44 @@
                 </span>
             </div>
         </md-toolbar>
-        <div flex>
+        <div flex layout="row" flex style="height: 100%;">
             <my-book-tree></my-book-tree>
+            <md-card flex class="no-margin">
+                <md-toolbar layout="row" class="md-hue-2" style="background: rgb(140,158,255); height: 40px; min-height: 30px;">
+                    <div class="md-toolbar-tools" style="height: 40px; min-height: 30px;">
+                        <span ng-if="currentChapter == null">章节名</span>
+                        <span ng-if="currentChapter != null" ng-bind="currentChapter.groupName"></span>
+                    </div>
+                </md-toolbar>
+                <md-content class="md-padding" flex ng-if="currentChapter.items && currentChapter.items.length > 0">
+                    对不起，当前章节下嵌套了其他章节，文章与章节无法共处同一层，因此您无法在此处归档《{{article.title}}》。
+                </md-content>
+                <md-content flex ng-if="!(currentChapter.items && currentChapter.items.length > 0)">
+                    <md-list class="md-dense">
+                        <md-list-item style="cursor: auto;" ng-repeat="a in articleModels | orderBy:'sortNum'">
+                            <md-button class="md-icon-button" ui-sref="blog.readblog({id: a.articleId})"
+                                       target="_blank">
+                                <md-tooltip>查看</md-tooltip>
+                                <md-icon>remove_red_eye</md-icon>
+                            </md-button>
+                            <span >{{a.sortNum}}.《{{a.articleTitle}}》</span>
+                            <md-button class="md-icon-button md-secondary" ng-click="sortNum(a)">
+                                <md-tooltip>排序</md-tooltip>
+                                <md-icon>sort</md-icon>
+                            </md-button>
+                            <md-button class="md-icon-button md-secondary" ng-click="deleteArticle(a)">
+                                <md-tooltip>删除</md-tooltip>
+                                <md-icon>delete</md-icon>
+                            </md-button>
+                            <md-divider></md-divider>
+                        </md-list-item>
+                    </md-list>
+                </md-content>
+                <md-card-actions ng-if="currentChapter != null" layout="row" layout-align="end center">
+                    <md-button class="md-primary md-raised" ng-disabled="currentChapter.items && currentChapter.items.length > 0"
+                               ng-click="publishArticle(article, currentChapter)">归档此处</md-button>
+                </md-card-actions>
+            </md-card>
         </div>
     </md-content>
 </md-card>

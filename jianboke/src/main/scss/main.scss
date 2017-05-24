@@ -6,6 +6,7 @@ $material-font-path: "../fonts";
 "material-design-add-bymyself",
 "book",
 "dashboard-style",
+"my-font",
 "article-style";
 
 // 全局css定义
@@ -55,7 +56,12 @@ md-card.white-card-toolbar {
 	margin: 0 !important;
 }
 .margin-left-right-10{
-	margin: 0px 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+.margin-left-right-5 {
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 .no-padding{
 	padding: 0 !important;

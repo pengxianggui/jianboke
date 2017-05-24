@@ -12,9 +12,12 @@ import com.jianboke.domain.Article;
 public interface ArticleRepository extends JpaRepository<Article, Long>, JpaSpecificationExecutor<Article> {
 
 	@Query(value = "SELECT * FROM articles a where a.author_id=:authorId AND (a.title LIKE %:filter% OR a.labels LIKE %:filter%) ORDER BY a.created_date", nativeQuery = true)
-	public List<Article> queryByFilterAndAuthorId(@Param("filter") String filter, @Param("authorId") Long authorId);
+	List<Article> queryByFilterAndAuthorId(@Param("filter") String filter, @Param("authorId") Long authorId);
 
-	public List<Article> findAllByAuthorId(Long authorId);
+	List<Article> findAllByAuthorId(Long authorId);
+
+	@Query(value = "SELECT a.id, a.title, bca.parent_id, c.name, bca.sort_num, bca.book_id FROM book_chapter_articles bca,articles a,chapters c WHERE bca.article_id=a.id AND bca.parent_id=c.id AND bca.book_id=:bookId", nativeQuery = true)
+	List findArticleModelByBookId(@Param("bookId") Long bookId);
 
 //	@Query(value = "select * from articles a, union_book_articles uba where a.id = uba.article_id and (a.author_id =:authorId or a.second_author_id =:authorId) and uba.book_id =:bookId and (a.title like '%:filter%' or a.labels like '%:filter%') ORDER BY a.`last_modified_date` :sort LIMIT :begin, :size")
 //    public List<Article> criteriaQueryByBookIdAndAuthorId(@Param("authorId") Long authorId,

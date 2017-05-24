@@ -15,16 +15,21 @@ public interface BookChapterArticleRepository extends JpaRepository<BookChapterA
         JpaSpecificationExecutor<BookChapterArticle> {
 
     @Query(value = "select * from book_chapter_articles bca where bca.parent_id =:parentId And bca.sort_num = null", nativeQuery = true)
-    public List<BookChapterArticle> findNullSortNumByParentId(@Param("parentId") Long parentId);
+    List<BookChapterArticle> findNullSortNumByParentId(@Param("parentId") Long parentId);
 
     @Query(value = "select count(1) from book_chapter_articles bca where bca.parent_id =:parentId", nativeQuery = true)
-    public int getCountByParentId(@Param("parentId") Long parentId);
+    int getCountByParentId(@Param("parentId") Long parentId);
 
-    public List<BookChapterArticle> findAllByParentId(Long parentId);
+    List<BookChapterArticle> findAllByParentId(Long parentId);
+
+    List<BookChapterArticle> findAllByBookId(Long bookId);
 
     @Query(value = "select * from book_chapter_articles bca where bca.parent_id =:parentId order by bca.sort_num", nativeQuery = true)
-    public List<BookChapterArticle> findAllByParentIdOrderly(@Param("parentId") Long parentId);
+    List<BookChapterArticle> findAllByParentIdOrderly(@Param("parentId") Long parentId);
 
     @Query(value = "select * from book_chapter_articles bca where bca.article_id =:articleId and bca.parent_id =:parentId", nativeQuery = true)
-    public List<BookChapterArticle> getByArticleIdAndParentId(@Param("articleId") Long articleId, @Param("parentId") Long parentId);
+    List<BookChapterArticle> getByArticleIdAndParentId(@Param("articleId") Long articleId, @Param("parentId") Long parentId);
+
+//    @Query(value = "SELECT book_id FROM book_chapter_articles WHERE article_id =:articleId ORDER BY book_id", nativeQuery = true)
+    List<BookChapterArticle> findAllByArticleId(Long articleId);
 }

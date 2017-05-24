@@ -7,9 +7,18 @@ angular.module('jianboke')
 			restrict: 'AE',
 			templateUrl: 'views/template/treeOfBooks.html',
 			replace: true,
+//			scope: {
+//			    type: '@', // type 有两个值: READ(阅读模式) 和 EDIT(编辑模式)
+//			    pxgData: '=',
+//			    pxgAction: '&'
+//			},
 			controller: function($scope, $mdDialog) {
 				$scope.treeName = 'categoryTree';
 				$scope.selectedBook;
+				if ($scope.book) {
+				    $scope.selectedBook = $scope.book;
+				    console.log($scope.selectedBook);
+				}
 				$scope.nodes = [];
 				Book.query().$promise.then(function(data) {
 					$scope.books = data;
@@ -47,7 +56,7 @@ angular.module('jianboke')
 			        } else {
 			          // 判断当前节点下是否存在资源(文章)，若存在，则提示不能添加
 			          BookChapterArticle.listByParentId({
-			            parentId: obj.id
+			            parentId: obj.id.split('-')[0]
 			          }).$promise.then(function (result) {
 			            if (result == null || result.length == 0) {
 			              showAddDialog(obj, sortNum);
@@ -70,7 +79,7 @@ angular.module('jianboke')
 			            group: {
 			              groupName: obj.groupName,
 			              bookId: obj.bookId,
-			              id: obj.id,
+			              id: obj.id.split('-')[0],
 			              parentName: obj.parentName,
 			              description: obj.description,
 			              sortNum: obj.sortNum,
@@ -101,7 +110,7 @@ angular.module('jianboke')
 			        // 删除操作的具体执行逻辑
 			        var deleteAction = function(title, content) {
                         $rootScope.confirmMessage(title, content, false, '确定', '取消', null).then(function() {
-                            Chapter.remove({id: obj.id}).$promise.then(function(result) {
+                            Chapter.remove({id: obj.id.split('-')[0]}).$promise.then(function(result) {
                                 $rootScope.popMessage('删除成功', true);
                                 var item = IntegralUITreeViewService.findItemById($scope.treeName, obj.id);
                                 if (item) {
@@ -114,7 +123,7 @@ angular.module('jianboke')
                         });
 			        }
 
-			        BookChapterArticle.listByChapterIdDeeply({chapterId: obj.id}).$promise.then(function(result) {
+			        BookChapterArticle.listByChapterIdDeeply({chapterId: obj.id.split('-')[0]}).$promise.then(function(result) {
                         var title, content;
                         if ((item.items && item.items.length > 0)) { // 章节下存在子章节
                             title = '警告！';
@@ -146,28 +155,38 @@ angular.module('jianboke')
 			      node.sortNum = obj.sortNum;
 			      node.parentName = obj.parentName;
 			      node.description = obj.description;
-			      $scope.listTable(node);
+//			      console.log($scope.pxgAction);
+//			      if ($scope.pxgAction) {
+//			        console.log(node);
+//			        $scope.pxgAction(node, $scope.treeName);
+//			      }
+                  $scope.listTable(node);
 			    };
 
 			    var clearList = function () {
 			    	IntegralUITreeViewService.clearItems($scope.treeName);
 			    };
-			    $scope.customItemTemplate = {url: '\'item-template.html\''};
-//			    $scope.customItemTemplate = {url: 'template/tree-item-template.html'};
+			    if ($scope.type == 'EDIT') { // 选取模板
+			        $scope.customItemTemplate = {url: '\'item-template-EDIT.html\''};
+			    } else {
+			        $scope.customItemTemplate = {url: '\'item-template-READ.html\''};
+			    }
 
 			    var addItem = function (parent, chapterGroup) {
 			        var node = {
 			          groupName: chapterGroup.groupName,
 			          text: chapterGroup.groupName,
-			          id: chapterGroup.id,
+			          id: chapterGroup.id + '-' + chapterGroup.parentId,
 			          bookId: chapterGroup.bookId,
 			          description: chapterGroup.description,
 			          parentId: chapterGroup.parentId,
 			          parentName: chapterGroup.parentName,
 			          //items:category.nodes,
 			          sortNum: chapterGroup.sortNum,
+			          isArticle: chapterGroup.isArticle,
+//			          icon: 'icon-book',
 			          templateObj: {
-			            id: chapterGroup.id,
+			            id: chapterGroup.id + '-' + chapterGroup.parentId,
 			            text: chapterGroup.groupName,
 			            groupName: chapterGroup.groupName,
 			            bookId: chapterGroup.bookId,
@@ -176,9 +195,10 @@ angular.module('jianboke')
 			            description: chapterGroup.description,
 			            //items:category.nodes,
 			            sortNum: chapterGroup.sortNum,
+//			            icon: 'icon-book',
 			            events: objEvents
 			          },
-			          expanded: true,
+			          expanded: chapterGroup.expanded,
 			        };
 			        IntegralUITreeViewService.addItem($scope.treeName, node, parent);
 			        if (chapterGroup.items) {
@@ -190,11 +210,21 @@ angular.module('jianboke')
 				// 加载树
 				$scope.refreshTree = function () {
 			      IntegralUITreeViewService.beginLoad($scope.treeName, null, {type: 'linear', speed: 'fast', opacity: 0.25});
-			      Chapter.getTree({"bookId": $scope.selectedBook.id}).$promise.then(function (value, responseHeaders) {
-			        $scope.chaptersTree = value;
+                  var promise;
+                  if ($scope.type == 'EDIT') {
+                    promise = Chapter.getTree({"bookId": $scope.selectedBook.id}).$promise;
+                  } else {
+                    promise = BookChapterArticle.getTree({
+                        "bookId": $scope.selectedBook.id,
+                        "articleId": $scope.articleId?$scope.articleId:-1
+                    }).$promise;
+                  }
+			      promise.then(function (value, responseHeaders) {
+			        console.log(value);
+			        $scope.nodes = value;
 			        IntegralUITreeViewService.suspendLayout($scope.treeName);
 			        clearList();
-			        addItem(null, $scope.chaptersTree);
+			        addItem(null, $scope.nodes);
 			        IntegralUITreeViewService.resumeLayout($scope.treeName);
 //				        $scope.selectedCategory = null;
 			      }).catch(function (httpResponse) {
@@ -212,6 +242,10 @@ angular.module('jianboke')
                 $scope.collapseAll = function() {
                     IntegralUITreeViewService.collapse($scope.treeName);
                 }
+                //
+                $scope.onLoadComplete = function () {
+                  IntegralUITreeViewService.endLoad($scope.treeName);
+                };
 
                 // 添加一个空的章节
                 var showAddDialog = function (obj, sortNum) {
@@ -224,14 +258,14 @@ angular.module('jianboke')
                                 groupName: null,
                                 bookId: obj.bookId,
                                 parentName: obj.groupName,
-                                parentId: obj.id,
+                                parentId: obj.id.split('-')[0],
                                 description: null,
                                 sortNum: sortNum
                             }
                         }
                     }).then(function (result) {
                         var item = {
-                          id: result.id,
+			              id: result.id + '-' + result.parentId,
                           text: result.groupName,
                           groupName: result.groupName,
                           bookId: result.bookId,
@@ -240,7 +274,7 @@ angular.module('jianboke')
                           parentName: result.parentName,
                           sortNum: result.sortNum,
                           templateObj: {
-                            id: result.id,
+			                id: result.id + '-' + result.parentId,
                             text: result.groupName,
                             groupName: result.groupName,
                             bookId: result.bookId,
@@ -260,7 +294,8 @@ angular.module('jianboke')
                 $scope.listTable = function (node) {
                     $scope.articleModels = [];
                     $scope.currentChapter = IntegralUITreeViewService.findItemById($scope.treeName, node.id);
-                    Chapter.getArticlesById({id: node.id}).$promise.then(function (value) {
+                    Chapter.getArticlesById({id: node.id.split('-')[0]}).$promise.then(function (value) {
+                        console.log(value);
                         $scope.articleModels = value;
                     })
                 };
@@ -299,15 +334,22 @@ angular.module('jianboke')
 
 			    $scope.$watch('selectedBook', function(newValue, oldValue) {
 			    	if (newValue != null) {
+			    	    if($scope.type === 'READ') {
+			    	        $state.go('book', {bookId: newValue.id});
+			    	    }
 			    		$scope.refreshTree();
 			    	}
 			    });
+
+//			    $scope.refreshBook = function(book) {
+//                    $state.go('book', {bookId: book.id});
+//                }
 
                 // 归档文章
                 $scope.publishArticle = function(article, currentChapter) {
                     var articleModel = {
                         bookId : $scope.selectedBook.id,
-                        parentId : currentChapter.id,
+                        parentId : currentChapter.id.split('-')[0],
                         articleId : article.id,
                         articleTitle : article.title,
                         sortNum : $scope.articleModels.length

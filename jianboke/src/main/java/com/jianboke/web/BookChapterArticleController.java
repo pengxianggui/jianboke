@@ -1,8 +1,11 @@
 package com.jianboke.web;
 
 import com.jianboke.domain.BookChapterArticle;
+import com.jianboke.domain.Chapter;
+import com.jianboke.model.ChapterModel;
 import com.jianboke.repository.BookChapterArticleRepository;
 import com.jianboke.service.BookChapterArticleService;
+import com.jianboke.service.TreeOfChapterService;
 import com.jianboke.utils.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +30,9 @@ public class BookChapterArticleController {
 
     @Autowired
     private BookChapterArticleService bookChapterArticleService;
+
+    @Autowired
+    private TreeOfChapterService treeOfChapterService;
 
     /**
      * 传入parentId，查找所有的BookChapterArticle，并返回
@@ -117,5 +123,17 @@ public class BookChapterArticleController {
         BookChapterArticle returnEntity = bookChapterArticleService.updateArticleModelSortNum(id, newSortNum);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert("BookChapterArticle", id.toString()))
                 .body(returnEntity);
+    }
+
+    /**
+     * 根据bookId得到树，包含article
+     * @param bookId
+     * @return
+     */
+    @RequestMapping(value = "/bookChapterArticle/listTreeWithArticle/{bookId}/{articleId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ChapterModel listTreeWithArticle(@PathVariable Long bookId, @PathVariable Long articleId) {
+        log.info("Get tree with article of book which id is :{}, articleId:{}", bookId, articleId);
+        List<ChapterModel> cmList = treeOfChapterService.getTreeWithArticle(bookId, articleId);
+        return cmList.get(0);
     }
 }

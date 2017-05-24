@@ -2,12 +2,23 @@
 
 angular.module('jianboke')
 	.config(function($stateProvider, $urlRouterProvider, ACCESS_LEVELS) {
+	    console.log('router.js');
 		$urlRouterProvider.otherwise('/dashboard');
-		$stateProvider.state('dashboard', {
-			url: '/dashboard',
+		$stateProvider
+		.state('index', {
+		    url: '/index/{userId}',
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
 				title: '首页'
+			},
+		    controller: 'IndexCtrl',
+		    templateUrl: 'views/index_center.html'
+		})
+		.state('dashboard', {
+			url: '/dashboard',
+			data: {
+				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				title: '个人中心'
 			},
 			controller: 'DashBoardCtrl',
 			templateUrl: 'views/dashboard.html'
@@ -96,7 +107,7 @@ angular.module('jianboke')
 		    }
 		})
 		.state('book', {
-		    url: '/book/{id}',
+		    url: '/book/{bookId}',
 		    data: {
 		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
 		        title: '书'
@@ -105,11 +116,30 @@ angular.module('jianboke')
 		    templateUrl: 'views/book.html',
 		    resolve: {
 		        entity: function($stateParams, Book) {
-		            return Book.get({id: $stateParams.id}).$promise;
+		            return Book.get({id: $stateParams.bookId}).$promise;
 		        }
 		    }
 		})
-		.state('，mycollection', {
+		.state('book.content', {
+		    url: '/{type}/{resourceId}', // type: 'chapter' or 'article'; resourceId : 'chapter.id' or 'article.id'
+		    data: {
+		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+		        title: '书'
+		    },
+		    controller: 'BookContentCtrl',
+		    templateUrl: 'views/book.content.html',
+		    resolve: {
+		        entity: function($stateParams, Article, Chapter) {
+		            if ($stateParams.type === 'article') {
+		                return Article.get({id: $stateParams.resourceId}).$promise;
+		            } else {
+		                return Chapter.get({id: $stateParams.resourceId}).$promise;
+		            }
+		        }
+		    }
+		})
+
+		.state('mycollection', {
 			url: '/mycollection',
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.RememberMeServices;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +32,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
+
+	@Autowired
+	private RememberMeServices rememberMeServices;
+
+	@Autowired
+	private AppProperties appProperties;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -54,6 +61,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //		.and().authorizeRequests()
 //			.antMatchers("/").permitAll() // "/"这个路径允许所有行为
 //			.anyRequest().authenticated() // 其他路径都会被加上权限拦截
+		.and()
+			.rememberMe()
+			.rememberMeServices(rememberMeServices)
+			.rememberMeParameter("remember-me")
+			.key(appProperties.getSecurity().getKey())
 		.and().formLogin()
 		    .loginProcessingUrl("/api/authentication")
 		    .successHandler(ajaxAuthenticationSuccessHandler)
@@ -89,7 +101,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override  
     protected void configure(AuthenticationManagerBuilder auth)  
             throws Exception {  
-        auth.userDetailsService(customUserDetailsService);  
+        auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
     }
 	
 //	@Autowired

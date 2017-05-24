@@ -41,6 +41,7 @@
     "ng-file-upload": "^12.0.4",
     "editor.md": "1.5.0",
     "jquery": "3.1.0",
-    "integralui": "luhuiguo/integralui#3.2"
+    "integralui": "luhuiguo/integralui#3.2",
+    "mdPickers": "0.7.5"
   }
 }

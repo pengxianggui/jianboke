@@ -1,8 +1,10 @@
 package com.jianboke.service;
 
 import com.jianboke.domain.Article;
+import com.jianboke.domain.BookChapterArticle;
 import com.jianboke.domain.criteria.ArticleCriteria;
 import com.jianboke.repository.ArticleRepository;
+import com.jianboke.repository.BookChapterArticleRepository;
 import com.jianboke.utils.DBConfigUtils;
 import com.jianboke.utils.DateTimeUtils;
 import org.hibernate.Criteria;
@@ -32,6 +34,9 @@ public class ArticleService {
 
     @Autowired
     private ArticleRepository articleRepository;
+
+    @Autowired
+    private BookChapterArticleService bookChapterArticleService;
 
     @Autowired
     private UserService userService;
@@ -123,6 +128,32 @@ public class ArticleService {
             System.out.println(a.toString());
         }
         return temp;
+    }
+
+    /**
+     * 查找一本书下所有的article, 在该书中不同章节下重复归档的文章也会被重复返回
+     * @param bookId
+     * @return
+     */
+    public List<Article> findAllByBookId(Long bookId) {
+        List<BookChapterArticle> bcaList = bookChapterArticleService.getAllByBookId(bookId);
+        List<Article> returnArticleList = new ArrayList<>();
+        bcaList.forEach(bca -> {
+            Article article = articleRepository.findOne(bca.getArticleId());
+            if (article != null) {
+                returnArticleList.add(article);
+            }
+        });
+        return returnArticleList;
+    }
+
+    /**
+     * 根据bookId查找书下所有的Article对应的模型
+     * @param bookId
+     * @return
+     */
+    public List findArticleModelByBookId(Long bookId) {
+        return articleRepository.findArticleModelByBookId(bookId);
     }
 
 }

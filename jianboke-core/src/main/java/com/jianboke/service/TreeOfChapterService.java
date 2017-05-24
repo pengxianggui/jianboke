@@ -1,9 +1,13 @@
 package com.jianboke.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import com.jianboke.domain.Article;
+import com.jianboke.mapper.ChapterMapper;
 import com.jianboke.model.ChapterModel;
+import com.jianboke.repository.ArticleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +26,19 @@ import com.jianboke.utils.ChapterModelComparator;
 public class TreeOfChapterService {
 
 	private static final Logger log = LoggerFactory.getLogger(TreeOfChapterService.class);
+	private Long expandedChapterId; //标识要定位的文章的上级id(迭代赋值)
 	
 	@Autowired
 	private ChapterRepository chapterRepository;
 
 	@Autowired
 	private ChapterService chapterService;
+
+	@Autowired
+	private ArticleService articleService;
+
+	@Autowired
+	private ChapterMapper chapterMapper;
 	
 	private ChapterModelComparator chapterModelComparator = new ChapterModelComparator();
 
@@ -38,7 +49,10 @@ public class TreeOfChapterService {
 	 */
 	public List<ChapterModel> getTreeWithoutArticle(Long bookId) {
 		List<Chapter> chapterList = chapterRepository.findAllByBookId(bookId);
-		List<ChapterModel> chapterModelList = changeToModelList(chapterList);
+		List<ChapterModel> chapterModelList = new ArrayList<>();
+		chapterList.forEach(chapter -> {
+			chapterModelList.add(chapterMapper.entityToModel(chapter));
+		});
 		
 		List<ChapterModel> rootNodes = new ArrayList<ChapterModel>(); // 存放当前chapterList中的根节点
 		List<ChapterModel> notRootNodes = new ArrayList<ChapterModel>(); //存放非根节点
@@ -59,7 +73,51 @@ public class TreeOfChapterService {
 		if (rootNodes.size() > 0) {
 			for (ChapterModel chapterModel : rootNodes) {
 				chapterModel.setLevel(0);
-				chapterModel.setItems(getChildChapter(notRootNodes, chapterModel.getId(), 0));
+				chapterModel.setIsArticle(false);
+				chapterModel.setItems(getChildChapter(notRootNodes, chapterModel.getId(), 0, -1l));
+			}
+		}
+		return rootNodes;
+	}
+
+	/**
+	 *
+	 * @param bookId
+	 * @return
+	 */
+	public List<ChapterModel> getTreeWithArticle(Long bookId, Long tableId) {
+		List<Chapter> chapterList = chapterRepository.findAllByBookId(bookId); // 获取所有组
+		List<ChapterModel> chapterModelList = new ArrayList<>();
+		// 转换为Model
+		chapterList.forEach(chapter -> {
+			chapterModelList.add(chapterMapper.entityToModel(chapter));
+		});
+		List listArticle = articleService.findArticleModelByBookId(bookId); // 获取所有表
+		List<ChapterModel> articleChapterModelList = changeToModelList(listArticle);
+		chapterModelList.addAll(articleChapterModelList); // 将表模型也放到组模型去
+		List<ChapterModel> rootNodes = new ArrayList<ChapterModel>(); // 存放当前chapterList中的根节点
+		List<ChapterModel> notRootNodes = new ArrayList<ChapterModel>(); //存放非根节点
+
+		if (chapterModelList.size() > 0 && chapterModelList != null) { // 存在且有元素
+			for (ChapterModel chapterModel : chapterModelList) { // 拆分 根节点和非根节点
+				if (chapterModel == null) continue;
+				if (!chapterModel.getIsArticle() &&
+						(chapterModel.getParentId() == null || chapterModel.getParentId().toString().equals(""))) {
+					// 为根节点
+					rootNodes.add(chapterModel);
+				} else {
+					notRootNodes.add(chapterModel);
+				}
+			}
+		}
+		// 递归获取子节点
+		if (rootNodes.size() > 0) {
+			for (ChapterModel chapterModel : rootNodes) {
+				chapterModel.setLevel(0);
+				chapterModel.setIsArticle(false);
+				chapterModel.setExpanded(true);
+				chapterModel.setItems(getChildChapter(notRootNodes, chapterModel.getId(), 0, tableId));
+				expandedChapterId = null; // 复位
 			}
 		}
 		return rootNodes;
@@ -72,7 +130,7 @@ public class TreeOfChapterService {
 	 * @param level 层级结构标示
 	 * @return
 	 */
-	private List<ChapterModel> getChildChapter(List<ChapterModel> childList, Long id, int level) {
+	private List<ChapterModel> getChildChapter(List<ChapterModel> childList, Long id, int level, Long articleId) {
 		List<ChapterModel> parentNodes = new ArrayList<ChapterModel>();
 		List<ChapterModel> childNodes = new ArrayList<ChapterModel>();
 		if (childList != null && childList.size() > 0) { //找出当前的根节点和非根节点
@@ -92,7 +150,23 @@ public class TreeOfChapterService {
 			for (ChapterModel chapterModel : parentNodes) {
 				List<ChapterModel> nodes;
 				chapterModel.setLevel(levelTemp);
-				nodes = getChildChapter(childNodes, chapterModel.getId(), levelTemp); //递归
+				if (chapterModel.getIsArticle()) { // 如果是表
+					nodes = null;
+					chapterModel.setExpanded(false);
+					if (articleId.toString().equals(chapterModel.getId().toString())) {
+						expandedChapterId = chapterModel.getParentId();
+					}
+				} else {
+					nodes = getChildChapter(childNodes, chapterModel.getId(), levelTemp, articleId); //递归
+					if (expandedChapterId != null
+							&& chapterModel.getId().toString().equals(expandedChapterId.toString())) {
+						chapterModel.setExpanded(true);
+						expandedChapterId = chapterModel.getParentId(); // 继续定位上一级展开的目录
+					} else {
+						chapterModel.setExpanded(false);
+					}
+					chapterModel.setIsArticle(false);
+				}
 				chapterModel.setItems(nodes);
 			}
 		}
@@ -101,23 +175,27 @@ public class TreeOfChapterService {
 
 
 	/**
-	 * 将chapter列表转为BookChapterArticleModel列表，并返回
-	 * @param chapterList
+	 * 将article列表转为BookChapterArticleModel(ChapterModel)列表，并返回
+	 * @param articleList
 	 * @return
 	 */
-	private List<ChapterModel> changeToModelList(List<Chapter> chapterList) {
+	private List<ChapterModel> changeToModelList(List articleList) {
 		List<ChapterModel> chapterModelList = new ArrayList<ChapterModel>();
-		for (Chapter chapter : chapterList) {
-			ChapterModel chapterModel = new ChapterModel();
-			chapterModel.setId(chapter.getId());
-			chapterModel.setParentId(chapter.getParentId());
-			chapterModel.setBookId(chapter.getBookId());
-			chapterModel.setGroupName(chapter.getName());
-			chapterModel.setSortNum(chapter.getSortNum());
+		Iterator iterator = articleList.iterator();
+		ChapterModel chapterModel;
+		while (iterator.hasNext()) {
+			chapterModel = new ChapterModel();
+			Object temp = iterator.next();
+			Object[] objT = (Object[]) temp;
+			chapterModel.setId(Long.valueOf(objT[0].toString()));
+			chapterModel.setGroupName(objT[1].toString());
+			chapterModel.setParentId(Long.valueOf(objT[2].toString()));
+			chapterModel.setParentName(objT[3].toString());
+			chapterModel.setSortNum(objT[4] == null ? 0 : Integer.valueOf(objT[4].toString()));
+			chapterModel.setBookId(Long.valueOf(objT[5].toString()));
 			chapterModel.setExpanded(false);
-			chapterModel.setIsArticle(false);
-			chapterModel.setIfCanClick(true);
-			chapterModel.setParentName(chapterService.getNameById(chapter.getParentId()));
+			chapterModel.setIsArticle(true);
+			chapterModel.setItems(null);
 			chapterModelList.add(chapterModel);
 		}
 		return chapterModelList;

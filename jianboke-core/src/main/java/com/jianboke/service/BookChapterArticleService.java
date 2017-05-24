@@ -49,6 +49,10 @@ public class BookChapterArticleService {
         return bookChapterArticleRepository.findAllByParentId(id);
     }
 
+    public List<BookChapterArticle> getAllByBookId(Long bookId){
+        return bookChapterArticleRepository.findAllByBookId(bookId);
+    }
+
 
     /**
      * 深搜索。根据chapterId查找该章节下所有的article,包括子章节下的articles

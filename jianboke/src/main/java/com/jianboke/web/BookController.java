@@ -2,13 +2,20 @@ package com.jianboke.web;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
+import com.jianboke.enumeration.HttpReturnCode;
+import com.jianboke.enumeration.ResourceName;
+import com.jianboke.model.RequestResult;
+import com.jianboke.service.BookService;
+import com.jianboke.service.UserAuhtorityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,9 +40,27 @@ public class BookController {
 	
 	@Autowired
 	private BookRepository bookRepository;
+
+	@Autowired
+	private BookService bookService;
 	
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private UserAuhtorityService userAuhtorityService;
+
+	@RequestMapping(value = "/book/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<RequestResult> get(@PathVariable Long id) {
+		log.info("rest to request a book :{}", id);
+		if (userAuhtorityService.ifHasAuthority(ResourceName.BOOK, id)) {
+			return Optional.ofNullable(bookRepository.findOne(id))
+					.map(book -> ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, book)))
+					.orElse(ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_RESOURCE_NOT_FOUND, null)));
+		}
+		log.info("the user has not authority to the book :{}", id);
+		return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_RESOURCE_NOT_FOUND, null));
+	}
 	
 	/**
 	 * 保存Book封面的api，返回存储路径字符串
@@ -80,10 +105,11 @@ public class BookController {
 	@RequestMapping(value = "/book/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public void delete(@PathVariable Long id) {
 		// TODO 权限校验
-
-		Book book = bookRepository.findOne(id);
-		bookRepository.delete(book);
-		log.debug("REST request to delete a book : {}", book);
+		if (userAuhtorityService.ifHasAuthority(ResourceName.BOOK, id)) {
+			Book book = bookRepository.findOne(id);
+			bookRepository.delete(book);
+			log.debug("REST request to delete a book : {}", book);
+		}
 	}
 	
 	/**
@@ -93,10 +119,20 @@ public class BookController {
 	 */
 	public Book update(@Valid @RequestBody Book book) {
 		// TODO 权限校验
-
 		log.debug("REST request to update a book : {}", book);
-		if (bookRepository.getOne(book.getId()) != null) {
-			return bookRepository.save(book);
+		if (userAuhtorityService.ifHasAuthority(ResourceName.BOOK, book.getId())) {
+			if (bookRepository.getOne(book.getId()) != null) {
+				return bookRepository.save(book);
+			}
+		}
+		return null;
+	}
+
+	@RequestMapping(value = "/book/getFirstBookByArticleId/{articleId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Book getFirstBookByArticleId(@PathVariable Long articleId) {
+		List<Book> bList = bookService.getBooksByArticleId(articleId);
+		if (bList.size() > 0) {
+			return bList.get(0);
 		}
 		return null;
 	}

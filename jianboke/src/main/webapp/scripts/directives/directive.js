@@ -56,7 +56,7 @@ angular.module('jianboke')
                         $rootScope.logout();
                     }, function() {});
                 } else {
-                    $state.go(item.state);
+                    $state.go(item.state, item.param);
                 }
             }
         }

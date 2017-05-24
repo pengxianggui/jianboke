@@ -1,12 +1,12 @@
-<div layout="row" flex style="height: 100%;">
-	<md-card flex>
+<div layout="row" flex style="height: 100%;" class="no-padding">
+	<md-card flex class="no-margin">
 		<md-toolbar layout="row" class="md-hue-2" style="background: white; height: 40px; min-height: 30px;">
-			  <md-input-container md-no-float class="margin-left-right-10" flex style="color: black">
-		        <md-select ng-model="selectedBook" placeholder="归类书籍">
-		            <md-option ng-value="book" ng-repeat="book in books">{{book.bookName}}</md-option>
+			  <md-input-container md-no-float class="margin-left-right-10 margin-left-right-5" flex style="color: black;">
+		        <md-select ng-model="selectedBook" placeholder="归类书籍" style="width: 80%; margin: auto">
+		            <md-option ng-value="book" ng-selected="selectedBook.id == book.id" ng-repeat="book in books">{{book.bookName}}</md-option>
 		        </md-select>
 		      </md-input-container>
-		      <div style="height: 40px; background: #999">
+		      <div style="height: 40px; background: #999" ng-if="type=='EDIT'">
 				<md-button class="md-icon-button" ng-click="refreshTree()">
 		          <md-tooltip>刷新</md-tooltip>
 		          <md-icon>refresh</md-icon>
@@ -26,51 +26,53 @@
 		        <!--</md-button>-->
 			</div>
 		</md-toolbar>
-		<md-content flex class="md-padding" layout="column">
-			    <iui-treeview style="z-index:10" flex name="{{treeName}}" class="category-tree" items="nodes" load-complete="onLoadComplete()" template-settings="customItemTemplate"
-			                  allow-focus="false" allow-drag="true" allow-drop="true" drag-drop="treeDrop(e)" >
+		<md-content flex class="md-padding" layout="column" style="padding: 10px 0 0 0;">
+			    <iui-treeview style="z-index:10; border: 0" flex name="{{treeName}}" class="category-tree" items="nodes" load-complete="onLoadComplete()"
+							  template-settings="customItemTemplate" item-icons="icon-book" show-icons="true"
+			                  allow-focus="false" auto-expand="true" allow-drop="true" drag-drop="treeDrop(e)" show-lines="false" events="treeEvents">
 			    </iui-treeview>
 		</md-content>
 	</md-card>
+<!--
 	<md-card flex>
-		<md-toolbar layout="row" class="md-hue-2" style="background: rgb(140,158,255); height: 40px; min-height: 30px;">
-			<div class="md-toolbar-tools" style="height: 40px; min-height: 30px;">
-				<span ng-if="currentChapter == null">章节名</span>
-				<span ng-if="currentChapter != null" ng-bind="currentChapter.groupName"></span>
-			</div>
-		</md-toolbar>
-		<md-content class="md-padding" flex ng-if="currentChapter.items && currentChapter.items.length > 0">
-			对不起，当前章节下嵌套了其他章节，文章与章节无法共处同一层，因此您无法在此处归档《{{article.title}}》。
-		</md-content>
-		<md-content flex ng-if="!(currentChapter.items && currentChapter.items.length > 0)">
-			<md-list class="md-dense">
-				<md-list-item style="cursor: auto;" ng-repeat="a in articleModels | orderBy:'sortNum'">
-					<md-button class="md-icon-button" ui-sref="blog.readblog({id: a.articleId})"
-							   target="_blank">
-						<md-tooltip>查看</md-tooltip>
-						<md-icon>remove_red_eye</md-icon>
-					</md-button>
-					<span >{{a.sortNum}}.《{{a.articleTitle}}》</span>
-					<md-button class="md-icon-button md-secondary" ng-click="sortNum(a)">
-						<md-tooltip>排序</md-tooltip>
-						<md-icon>sort</md-icon>
-					</md-button>
-					<md-button class="md-icon-button md-secondary" ng-click="deleteArticle(a)">
-						<md-tooltip>删除</md-tooltip>
-						<md-icon>delete</md-icon>
-					</md-button>
-					<md-divider></md-divider>
-				</md-list-item>
-			</md-list>
-		</md-content>
-		<md-card-actions ng-if="currentChapter != null" layout="row" layout-align="end center">
-			<md-button class="md-primary md-raised" ng-disabled="currentChapter.items && currentChapter.items.length > 0"
-					   ng-click="publishArticle(article, currentChapter)">归档此处</md-button>
-		</md-card-actions>
+    <md-toolbar layout="row" class="md-hue-2" style="background: rgb(140,158,255); height: 40px; min-height: 30px;">
+        <div class="md-toolbar-tools" style="height: 40px; min-height: 30px;">
+            <span ng-if="currentChapter == null">章节名</span>
+            <span ng-if="currentChapter != null" ng-bind="currentChapter.groupName"></span>
+        </div>
+    </md-toolbar>
+    <md-content class="md-padding" flex ng-if="currentChapter.items && currentChapter.items.length > 0">
+        对不起，当前章节下嵌套了其他章节，文章与章节无法共处同一层，因此您无法在此处归档《{{article.title}}》。
+    </md-content>
+    <md-content flex ng-if="!(currentChapter.items && currentChapter.items.length > 0)">
+        <md-list class="md-dense">
+            <md-list-item style="cursor: auto;" ng-repeat="a in articleModels | orderBy:'sortNum'">
+                <md-button class="md-icon-button" ui-sref="blog.readblog({id: a.articleId})"
+                           target="_blank">
+                    <md-tooltip>查看</md-tooltip>
+                    <md-icon>remove_red_eye</md-icon>
+                </md-button>
+                <span >{{a.sortNum}}.《{{a.articleTitle}}》</span>
+                <md-button class="md-icon-button md-secondary" ng-click="sortNum(a)">
+                    <md-tooltip>排序</md-tooltip>
+                    <md-icon>sort</md-icon>
+                </md-button>
+                <md-button class="md-icon-button md-secondary" ng-click="deleteArticle(a)">
+                    <md-tooltip>删除</md-tooltip>
+                    <md-icon>delete</md-icon>
+                </md-button>
+                <md-divider></md-divider>
+            </md-list-item>
+        </md-list>
+    </md-content>
+    <md-card-actions ng-if="currentChapter != null" layout="row" layout-align="end center">
+        <md-button class="md-primary md-raised" ng-disabled="currentChapter.items && currentChapter.items.length > 0"
+                   ng-click="publishArticle(article, currentChapter)">归档此处</md-button>
+    </md-card-actions>
 	</md-card>
-
-	<!-- 模板树节点 -->
-	<script  type="text/ng-template" id="'item-template.html'">
+-->
+	<!-- 模板树节点-EDIT -->
+	<script  type="text/ng-template" id="'item-template-EDIT.html'">
 		<div class="category-item" layout="row">
 			<span class="item-text">{{obj.groupName}}</span>
 			<span flex></span>
@@ -90,6 +92,12 @@
 				<md-icon>list</md-icon>
 				<md-tooltip>显示文章</md-tooltip>
 			</md-button>
+		</div>
+	</script>
+	<!-- 模板树节点-READ -->
+	<script  type="text/ng-template" id="'item-template-READ.html'">
+		<div class="category-item" layout="row">
+			<span class="item-text">{{obj.groupName}}</span>
 		</div>
 	</script>
 </div>

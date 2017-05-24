@@ -1702,6 +1702,16 @@ md-grid-tile.book-add-grid-item {
   .load-more > button {
     width: 100%; }
 
+.icon-book {
+  background-image: url(../png/book.png);
+  display: inline-block;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  width: 16px;
+  height: 16px; }
+
 span.title {
   font-size: 2em;
   display: inline-block; }
@@ -1764,7 +1774,12 @@ md-card.white-card-toolbar {
   margin: 0 !important; }
 
 .margin-left-right-10 {
-  margin: 0px 10px; }
+  margin-left: 10px;
+  margin-right: 10px; }
+
+.margin-left-right-5 {
+  margin-top: 5px;
+  margin-bottom: 5px; }
 
 .no-padding {
   padding: 0 !important; }

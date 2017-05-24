@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.jianboke.domain.User;
@@ -42,6 +43,9 @@ public class AccountController {
 
     @Autowired
     private UsersMapper usersMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
     @RequestMapping(value = "/account", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -104,13 +108,17 @@ public class AccountController {
                 || userRepository.findOneByUsername(model.getUsername()).isPresent()) {
             return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_ACCOUNT_IS_EXIST));
         }
-
-
-        System.out.println("test----------------------------");
         return verificationCodeRepository.findOneByEmail(model.getEmail())
             .filter(verificationCode -> userService.verificationCodeValid(model, verificationCode))
-            .map(verificationCode -> ResponseEntity.ok()
-                    .body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, userRepository.saveAndFlush(usersMapper.modelToEntity(model)))))
+            .map(verificationCode -> {
+                User user = usersMapper.modelToEntity(model);
+                user.setPassword(passwordEncoder.encode(model.getPassword())); // 加密
+                userRepository.saveAndFlush(user);
+                User u = user;
+                u.setPassword(model.getPassword());
+                return ResponseEntity.ok()
+                    .body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, u));
+            })
             .orElse(ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_VERIFICATION_CODE_WRONG)));
     }
 }
