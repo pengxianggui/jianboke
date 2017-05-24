@@ -10,6 +10,7 @@ import com.jianboke.enumeration.ResourceName;
 import com.jianboke.mapper.ArticleMapper;
 import com.jianboke.model.ArticleModel;
 import com.jianboke.service.ArticleService;
+import com.jianboke.service.BookChapterArticleService;
 import com.jianboke.service.UserAuhtorityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,9 @@ public class ArticleController {
 
 	@Autowired
 	private UserAuhtorityService userAuhtorityService;
+
+	@Autowired
+	private BookChapterArticleService bookChapterArticleService;
 
 	@RequestMapping(value = "/article", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
@@ -110,13 +114,14 @@ public class ArticleController {
 		}
 		return ResponseEntity.ok().body(null); // 不能把没有权限的资源返回
 	}
-
+	@javax.transaction.Transactional
 	@RequestMapping(value = "/article/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Article remove(@PathVariable Long id) {
 		log.info("request to delete a article which id is :{}", id);
 		// TODO 权限校验
 		if (userAuhtorityService.ifHasAuthority(ResourceName.ARTICLE, id)) {
 			Article article = articleRepository.findOne(id);
+			bookChapterArticleService.deleteByArticleId(id);
 			articleRepository.delete(article);
 			return article;
 		} else {

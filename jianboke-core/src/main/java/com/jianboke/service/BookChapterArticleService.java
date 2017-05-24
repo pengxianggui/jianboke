@@ -167,4 +167,12 @@ public class BookChapterArticleService {
         bookChapterArticleRepository.save(allArticleModelList);
     }
 
+    /**
+     * 删除某篇文章的归档记录
+     * @param articleId
+     */
+    public void deleteByArticleId(Long articleId) {
+        bookChapterArticleRepository.deleteByArticleId(articleId);
+    }
+
 }

@@ -3,9 +3,11 @@ package com.jianboke.repository;
 import com.jianboke.domain.BookChapterArticle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -32,4 +34,8 @@ public interface BookChapterArticleRepository extends JpaRepository<BookChapterA
 
 //    @Query(value = "SELECT book_id FROM book_chapter_articles WHERE article_id =:articleId ORDER BY book_id", nativeQuery = true)
     List<BookChapterArticle> findAllByArticleId(Long articleId);
+
+    @Modifying
+    @Query("DELETE BookChapterArticle bca WHERE bca.articleId =:articleId")
+    void deleteByArticleId(@Param("articleId") Long articleId);
 }
