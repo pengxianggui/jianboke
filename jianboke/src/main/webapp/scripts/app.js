@@ -20,6 +20,10 @@ angular.module('jianboke', [
      "mdPickers"
 ]).run(function($rootScope, $state, $templateCache, Auth, $window, $mdDialog, $mdToast) {
     console.log('run.js');
+    $rootScope.showDarkTheme = false;
+    $rootScope.changeTheme = function(param) {
+        $rootScope.showDarkTheme = param;
+    }
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) { 
         $templateCache.remove(toState.templateUrl); //清除路由缓存
         $rootScope.toState = toState;

@@ -1,5 +1,5 @@
-<div layout="column" flex style="overflow: auto">
-    <md-content style="width: 1000px; margin: 0 auto; overflow: initial;">
+<md-content layout="column" flex style="overflow: auto">
+    <md-content flex style="width: 1000px; margin: 0 auto; overflow: initial;">
         <md-head layout="row" style="margin: 20px 0;">
             <span class="title" ng-bind="article.title"></span>
             <span flex></span>
@@ -14,4 +14,4 @@
 
         <pxg-markdown-parse flex md-id="article_{{article.id}}" md-data="article.content"></pxg-markdown-parse>
     </md-content>
-</div>
+</md-content>

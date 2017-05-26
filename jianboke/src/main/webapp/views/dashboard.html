@@ -4,12 +4,8 @@
 		<md-sidenav layout="column" class="md-sidenav-left" md-component-id="left"
 			md-is-locked-open="$mdMedia('gt-md')" md-whiteframe="4">
 			<md-content> 
-				<md-card md-theme="{{ showDarkTheme ? 'dark-orange' : 'default' }}" md-theme-watch layout="column">
+				<md-card md-theme="{{ showDarkTheme ? 'pxg-dark-theme' : 'default' }}" md-theme-watch layout="column">
 					<md-content class="md-padding" layout="row" layout-align="center center" style="text-align: center">
-					<!-- <md-card-title-text>
-				            <span class="md-headline">个人卡片</span>
-				            <span class="md-subhead">Extra Large</span>
-	          			 </md-card-title-text> -->
 						<span layout="column" flex>
 							<md-icon ng-style="{'font-size': 100 + 'px', height: 100 + 'px', width: 100 + 'px'}">
 								account_circle
@@ -38,8 +34,8 @@
 			</md-content> 
 			
 			<md-content flex layout="column"> 
-				<md-card flex md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch> 
-					<md-toolbar style="min-height: 50px; height: 50px; background-color: #009688">
+				<md-card flex md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}" md-theme-watch>
+					<md-toolbar class="md-accent md-hue-2" style="min-height: 50px; height: 50px;">
 						<h1 class="md-toolbar-tools">我的作品</h1>
 					</md-toolbar>
 					<md-content flex>
@@ -69,12 +65,12 @@
 		</md-sidenav>
 
 		<md-content flex layout="column">
-		 	<md-card layout="row" class="white-card-toolbar">
+		 	<md-card layout="row">
           		<md-button ng-click="toggleLeft()"
 		            class="md-primary md-icon-button" hide-gt-md style="margin: auto 4px">
 		            <md-icon>menu</md-icon>
 		        </md-button>
-				<md-input-container md-no-float class="no-margin margin-left-right-10" style="color: black; padding: 0 10px">
+				<md-input-container md-no-float class="no-margin margin-left-right-10" style="padding: 0 10px">
 					<md-select ng-model="query.findBy" placeholder="分类查询" style="margin-top: 8px;" ng-change="refreshArticleList()">
 						<md-option value="all">全部</md-option>
 						<md-option ng-repeat="book in books" value="{{book.id}}">{{book.bookName}}</md-option>
@@ -115,7 +111,7 @@
 									<span flex></span>
 									<pxg-chips-show chips-data="article.labels" chips-style="chipsStyle"></pxg-chips-show>
 								</div>
-								<h3 style="padding: 2px 0;">时间、喜欢数量、评论数量....</h3>
+								<h3 style="padding: 2px 0;" class="md-hue-1">时间、喜欢数量、评论数量....</h3>
 							</div>
 							<div>
 								<md-button class="md-icon-button" ui-sref="blog.edit({id: article.id})">

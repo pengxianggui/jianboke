@@ -114,8 +114,9 @@ angular.module('jianboke')
 
         function buildToggler(navID) {
           return function() {
-            $scope.toggleValue = !$scope.toggleValue;
-            console.log($scope.toggleValue);
+            if (navID == 'left') {
+                $scope.toggleValue = !$scope.toggleValue;
+            }
             $mdSidenav(navID).toggle().then(function() {
                 console.log('toggle over');
             });

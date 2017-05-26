@@ -68,14 +68,14 @@ angular.module('jianboke')
  * 如何监听 textarea value的改变(包括通过js改变)成为解决bug的思路之一！ 网上优选方案是input 和 propertychange 事件结合
  * 前者无法监听通过js改变的情况，后者虽然可以监听js改变的情况，但却是IE独有。
  */
-.directive('pxgMarkDown', function($timeout) {
+.directive('pxgMarkDown', function($timeout,$rootScope) {
 	return {
         restrict: 'E',
-        template: '<div flex style="z-index: 1" data-ng-init="setValue()">' +
+        template: '<md-content flex style="z-index: 1" data-ng-init="setValue()">' +
 //			            '<md-button ng-click="setValue()"></md-button>' +
                     '<div id="editormd" flex style="z-index: 89;"></div>' +
                     '<textarea ng-model="value" style="display:none"></textarea>' +
-                  '</div>',
+                  '</md-content>',
         replace: true,
         scope: {
             content: '=ngModel'
@@ -88,7 +88,14 @@ angular.module('jianboke')
                 htmlDecode      : "script,iframe",  // you can filter tags decode
                 flowChart       : true,
                 tex             : true
+//                theme : "dark",
+//                // Preview container theme, added v1.5.0
+//                // You can also custom css class .editormd-preview-theme-xxxx
+//                previewTheme : "dark",
+//                // Added @v1.5.0 & after version this is CodeMirror (editor area) theme
+//                editorTheme : "pastel-on-dark"
             });
+
             scope.getValue = function() {
                 scope.content = scope.editor.getMarkdown();
             }
@@ -97,6 +104,11 @@ angular.module('jianboke')
             });
             var setValue = function(){
                 scope.editor.setMarkdown(scope.content);
+                if ($rootScope.showDarkTheme) { // 黑暗主题
+                    scope.editor.setTheme('dark');
+                    scope.editor.setPreviewTheme('dark');
+                    scope.editor.setEditorTheme('pastel-on-dark');
+                }
             };
             // TODO 如何改进，让页面完全渲染完毕后去执行此方法？好几种方法都尝试过，失败：
             // 1. scope.$on('$viewContentLoaded',functon(){})
@@ -104,7 +116,7 @@ angular.module('jianboke')
             // 3. ng-init / data-ng-init都失败。
 //            window.setTimeout(setValue, 1000);
             $timeout(function() {
-                setValue();
+                scope.$apply(setValue());
             }, 1000);
         }
     }
@@ -119,9 +131,9 @@ angular.module('jianboke')
       mdData: '=' //  需要解析的md文本字符
     }, 
     restrict: 'AE', // E = Element, A = Attribute, C = Class, M = Comment
-    template: '<div id="{{mdId}}" style="width: auto;">' +
+    template: '<md-content flex id="{{mdId}}" style="width: auto;">' +
                 ' <textarea id="append-test" style="display:none;">{{mdData}}</textarea>' +
-              '</div>',
+              '</md-content>',
     replace: true,
     transclude: true,
     link: function($scope, iElm, iAttrs) {
@@ -144,7 +156,7 @@ angular.module('jianboke')
 //展示chips的指令，传入的chips-data可以使以逗号分隔的字符串或者数组，chipsStyle是css样式对象，不传入则使用默认值
 .directive('pxgChipsShow', function() {
     return {
-        restrice: 'AE',
+        restrict: 'AE',
         scope: {
             chipsData: '=',
             chipsStyle: '='
@@ -158,9 +170,9 @@ angular.module('jianboke')
             }
             $scope.chipsStyle = $scope.chipStyle || {
                 "font-size": "12px",
-                "border": "1px solid rgba(0,0,0,.2)",
+                "border": "1px solid rgba(120,120,120,.2)",
                 "border-radius": "8px",
-                "background-color": "#fafafa",
+//                "background-color": "#fafafa",
                 "margin": "2px 4px"
             }
         }
@@ -170,7 +182,7 @@ angular.module('jianboke')
 // 倒计时按钮，用于发送验证码类似功能，可配置点击触发传入的操作。操作被执行后，倒计指定时间time，期间，按钮不点击，倒计时结束后，按钮可点击可重新触发该操作。
 .directive('pxgCountDownButton', function($interval) {
     return {
-        restrice: 'AE',
+        restrict: 'AE',
         scope: {
             pxgAction: '&', // 传递引用
             pxgTime: '@', // 传递字符串
@@ -198,6 +210,29 @@ angular.module('jianboke')
                 } else {
                     scope.timeLong--;
                 }
+            }
+        }
+    }
+})
+// 滑动效果
+.directive('pxgSlideEffect', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, ele, attrs) {
+            console.log(ele);
+            console.log(attrs);
+            console.log($(ele));
+            var buttonArr = $(ele).children("button.nav");
+            for (var i = 0; i < buttonArr.length; i++) {
+                var button = buttonArr[i];
+                console.log(button);
+                $(button).mouseenter(function() {
+                    console.log('鼠标进入 button');
+                    console.log(this);
+                });
+                $(button).mouseleave(function() {
+                    console.log('鼠标离开 button');
+                })
             }
         }
     }

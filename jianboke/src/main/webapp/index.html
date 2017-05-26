@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="style/main.css" />
 <link rel="stylesheet" href="bower_components/editor.md/css/editormd.min.css" />
 </head>
-<body ng-app="jianboke" layout="column" ng-cloak>
+<body ng-app="jianboke" layout="column" ng-cloak md-theme="{{showDarkTheme?'pxg-dark-theme':'default'}}">
 	<header style="z-index:1" ng-controller="HeaderCtrl">
 		<md-toolbar class="md-hue-2">
 		<div class="md-toolbar-tools">
@@ -26,11 +26,34 @@
 			<h2 style="margin-right: 50px;">
 				<span>简博</span>
 			</h2>
-			<span ng-if="isAuthenticated()" style="height: 100%;">
+			<span ng-if="isAuthenticated()" style="height: 100%;" pxg-slide-effect>
 				<md-button class="nav" ng-class="{'md-raised md-warn': current=='index'}" style="height: 100%; margin: 0;" ng-click="go('index')">首页</md-button>
 				<md-button class="nav" ng-class="{'md-raised md-warn': current=='dashboard'}" style="height: 100%; margin: 0;" ng-click="go('dashboard')">个人主页</md-button>
 			</span>
 			<span flex></span>
+			<md-menu-bar>
+				<md-menu md-position-mode="target-right target" md-offset="-100 50">
+					<md-button ng-click="$mdOpenMenu();" class="md-icon-button">
+						<md-icon>settings_applications</md-icon>
+					</md-button>
+					<md-menu-content width="4" class="no-padding">
+						<md-menu-item style="height: auto;" layout="row">
+							<md-content flex class="no-margin" layout="row" layout-align="center center">
+								<div flex class="md-toolbar-tool">
+									<md-icon>brightness_4</md-icon>
+									<span>夜间模式</span>
+								</div>
+							</md-content>
+							<md-content flex class="no-padding no-margin" layout="row" layout-align="center center">
+								<span>开</span>
+								<md-switch ng-model="showDarkTheme" ng-change="changeTheme(showDarkTheme)" aria-label="Switch 1" md-theme-watch>
+								</md-switch>
+								<span>关</span>
+							</md-content>
+						</md-menu-item>
+					</md-menu-content>
+				</md-menu>
+			</md-menu-bar>
 			<pxg-account-menu ng-if="isAuthenticated()">
 				<!-- <md-button class="md-fab md-primary md-mini" ng-if="isAuthenticated()" ng-click="showAccountMenu()">
 					<md-icon>account_circle</md-icon>

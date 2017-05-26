@@ -1,6 +1,6 @@
 <form name="articleForm" ng-submit="saveArticle()" flex layout="column">
-	<md-content flex layout="column" style="overflow: hidden">
-		<md-card layout="row" class="white-card-toolbar" style="padding: 0 10px">
+	<md-content  md-theme="{{ showDarkTheme ? 'pxg-dark-theme' : 'default' }}" flex layout="column" style="overflow: hidden">
+		<md-card layout="row" style="padding: 0 10px; min-height: 50px; height: 50px;">
 			<md-input-container class="set-margin" md-no-float flex>
 				<input ng-model="article.title" placeholder="标题" type="text" name="articleTitle" required>
 			</md-input-container>

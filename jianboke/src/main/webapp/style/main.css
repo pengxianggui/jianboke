@@ -1843,3 +1843,7 @@ p.error {
   color: white;
   border-radius: 5px;
   padding: 10px; }
+
+.dark-tree {
+  background-color: #37474f;
+  color: white; }
