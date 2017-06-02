@@ -23,17 +23,18 @@
 		<div class="md-toolbar-tools">
 			<md-button class="md-icon-button" aria-label="Settings"
 				ng-disabled="true"> <md-icon>book</md-icon> </md-button>
-			<h2 style="margin-right: 50px;">
+			<h2 hide-xs style="margin-right: 50px;">
 				<span>简博</span>
 			</h2>
 			<span ng-if="isAuthenticated()" style="height: 100%;" pxg-slide-effect>
-				<md-button class="nav" ng-class="{'md-raised md-warn': current=='index'}" style="height: 100%; margin: 0;" ng-click="go('index')">首页</md-button>
-				<md-button class="nav" ng-class="{'md-raised md-warn': current=='dashboard'}" style="height: 100%; margin: 0;" ng-click="go('dashboard')">个人主页</md-button>
+				<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='index'}" style="height: 100%; margin: 0;" ng-click="go('index')">首页</md-button>
+				<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='dashboard'}" style="height: 100%; margin: 0;" ng-click="go('dashboard')">个人主页</md-button>
+				<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='attention'}" style="height: 100%; margin: 0;" ng-click="go('attention')">关注</md-button>
 			</span>
 			<span flex></span>
-			<md-menu-bar>
+			<md-menu-bar ng-if="isAuthenticated()">
 				<md-menu md-position-mode="target-right target" md-offset="-100 50">
-					<md-button ng-click="$mdOpenMenu();" class="md-icon-button">
+					<md-button ng-click="$mdMenu.open()" class="md-icon-button">
 						<md-icon>settings_applications</md-icon>
 					</md-button>
 					<md-menu-content width="4" class="no-padding">
@@ -45,10 +46,10 @@
 								</div>
 							</md-content>
 							<md-content flex class="no-padding no-margin" layout="row" layout-align="center center">
-								<span>开</span>
+								<span>关</span>
 								<md-switch ng-model="showDarkTheme" ng-change="changeTheme(showDarkTheme)" aria-label="Switch 1" md-theme-watch>
 								</md-switch>
-								<span>关</span>
+								<span>开</span>
 							</md-content>
 						</md-menu-item>
 					</md-menu-content>
@@ -133,11 +134,13 @@
 	<script src="scripts/controllers/article.js"></script>
 	<script src="scripts/controllers/userSet.js"></script>
 	<script src="scripts/controllers/index_center.js"></script>
+	<script src="scripts/controllers/attention.js"></script>
 
 	<!-- directive -->
 	<!--<script src="scripts/directives/my_directive.js"></script>-->
 	<script src="scripts/directives/my_book_tree.js"></script>
 	<script src="scripts/directives/directive.js"></script>
+	<script src="scripts/directives/content_directive.js"></script>
 
 	<!-- filter -->
 	<script src="scripts/filters/dataTypeExchangeFilter.js"></script>
