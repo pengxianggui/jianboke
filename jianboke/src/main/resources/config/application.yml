@@ -19,8 +19,8 @@ app:
   security:
     key: 8a70f2e95f2f5184495a979a4e624a9e6e9ea821
 data:
-  bookCoverPathUploadConfig:
-    baseUrl: E:/sts_workspace_other/jianboke/src/main/resources/static
+  imgConfig:
+    baseUrl: E:\idea_workspace\jianboke-dev\jianboke\src\main\resources\static
   email:
     host: smtp.aliyun.com
     sender: jianboke@aliyun.com
