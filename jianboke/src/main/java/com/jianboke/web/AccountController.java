@@ -11,6 +11,8 @@ import com.jianboke.mapper.UsersMapper;
 import com.jianboke.model.*;
 import com.jianboke.repository.UserRepository;
 import com.jianboke.repository.VerificationCodeRepository;
+import com.jianboke.security.SecurityUtils;
+import com.jianboke.utils.FileUploadUtils;
 import com.jianboke.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,9 @@ import org.springframework.web.bind.annotation.*;
 
 import com.jianboke.domain.User;
 import com.jianboke.service.UserService;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.transaction.Transactional;
 
 @RestController
 @RequestMapping("/api")
@@ -46,6 +51,9 @@ public class AccountController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private FileUploadUtils fileUploadUtils;
     
     @RequestMapping(value = "/account", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -120,5 +128,30 @@ public class AccountController {
                     .body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, u));
             })
             .orElse(ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_VERIFICATION_CODE_WRONG)));
+    }
+
+    /**
+     * 上传用户头像
+     * @param file
+     * @return
+     */
+    @Transactional
+    @RequestMapping(value = "/account/avator", method = RequestMethod.POST)
+    public ResponseEntity<RequestResult> uploadAvator(@RequestParam("file") MultipartFile file) {
+        log.info("rest request to upload avator for the user:{}", SecurityUtils.getCurrentUsername());
+        ResponseEntity<RequestResult> result =  fileUploadUtils.uploadAvator(file);
+        if (result.getBody().getCode().equals("0000")) { // 保存路径
+            userService.updateAvatarPath((String) result.getBody().getData());
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/account/updateUsername/{username}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RequestResult> updateUsername(@PathVariable String username) {
+        log.info("rest request to update the username for :{}", SecurityUtils.getCurrentUsername());
+        if(userService.updateUsername(username) != null) {
+            return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS));
+        }
+        return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_ERROR));
     }
 }

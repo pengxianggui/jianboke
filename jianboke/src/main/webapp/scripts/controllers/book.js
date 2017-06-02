@@ -56,9 +56,8 @@ angular.module('jianboke')
 		}
 	})
 	.controller('BookCtrl', function($scope, entity, Book, $timeout, $mdSidenav, $log, $state, $stateParams, $location, Chapter, Article, $mdMedia) {
-	    $scope.type = 'READ';
-	    console.log(entity);
-	    console.log($location);
+	    $scope.type = 'READ'; // markdown指令模式
+	    var dataType; // markdown解析的是chapter还是article
 	    $scope.book = entity.data;
 	    console.log('BookCtrl');
         $scope.toggleLeft = buildToggler('left');
@@ -68,10 +67,7 @@ angular.module('jianboke')
         $scope.articleId;
         $scope.toggleValue = $mdMedia('gt-md'); // boolean
         $scope.currentchapOrArt = entity.data; //当前选中的chapter或article, 默认是当前书本
-        $state.go('book.content', {
-            type: $state.params.type?$state.params.type:'chapter',
-            resourceId: $state.params.resourceId?$state.params.resourceId:$scope.book.id
-        });
+
         $scope.isOpenRight = function(){
           return $mdSidenav('right').isOpen();
         };
@@ -82,9 +78,6 @@ angular.module('jianboke')
 //                $scope.book = value;
 //            });
         }
-
-
-        console.log('sbsbsb');
         $scope.treeEvents = {
           itemClick: function (e) {
             return $scope.onItemClick(e);
@@ -96,20 +89,17 @@ angular.module('jianboke')
             if (!e.item) {
                 return;
             }
-            console.log(e.item);
-            console.log($state.params);
-            var type, resourceId;
+            var resourceId;
             if (e.item.isArticle) {
-                type = 'article';
+                dataType = 'article';
                 $scope.articleId = e.item.id.split('-')[0];
                 $scope.currentchapOrArt = Article.get({id: $scope.articleId});
             } else {
-                type = 'chapter';
-                $scope.currentchapOrArt = Chapter.get({id: e.item.id.split('-')[0]});
+                dataType = 'chapter';
+                $scope.currentchapOrArt = Chapter.get({id: e.item.id.split('-')[0]});;
             }
-            console.log($stateParams);
             resourceId = e.item.id.split('-')[0];
-            $state.go('book.content', {type: type, resourceId: resourceId});
+            $state.go('book.content', {type: dataType, resourceId: resourceId});
         }
 
         function buildToggler(navID) {
@@ -122,6 +112,18 @@ angular.module('jianboke')
             });
           };
         }
+
+//        var showContent = function() {
+//            console.log('$state.params.type: ' + $state.params.type);
+//            console.log('$state.params.resourceId: ' + $state.params.resourceId);
+//            $state.go('book.content', {
+//                type: $state.params.type?$state.params.type:'chapter',
+//                resourceId: $state.params.resourceId?$state.params.resourceId:$scope.book.id
+//            });
+//        }
+//        $timeout(function() {
+//            showContent();
+//        }, 1000);
       })
       .controller('LeftCtrl', function ($scope, $timeout, $mdSidenav, $log) {
         $scope.close = function () {
@@ -130,7 +132,6 @@ angular.module('jianboke')
             .then(function () {
               $log.debug("close LEFT is done");
             });
-
         };
       })
       .controller('RightCtrl', function ($scope, $timeout, $mdSidenav, $log) {
@@ -144,10 +145,8 @@ angular.module('jianboke')
       })
       .controller('BookContentCtrl', function ($scope, entity, $stateParams, $state) {
         console.log('BookContentCtrl');
-        $scope.type = $stateParams.type;
-        $scope.object = entity;
-        console.log($scope.object);
-        if ($scope.type === 'chapter') {
+        $scope.datType = $stateParams.type;
+        if ($scope.datType === 'chapter') {
             $scope.content = entity.description;
         } else {
             $scope.content = entity.content;

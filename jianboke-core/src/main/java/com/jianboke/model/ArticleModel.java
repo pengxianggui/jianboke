@@ -16,6 +16,13 @@ public class ArticleModel {
     private String labels;
     private Long authorId;
     private Long secondAuthorId;
+    private boolean ifOriginal;
+    private String originalAuthorName;
+    private boolean ifPublic;
+    private boolean ifAllowReprint;
+    private boolean ifAllowComment;
+    private boolean ifAllowSecondAuthor;
+    private boolean ifSetTop = false;
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
 
@@ -65,6 +72,62 @@ public class ArticleModel {
 
     public void setSecondAuthorId(Long secondAuthorId) {
         this.secondAuthorId = secondAuthorId;
+    }
+
+    public boolean isIfOriginal() {
+        return ifOriginal;
+    }
+
+    public void setIfOriginal(boolean ifOriginal) {
+        this.ifOriginal = ifOriginal;
+    }
+
+    public String getOriginalAuthorName() {
+        return originalAuthorName;
+    }
+
+    public void setOriginalAuthorName(String originalAuthorName) {
+        this.originalAuthorName = originalAuthorName;
+    }
+
+    public boolean isIfPublic() {
+        return ifPublic;
+    }
+
+    public void setIfPublic(boolean ifPublic) {
+        this.ifPublic = ifPublic;
+    }
+
+    public boolean isIfAllowReprint() {
+        return ifAllowReprint;
+    }
+
+    public void setIfAllowReprint(boolean ifAllowReprint) {
+        this.ifAllowReprint = ifAllowReprint;
+    }
+
+    public boolean isIfAllowComment() {
+        return ifAllowComment;
+    }
+
+    public void setIfAllowComment(boolean ifAllowComment) {
+        this.ifAllowComment = ifAllowComment;
+    }
+
+    public boolean isIfAllowSecondAuthor() {
+        return ifAllowSecondAuthor;
+    }
+
+    public void setIfAllowSecondAuthor(boolean ifAllowSecondAuthor) {
+        this.ifAllowSecondAuthor = ifAllowSecondAuthor;
+    }
+
+    public boolean isIfSetTop() {
+        return ifSetTop;
+    }
+
+    public void setIfSetTop(boolean ifSetTop) {
+        this.ifSetTop = ifSetTop;
     }
 
     public LocalDateTime getCreatedDate() {

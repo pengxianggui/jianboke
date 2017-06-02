@@ -2,20 +2,11 @@
 
 angular.module('jianboke')
 	.controller('BlogCtrl', function($scope, $rootScope) {
-		console.log('BlogCtrl');
-		console.log($scope);
-		$scope.shareOpen = false;
-		
-		$scope.openSetting = function() {
-//			console.log($scope.$parent); //调用上层scope
-			console.log($scope.$$childTail); // 调用下层scope
-			$scope.$$childTail.toggleSettings($scope.$$childTail.ifOpenSet);
-		}
+
 	})
 	.controller('NewBlogCtrl', function($scope, $element, $mdConstant, entity, Book, $mdDialog, Article, $rootScope, $state) {
       		console.log('NewBlogCtrl');
-      		$scope.ifOpenSet = false;
-              $scope.article = entity;
+            $scope.article = entity;
       		if ($state.params.id != 'new') {
       		    if ($scope.article == null || $scope.article.labels == null) {
       		        $scope.labels = [];
@@ -31,9 +22,6 @@ angular.module('jianboke')
       		$element.find('input').on('keydown', function(ev) {
       			ev.stopPropagation();
       		});
-      		$scope.toggleSettings = function(ifOpenSet) {
-      			$scope.ifOpenSet = !ifOpenSet;
-      		}
       		$scope.saveArticle = function() {
       			console.log($scope.article.content);
       			if ($scope.article.content == null || $scope.article.content == '') {
@@ -48,20 +36,27 @@ angular.module('jianboke')
       			console.log($scope.article);
       			Article.save($scope.article).$promise.then(function(resp) {
                       // 保存成功后提示用户去选择要归入Book的章节，跳转页面去进行操作。如果用户没有选择归类书籍，则直接在点击保存的时候提示用户即可。
-                      var content = '保存成功！是否去归档此文章？';
                       if ($state.params.id != 'new') { //编辑
-                          content = '更新成功！是否去修改归档？';
-                      }
-                      $rootScope.confirmMessage('温馨提示: ', content, false, '去归档', '算了吧', null)
+                        $state.go('blog.readBlog', {id: $scope.article.id});
+                      } else {
+                        $rootScope.confirmMessage('温馨提示: ', '保存成功！是否去归档此文章？', false, '是', '否', null)
                           .then(function() { // 去归档
-                              $state.go('blog.addToBook', {id: resp.id});
-                          }, function() { // 不归档，回到首页
-                              $state.go('dashboard');
+                            $state.go('blog.addToBook', {id: resp.id});
+                          }, function() { // 不归档，查看
+                            $state.go('blog.readBlog', {id: $scope.article.id});
                           });
+                      }
                   });
       		}
       	})
-      	.controller('ReadBlogCtrl', function($rootScope, $scope, entity, Article, Book, Account) {
+      	.controller('ReadBlogCtrl', function($rootScope, $scope, entity, Article, Book, Account, $mdSidenav) {
+      	    console.log('ReadBlogCtrl');
+            $scope.shareOpen = false; // 分享
+            $scope.toggleRight = buildToggler('right');
+            $scope.isOpenRight = function(){
+                return $mdSidenav('right').isOpen();
+            };
+
             $scope.article = entity;
             console.log(entity);
             $scope.authorNameArr = [];
@@ -74,4 +69,33 @@ angular.module('jianboke')
                 }
             }
             getAuthorName($scope.article);
+
+            function buildToggler(navID) {
+              return function() {
+                $mdSidenav(navID).toggle().then(function() {
+                    console.log('toggle over');
+                });
+              };
+            }
       	})
+        .controller('BlogSetCtrl', function ($scope, $rootScope, Article, $state) {
+            console.log('BlogSetCtrl');
+            console.log($scope.article);
+            $scope.saveArticle = function() {
+                Article.update($scope.article).$promise.then(function(resp) {
+                    if (resp.code === '0000') {
+                        $rootScope.popMessage('设置成功', true);
+                    } else {
+                        $rootScope.popMessage(resp.data, false);
+                    }
+                });
+            };
+
+            $scope.$watch('article.ifPublic', function(newValue, oldValue) {
+                if (!newValue) {
+                    $scope.article.ifAllowReprint = false;
+                    $scope.article.ifAllowComment = false;
+                    $scope.article.ifAllowSecondAuthor = false;
+                }
+            });
+        });

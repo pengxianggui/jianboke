@@ -1,6 +1,6 @@
 <div style="width: 100%" layout="column">
 
-	<section layout="row" flex>
+	<md-content layout="row" flex>
 		<md-sidenav layout="column" class="md-sidenav-left" md-component-id="left"
 			md-is-locked-open="$mdMedia('gt-md')" md-whiteframe="4">
 			<md-content> 
@@ -87,7 +87,7 @@
 				<span flex></span>
 				<form name="search" ng-submit="refreshArticleList()">
 					<md-input-container style="margin: 4px;" md-no-float>
-						<input id="article-search-input" placeholder="search" type="search" name="search" ng-model="query.filter">
+						<input id="article-flex-input" placeholder="search" type="search" name="search" ng-model="query.filter">
 						<md-button class="md-icon-button" ng-if="query.filter" ng-click="clearFilter();">
 							<md-icon>clear</md-icon>
 						</md-button>
@@ -99,13 +99,13 @@
 				</form>
 			</md-card>
 			<div class="article-list" flex>
-				<md-content flex> 
+				<md-content flex>
 					<md-list class="md-dense" flex>
 						<md-list-item class="md-2-line" layout="row" ng-repeat="article in articles" >
 							<div class="md-list-item-text" layout="column">
 								<div class="no-margin" layout="row">
 									<span>
-										<a class="h2 article-title" ui-sref="blog.readBlog({id:article.id})" target="_blank"
+										<a class="h2 article-title" ng-class="{true:'article-title-dark'}[showDarkTheme]" ui-sref="blog.readBlog({id:article.id})" target="_blank"
 										   ng-bind="article.title"></a>
 									</span>
 									<span flex></span>
@@ -114,14 +114,39 @@
 								<h3 style="padding: 2px 0;" class="md-hue-1">时间、喜欢数量、评论数量....</h3>
 							</div>
 							<div>
-								<md-button class="md-icon-button" ui-sref="blog.edit({id: article.id})">
+								<md-button class="md-icon-button no-margin" ui-sref="blog.edit({id: article.id})">
 									<md-tooltip md-direction="bottom">编辑</md-tooltip>
 									<md-icon>edit</md-icon>
 								</md-button>
-								<md-button class="md-icon-button" ng-click="remove(article.id)">
+								<md-button class="md-icon-button no-margin" ng-click="updateArticleSet(article)">
+									<md-tooltip md-direction="bottom">权限</md-tooltip>
+									<md-icon>lock</md-icon>
+								</md-button>
+								<md-button class="md-icon-button no-margin" ng-click="remove(article.id)">
 									<md-tooltip md-direction="bottom">删除</md-tooltip>
 									<md-icon>delete</md-icon>
 								</md-button>
+								<!--
+								<md-menu class="md-dense">
+									<md-button class="md-icon-button" ng-mouseenter="$mdMenu.open()">
+										<md-icon>settings</md-icon>
+									</md-button>
+									<md-menu-content width="1" ng-mouseleave="$mdMenu.close()">
+										<md-menu-item class="md-dense">
+											<md-button ng-click="remove(article.id)">
+												<md-icon>delete</md-icon>
+												<span>删除</span>
+											</md-button>
+										</md-menu-item>
+										<md-menu-item>
+											<md-button ng-click="updateArticleSet(article)">
+												<md-icon>lock</md-icon>
+												<span>权限设置</span>
+											</md-button>
+										</md-menu-item>
+									</md-menu-content>
+								</md-menu>
+								-->
 							</div>
 						</md-list-item> 
 						<md-divider></md-divider>
@@ -153,7 +178,7 @@
 
     </md-sidenav> -->
 
-	</section>
+	</md-content>
 
 </div>
 <!--

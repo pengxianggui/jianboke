@@ -32,6 +32,7 @@ angular.module('jianboke', [
     });
 	
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+        $rootScope.stateBelong = toState.data.belong;
         if (toState.name !== 'login' && $rootScope.previousStateName) {
             $rootScope.previousStateName = fromState.name;
             $rootScope.previousStateParams = fromParams;
@@ -59,9 +60,15 @@ angular.module('jianboke', [
      * @param isSuccess 成功或失败
      */
     $rootScope.popMessage = function(content, isSuccess){
-      $mdDialog.cancel();
-      isSuccess = isSuccess && true;
-      var theme = isSuccess ? 'success':'error';
+//      $mdDialog.cancel();
+      var theme;
+      if (isSuccess === true) {
+        theme = 'success';
+      } else if (isSuccess === false){
+        theme = 'error';
+      } else {
+        theme = 'warning';
+      }
       $mdToast.show($mdToast.simple().content(content).hideDelay(3000).theme(theme));
     }
     
@@ -101,11 +108,10 @@ angular.module('jianboke', [
 		  return $mdDialog.show(alert);
     }
 })
-.controller('HeaderCtrl', function($scope, $state) {
+.controller('HeaderCtrl', function($scope, $rootScope, $state) {
     console.log('HeaderCtrl');
-    $scope.current = 'dashboard';
+//    $scope.current = 'dashboard'; // 当前路由
     $scope.go = function (router, param) {
         $state.go(router, param);
-        $scope.current = router;
     }
 });

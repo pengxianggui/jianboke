@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: update_jb_article
+      author: pengxg
+      changes:
+      - addColumn:
+            tableName: articles
+            columns:
+              - column:
+                  name: if_original
+                  type: boolean
+                  defaultValueBoolean: true
+                  remarks: 是否原创（若否，表明是转载的）
+              - column:
+                  name: original_author_name
+                  type: varchar(20)
+                  remarks: 原创作者名
+              - column:
+                  name: if_public
+                  type: boolean
+                  defaultValueBoolean: true
+                  remarks: 是否公开（是否允许其他用户搜索到）
+              - column:
+                  name: if_allow_reprint
+                  type: boolean
+                  defaultValueBoolean: true
+                  remarks: 是否允许拷贝（即：转载，转载意味着拷贝了一个副本）
+              - column:
+                  name: if_allow_comment
+                  type: boolean
+                  defaultValueBoolean: true
+                  remarks: 是否允许评论
+              - column:
+                  name: if_allow_second_author
+                  type: boolean
+                  defaultValueBoolean: true
+                  remarks: 是否允许接收第二作者申请：设置为false，其他用户无法发出协同创作请求
+#              - column:
+#                  name: if_accept_second_author
+#                  type: boolean
+#                  remarks: 是否接受第二作者申请：设置为false，相当于拒绝其他用户协同创作的请求
+              - column:
+                  name: if_set_top
+                  type: boolean
+                  defaultValueBoolean: false
+                  remarks: 是否在个人主页置顶

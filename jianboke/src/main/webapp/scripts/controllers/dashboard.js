@@ -3,12 +3,12 @@
 angular.module('jianboke')
 	.controller('DashBoardCtrl', function($scope, $timeout, $mdSidenav, $log, $state, $mdDialog, Book, Article, $rootScope) {
 		console.log('DashBoardCtrl');
+		console.log($scope);
 		var pageSize = 10;
 		$scope.query;
 		$scope.books;
 		$scope.articles = [];
 		$scope.end = false; // 文章显示是否到底了
-		$scope.showDarkTheme = false;
 		$scope.toggleLeft = buildDelayedToggler('left');
 //	    $scope.toggleRight = buildToggler('right');
 	    $scope.isOpenRight = function(){
@@ -18,19 +18,37 @@ angular.module('jianboke')
 	    $scope.goToWrite = function() {
 	    	$state.go('blog.newblog');
 	    }
+
+	    // 删除文章
 	    $scope.remove = function(id) {
 	        $rootScope.confirmMessage("提示:", "删除文章会一并删除该文章的归档记录。确定要这样做吗？", true, "确定", "取消")
-	            .then(function() {
-                    Article.delete({id: id}).$promise.then(function(data) {
-                        $rootScope.popMessage("删除成功！", true);
-                        // 重新从第一行开始查询
-                        $scope.articles = [];
-                        initQueryPage($scope.query.findBy, null, null, $scope.query.filter);
-                        getAllArticle($scope.query); // 重新获取articles
-                    }).catch(function(httpResponse) {
-                        $rootScope.popMessage("删除失败！", false);
-                    });
-                }, function() {});
+              .then(function() {
+                Article.delete({id: id}).$promise.then(function(data) {
+                    $rootScope.popMessage("删除成功！", true);
+                    // 重新从第一行开始查询
+                    $scope.articles = [];
+                    initQueryPage($scope.query.findBy, null, null, $scope.query.filter);
+                    getAllArticle($scope.query); // 重新获取articles
+                }).catch(function(httpResponse) {
+                    $rootScope.popMessage("删除失败！", false);
+                });
+            }, function() {});
+	    }
+
+	    // 更新文章权限
+	    $scope.updateArticleSet = function(article) {
+	        $mdDialog.show({
+                controller: function($scope, $mdDialog) {
+                    $scope.article = article;
+                    $scope.cancel = function() {
+                        $mdDialog.cancel();
+                    }
+                },
+                template: '<pxg-blog-set article="article"></pxg-blog-set>',
+//                templateUrl: 'views/blog.set.html',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true
+            });
 	    }
 
 	    /**
@@ -89,6 +107,7 @@ angular.module('jianboke')
                 if (result.result == 'success') {
                     if (result.data.length > 0)
                         $scope.articles.push.apply($scope.articles, result.data);
+                        console.log($scope.articles);
                     if (result.data.length < pageSize)
                         $scope.end = true;
                 } else {

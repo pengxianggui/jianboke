@@ -17,3 +17,6 @@ databaseChangeLog:
   - include:
       file: classpath:db/changelog/create_jb_verification_code.yaml
       relativeToChangelogFile: false
+  - include:
+      file: classpath:db/changelog/update_jb_article.yaml
+      relativeToChangelogFile: false

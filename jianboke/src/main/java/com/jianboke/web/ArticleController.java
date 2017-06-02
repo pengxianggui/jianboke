@@ -6,9 +6,11 @@ import java.util.*;
 import javax.validation.Valid;
 
 import com.jianboke.domain.criteria.ArticleCriteria;
+import com.jianboke.enumeration.HttpReturnCode;
 import com.jianboke.enumeration.ResourceName;
 import com.jianboke.mapper.ArticleMapper;
 import com.jianboke.model.ArticleModel;
+import com.jianboke.model.RequestResult;
 import com.jianboke.service.ArticleService;
 import com.jianboke.service.BookChapterArticleService;
 import com.jianboke.service.UserAuhtorityService;
@@ -56,9 +58,8 @@ public class ArticleController {
 		Map<String, Object> map = new HashMap<>();
 		try {
 			List<ArticleModel> modelList = new ArrayList<>();
-			articleService.queryByCriteria(criteria).forEach(article -> {
-				modelList.add(articleMapper.entityToModel(article));
-			});
+			articleService.queryByCriteria(criteria).forEach(article ->
+					modelList.add(articleMapper.entityToModel(article)));
 			map.put("result", "success");
 			map.put("data", modelList);
 		} catch (SQLException e) {
@@ -93,14 +94,39 @@ public class ArticleController {
 		 }
 		 return ResponseEntity.ok().body(articleModelList);
 	}
-	
+
+	/**
+	 * 保存
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "/article", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Article saveArticle(@Valid @RequestBody Article article) {
-		log.debug("REST request to save article : {}", article);
-		article.setAuthorId(userService.getUserWithAuthorities().getId());
-		Article a = articleRepository.save(article);
-		System.out.println(a.toString());
-		return a;
+	public ResponseEntity<RequestResult> saveArticle(@Valid @RequestBody ArticleModel model) {
+		if (model.getId() != null) { // 更新
+			return updateArticle(model);
+		}
+		log.debug("REST request to save article : {}", model);
+		model.setAuthorId(userService.getUserWithAuthorities().getId());
+		Article a = articleRepository.save(articleMapper.modelToEntity(model));
+		if (a != null) {
+			return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, model));
+		}
+		return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_ERROR, "保存失败"));
+	}
+
+	/**
+	 * 更新
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/article", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<RequestResult> updateArticle(@Valid @RequestBody ArticleModel model) {
+		log.info("REST request to update a article, the model is :{}", model);
+		Article a = articleRepository.saveAndFlush(articleMapper.modelToEntity(model));
+		if (a != null) {
+			return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, model));
+		}
+		return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_ERROR, "保存失败"));
 	}
 
 	@RequestMapping(value = "/article/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -128,4 +154,13 @@ public class ArticleController {
 			return null;
 		}
 	}
+
+//	@RequestMapping(value = "/article/ifPublic", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<HttpReturnCode> ifPublicSave(@RequestParam("id") Long id,
+//													   @RequestParam("ifPublic") boolean ifPublic) {
+//		log.info("rest request to update ifPublic:{} of article:{}", ifPublic, id);
+//		System.out.println(id);
+//		System.out.println(ifPublic);
+//		return null;
+//	}
 }

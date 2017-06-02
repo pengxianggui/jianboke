@@ -78,6 +78,19 @@ public class UserService {
 		  log.debug("Changed phonenum for User: {}", user);
 		  return user;
 	  }
+
+	/**
+	 * 更新用户名
+	 * @param username
+	 * @return
+	 */
+	public User updateUsername(String username) {
+		  User user = this.getUserWithAuthorities();
+		  user.setUsername(username);
+		  userRepository.save(user);
+		  log.debug("Changed username for User: {}", user);
+		  return user;
+	  }
 	  
 	  /**
 	   * 更新邮箱

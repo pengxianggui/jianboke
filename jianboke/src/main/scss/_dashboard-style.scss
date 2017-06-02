@@ -16,11 +16,11 @@ div.nail-float-write {
 md-grid-tile.book-add-grid-item {
 	border: 1px solid #BFBCBC;
 }
-#article-search-input {
+#article-flex-input {
     width: 100px;
     transition: width 0.3s;
     &:focus {
-        width: 300px;
+        width: 200px;
     }
 }
 

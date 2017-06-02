@@ -22,6 +22,10 @@ angular.module('jianboke')
         register: {
             url: 'api/account/register',
             method: 'POST'
+        },
+        updateUsername: {
+            url: 'api/account/updateUsername/:username',
+            method: 'GET'
         }
     });
   });

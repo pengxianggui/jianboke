@@ -11,6 +11,10 @@ angular.module('jianboke')
 			save: {
 				url: 'api/article',
 				method: 'POST'
+			},
+			update: {
+			    url: 'api/article',
+			    method: 'PUT'
 			}
 		})
 	})

@@ -7,9 +7,11 @@ public enum HttpReturnCode {
     JBK_SUCCESS("0000", "success", "成功"),
     JBK_ACCOUNT_IS_EXIST("0001", "Account is already exist", "账号名或邮箱已经被注册"),
     JBK_VERIFICATION_CODE_WRONG("0002", "verification code is wrong", "验证码不正确"),
+    JBK_UPLOAD_FAIL("0003", "resource upload fail", "上传失败"),
 
-    JBK_RESOURCE_NOT_FOUND("4004", "request resource is not found", "资源没有找到")
-    ;
+    JBK_RESOURCE_NOT_FOUND("4004", "request resource is not found", "资源没有找到"),
+    JBK_ERROR("5000", "An error occurren!", "发生错误！"),
+            ;
 
     HttpReturnCode(String code, String msg, String detail) {
         this.code = code;

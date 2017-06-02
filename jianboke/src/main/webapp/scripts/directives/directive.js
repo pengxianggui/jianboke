@@ -29,40 +29,6 @@ angular.module('jianboke')
   };
 })
 
-.directive('pxgAccountMenu', function(ACCOUNT_MENU, $state, $rootScope) {
-    return {
-        restrict: 'E',
-        templateUrl: 'views/account_menu.html',
-        replace: true,
-        link: function(scope, iElement, iAttr) {
-
-        },
-        controller: function($scope) {
-            $scope.showMenu = false;
-            $scope.accountMenu = ACCOUNT_MENU.list;
-            $scope.toggleMenu = function(showMenu) {
-                $scope.showMenu = !showMenu;
-            };
-            $scope.closeMenu = function() {
-                $scope.showMenu = false;
-            };
-            $scope.goState = function(item) {
-                $scope.showMenu = false;
-                if (item.state === undefined && item.title == 'exit') {
-                    console.log('exit');
-                    var title = '确定要退出？',
-                        content = '';
-                    $rootScope.confirmMessage(title, content).then(function() {
-                        $rootScope.logout();
-                    }, function() {});
-                } else {
-                    $state.go(item.state, item.param);
-                }
-            }
-        }
-    }
-})
-
 /**
  * 存在bug: 通过顶端工具栏改变textarea内容时，无法将最新变动传递给conent，需要在点击、keyup等途径触发传递。
  * 如何监听 textarea value的改变(包括通过js改变)成为解决bug的思路之一！ 网上优选方案是input 和 propertychange 事件结合
@@ -87,13 +53,15 @@ angular.module('jianboke')
                 htmlDecode      : true,
                 htmlDecode      : "script,iframe",  // you can filter tags decode
                 flowChart       : true,
-                tex             : true
-//                theme : "dark",
-//                // Preview container theme, added v1.5.0
-//                // You can also custom css class .editormd-preview-theme-xxxx
-//                previewTheme : "dark",
-//                // Added @v1.5.0 & after version this is CodeMirror (editor area) theme
-//                editorTheme : "pastel-on-dark"
+                tex             : true,
+                onload: function() {
+                    this.setMarkdown(scope.content);
+                    if ($rootScope.showDarkTheme) { // 黑暗主题
+                        this.setTheme('dark');
+                        this.setPreviewTheme('dark');
+                        this.setEditorTheme('pastel-on-dark');
+                    }
+                }
             });
 
             scope.getValue = function() {
@@ -102,22 +70,6 @@ angular.module('jianboke')
             iElement.on('change keyup blur input propertychange click', function() {
                 scope.$apply(scope.getValue);
             });
-            var setValue = function(){
-                scope.editor.setMarkdown(scope.content);
-                if ($rootScope.showDarkTheme) { // 黑暗主题
-                    scope.editor.setTheme('dark');
-                    scope.editor.setPreviewTheme('dark');
-                    scope.editor.setEditorTheme('pastel-on-dark');
-                }
-            };
-            // TODO 如何改进，让页面完全渲染完毕后去执行此方法？好几种方法都尝试过，失败：
-            // 1. scope.$on('$viewContentLoaded',functon(){})
-            // 2. scope.$watch('$viewContentLoaded', function(){})
-            // 3. ng-init / data-ng-init都失败。
-//            window.setTimeout(setValue, 1000);
-            $timeout(function() {
-                scope.$apply(setValue());
-            }, 1000);
         }
     }
 })
@@ -140,9 +92,11 @@ angular.module('jianboke')
       $scope.getMarkHtml = function() {
         var id = $scope.mdId; //有多个需要解析的markdown内容(多个场景)，需要一一对应
         var testEditormdView = editormd.markdownToHTML(id, {
-            htmlDecode      : true,  // 开启 HTML 标签解析，为了安全性，默认不开启 
+            htmlDecode      : true,  // 开启 HTML 标签解析，为了安全性，默认不开启
             flowChart       : true,  // 默认不解析，流程图
-            tex             : true
+            tex             : true,
+//            theme : "dark",
+//            previewTheme    : "dark"
           });
       };
       // 设置timeout可以让其中的代码跳出digest循环外。从而实现“先渲染，后解析”的效果
@@ -161,20 +115,22 @@ angular.module('jianboke')
             chipsData: '=',
             chipsStyle: '='
         },
+        replace: true,
         template: '<span>' +
-                        '<span ng-repeat="item in chipsData" ng-bind="item" ng-style="chipsStyle"></span>' +
+                        '<span ng-repeat="item in data" ng-bind="item" ng-style="style"></span>' +
                   '</span>',
         controller: function($scope) {
             if(!Array.isArray($scope.chipsData) && $scope.chipsData != '') {
-                $scope.chipsData = $scope.chipsData.split(",");
+                $scope.data = $scope.chipsData.split(",");
             }
-            $scope.chipsStyle = $scope.chipStyle || {
+            $scope.style = $scope.style || {
                 "font-size": "12px",
                 "border": "1px solid rgba(120,120,120,.2)",
                 "border-radius": "8px",
 //                "background-color": "#fafafa",
                 "margin": "2px 4px"
             }
+            console.log($scope.chipsStyle);
         }
     }
 })
@@ -219,20 +175,16 @@ angular.module('jianboke')
     return {
         restrict: 'A',
         link: function(scope, ele, attrs) {
-            console.log(ele);
-            console.log(attrs);
-            console.log($(ele));
             var buttonArr = $(ele).children("button.nav");
             for (var i = 0; i < buttonArr.length; i++) {
-                var button = buttonArr[i];
-                console.log(button);
-                $(button).mouseenter(function() {
-                    console.log('鼠标进入 button');
-                    console.log(this);
-                });
-                $(button).mouseleave(function() {
-                    console.log('鼠标离开 button');
-                })
+//                var button = buttonArr[i];
+//                $(button).mouseenter(function() {
+//                    console.log('鼠标进入 button');
+//                    console.log(this);
+//                });
+//                $(button).mouseleave(function() {
+//                    console.log('鼠标离开 button');
+//                })
             }
         }
     }

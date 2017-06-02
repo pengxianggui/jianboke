@@ -9,7 +9,8 @@ angular.module('jianboke')
 		    url: '/index/{userId}',
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-				title: '首页'
+				title: '首页',
+				belong: 'index'
 			},
 		    controller: 'IndexCtrl',
 		    templateUrl: 'views/index_center.html'
@@ -18,10 +19,21 @@ angular.module('jianboke')
 			url: '/dashboard',
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-				title: '个人中心'
+				title: '个人中心',
+				belong: 'dashboard'
 			},
 			controller: 'DashBoardCtrl',
 			templateUrl: 'views/dashboard.html'
+		})
+		.state('attention', {
+			url: '/attention',
+			data: {
+				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				title: '我的关注',
+				belong: 'attention'
+			},
+			controller: 'AttentionCtrl',
+			templateUrl: 'views/attention.html'
 		})
 		.state('login', {
 			url: '/login',
@@ -46,7 +58,8 @@ angular.module('jianboke')
 			abstract: true,
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-				title: '博客'
+				title: '博客',
+				belong: 'dashboard'
 			},
 			templateUrl: 'views/blog.html',
 			controller: 'BlogCtrl'
@@ -56,6 +69,7 @@ angular.module('jianboke')
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
 				title: '新建Blog',
+				belong: 'dashboard'
 			},
 			controller: 'NewBlogCtrl',
 			templateUrl: 'views/newBlog.html',
@@ -82,7 +96,8 @@ angular.module('jianboke')
 			url: '/readblog/{id}',
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-				title: '阅读Blog'
+				title: '阅读Blog',
+                belong: 'dashboard'
 			},
 			controller: 'ReadBlogCtrl',
 			templateUrl: 'views/readBlog.html',
@@ -96,7 +111,8 @@ angular.module('jianboke')
 		    url: '/addToBook/{id}',
 		    data: {
 		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-		        title: '文章归档'
+		        title: '文章归档',
+                belong: 'dashboard'
 		    },
 		    controller: 'AddToBookCtrl',
 		    templateUrl: 'views/addToBook.html',
@@ -110,7 +126,8 @@ angular.module('jianboke')
 		    url: '/book/{bookId}',
 		    data: {
 		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-		        title: '书'
+		        title: '书',
+                belong: 'dashboard'
 		    },
 		    controller: 'BookCtrl',
 		    templateUrl: 'views/book.html',
@@ -124,12 +141,14 @@ angular.module('jianboke')
 		    url: '/{type}/{resourceId}', // type: 'chapter' or 'article'; resourceId : 'chapter.id' or 'article.id'
 		    data: {
 		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-		        title: '书'
+		        title: '书',
+                belong: 'dashboard'
 		    },
 		    controller: 'BookContentCtrl',
 		    templateUrl: 'views/book.content.html',
 		    resolve: {
 		        entity: function($stateParams, Article, Chapter) {
+		            console.log($stateParams.type);
 		            if ($stateParams.type === 'article') {
 		                return Article.get({id: $stateParams.resourceId}).$promise;
 		            } else {
@@ -143,7 +162,8 @@ angular.module('jianboke')
 			url: '/mycollection',
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-				title: '我的收藏'
+				title: '我的收藏',
+                belong: 'dashboard'
 			},
 			controller: 'MyCollectionCtrl',
 			templateUrl: 'views/myCollection.html'
@@ -152,7 +172,8 @@ angular.module('jianboke')
 			url: '/userset',
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-				title: '用户设置'
+				title: '用户设置',
+                belong: 'dashboard'
 			},
 			controller: 'UserSetCtrl',
 			templateUrl: 'views/userSet.html'

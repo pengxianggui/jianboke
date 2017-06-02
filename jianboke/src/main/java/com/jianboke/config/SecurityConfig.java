@@ -61,11 +61,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //		.and().authorizeRequests()
 //			.antMatchers("/").permitAll() // "/"这个路径允许所有行为
 //			.anyRequest().authenticated() // 其他路径都会被加上权限拦截
-		.and()
-			.rememberMe()
-			.rememberMeServices(rememberMeServices)
-			.rememberMeParameter("remember-me")
-			.key(appProperties.getSecurity().getKey())
+//		.and()
+//			.rememberMe()
+//			.rememberMeServices(rememberMeServices)
+//			.rememberMeParameter("remember-me")
+//			.key(appProperties.getSecurity().getKey())
 		.and().formLogin()
 		    .loginProcessingUrl("/api/authentication")
 		    .successHandler(ajaxAuthenticationSuccessHandler)
@@ -101,7 +101,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override  
     protected void configure(AuthenticationManagerBuilder auth)  
             throws Exception {  
-        auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(customUserDetailsService);
+//				.passwordEncoder(passwordEncoder()); // 暂时先屏蔽密码加密
     }
 	
 //	@Autowired

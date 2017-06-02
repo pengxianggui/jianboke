@@ -122,6 +122,13 @@ public class ArticleService {
             a.setLabels(rs.getString("labels"));
             a.setAuthorId(rs.getLong("author_id"));
             a.setSecondAuthorId(rs.getLong("second_author_id"));
+            a.setIfOriginal(rs.getBoolean("if_original"));
+            a.setOriginalAuthorName(rs.getString("original_author_name"));
+            a.setIfPublic(rs.getBoolean("if_public"));
+            a.setIfAllowReprint(rs.getBoolean("if_allow_reprint"));
+            a.setIfAllowComment(rs.getBoolean("if_allow_comment"));
+            a.setIfAllowSecondAuthor(rs.getBoolean("if_allow_second_author"));
+            a.setIfSetTop(rs.getBoolean("if_set_top"));
             a.setCreatedDate(DateTimeUtils.toLdt(rs.getDate("created_date")));
             a.setLastModifiedDate(DateTimeUtils.toLdt(rs.getDate("last_modified_date")));
             temp.add(a);
