@@ -106,6 +106,20 @@
           <artifactId>mapstruct-processor</artifactId>
           <version>1.2.0.Beta2</version>
       </dependency>
+      <!-- Jackson: 用以支持java8 LocalDateTime事件类型的序列化（REST服务下） -->
+      <dependency>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-jsr310</artifactId>
+      </dependency>
+      <dependency>
+          <groupId>com.fasterxml.jackson.datatype</groupId>
+          <artifactId>jackson-datatype-hibernate5</artifactId>
+      </dependency>
+      <!--<dependency>-->
+          <!--<groupId>org.mapstruct</groupId>-->
+          <!--<artifactId>mapstruct</artifactId> &lt;!&ndash; use mapstruct-jdk8 for Java 8 or higher &ndash;&gt;-->
+          <!--<version>1.1.0.Final</version>-->
+      <!--</dependency>-->
   </dependencies>
   
   <build>
