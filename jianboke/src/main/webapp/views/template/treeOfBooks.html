@@ -1,7 +1,7 @@
 <div layout="row" flex style="height: 100%;" class="no-padding">
 	<md-card flex class="no-margin">
 		<md-content layout="row" class="md-hue-2" style="height: 40px; min-height: 30px;">
-			  <md-input-container md-no-float class="margin-left-right-10 margin-left-right-5" flex style="">
+			  <md-input-container md-no-float class="margin-left-right-10 margin-top-bottom-5" flex style="">
 		        <md-select ng-model="selectedBook" placeholder="归类书籍" style="width: 80%; margin: auto">
 		            <md-option ng-value="book" ng-selected="selectedBook.id == book.id" ng-repeat="book in books">{{book.bookName}}</md-option>
 		        </md-select>

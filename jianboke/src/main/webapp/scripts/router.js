@@ -176,6 +176,11 @@ angular.module('jianboke')
                 belong: 'dashboard'
 			},
 			controller: 'UserSetCtrl',
-			templateUrl: 'views/userSet.html'
+			templateUrl: 'views/userSet.html',
+		    resolve: {
+		        entity: function(AccountDefaultSetting) {
+		            return AccountDefaultSetting.get().$promise;
+		        }
+		    }
 		})
 	});

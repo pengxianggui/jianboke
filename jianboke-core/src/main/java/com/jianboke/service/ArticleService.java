@@ -1,10 +1,14 @@
 package com.jianboke.service;
 
+import com.jianboke.domain.AccountDefaultSetting;
 import com.jianboke.domain.Article;
 import com.jianboke.domain.BookChapterArticle;
 import com.jianboke.domain.criteria.ArticleCriteria;
+import com.jianboke.model.ArticleModel;
+import com.jianboke.repository.AccountDefaultSettingRepository;
 import com.jianboke.repository.ArticleRepository;
 import com.jianboke.repository.BookChapterArticleRepository;
+import com.jianboke.security.SecurityUtils;
 import com.jianboke.utils.DBConfigUtils;
 import com.jianboke.utils.DateTimeUtils;
 import org.hibernate.Criteria;
@@ -43,6 +47,9 @@ public class ArticleService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private AccountDefaultSettingRepository accountDefaultSettingRepository;
 
     private Connection conn = null;
     private PreparedStatement stmt = null;
@@ -163,4 +170,27 @@ public class ArticleService {
         return articleRepository.findArticleModelByBookId(bookId);
     }
 
+    /**
+     * 为刚保存的article，设置用户自定义默认的权限。若用户没有自定义的用户设置，则采用系统默认的设置
+     * @param model
+     * @param userId
+     */
+    public ArticleModel setDefaultAuthority(ArticleModel model, Long userId) {
+        return accountDefaultSettingRepository.findOneByUserId(userId).map(ads -> {
+            model.setIfPublic(ads.isDefaultIfPublic());
+            model.setIfAllowComment(ads.isDefaultIfAllowComment());
+            model.setIfAllowReprint(ads.isDefaultIfAllowReprint());
+            model.setIfAllowSecondAuthor(ads.isDefaultIfAllowSecondAuthor());
+            return model;
+        }).orElseGet(() -> { // 该用户不存在默认值。则采用系统默认值
+            AccountDefaultSetting ads = AccountDefaultSetting.create(userId);
+            model.setIfPublic(ads.isDefaultIfPublic());
+            model.setIfAllowComment(ads.isDefaultIfAllowComment());
+            model.setIfAllowReprint(ads.isDefaultIfAllowReprint());
+            model.setIfAllowSecondAuthor(ads.isDefaultIfAllowSecondAuthor());
+            accountDefaultSettingRepository.saveAndFlush(ads); // 并保存，以系统默认的文章权限设置作为用户的默认文章权限设置
+            return model;
+        });
+
+    }
 }

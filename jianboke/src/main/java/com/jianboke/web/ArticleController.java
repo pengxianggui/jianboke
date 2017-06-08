@@ -106,10 +106,11 @@ public class ArticleController {
 			return updateArticle(model);
 		}
 		log.debug("REST request to save article : {}", model);
-		model.setAuthorId(userService.getUserWithAuthorities().getId());
-		Article a = articleRepository.save(articleMapper.modelToEntity(model));
+		User u = userService.getUserWithAuthorities();
+		model.setAuthorId(u.getId());
+		Article a = articleRepository.save(articleMapper.modelToEntity(articleService.setDefaultAuthority(model, u.getId())));
 		if (a != null) {
-			return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, model));
+			return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, articleMapper.entityToModel(a)));
 		}
 		return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_ERROR, "保存失败"));
 	}

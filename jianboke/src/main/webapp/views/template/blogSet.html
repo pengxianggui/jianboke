@@ -1,49 +1,47 @@
 <md-content layout-padding>
-    <form action="">
-        <md-list class="md-dense" >
-            <md-subheader class="md-no-sticky">权限设置</md-subheader>
-            <md-list-item>
-                <p>是否公开</p>
-                <span>关</span>
-                <md-switch ng-model="article.ifPublic" aria-label="ifPublic"
-                    ng-change="saveArticle()">
-                </md-switch>
-                <span>开</span>
-            </md-list-item>
-            <md-list-item>
-                <p>是否允许转载</p>
-                <span>关</span>
-                <md-switch ng-model="article.ifAllowReprint" aria-label="ifAllowReprint"
-                           ng-disabled="!article.ifPublic" ng-change="saveArticle()">
-                </md-switch>
-                <span>开</span>
-            </md-list-item>
-            <md-list-item>
-                <p>是否允许评论</p>
-                <span>关</span>
-                <md-switch ng-model="article.ifAllowComment" aria-label="ifAllowComment"
-                           ng-disabled="!article.ifPublic" ng-change="saveArticle()">
-                </md-switch>
-                <span>开</span>
-            </md-list-item>
-            <md-list-item>
-                <p>是否允许联合创作</p>
-                <span>关</span>
-                <md-switch ng-model="article.ifAllowSecondAuthor" aria-label="ifAllowSecondAuthor"
-                           ng-disabled="!article.ifPublic" ng-change="saveArticle()">
-                </md-switch>
-                <span>开</span>
-            </md-list-item>
+    <md-list class="md-dense" >
+        <md-subheader class="md-no-sticky">权限设置</md-subheader>
+        <md-list-item>
+            <p>是否公开</p>
+            <span>关</span>
+            <md-switch ng-model="article.ifPublic" aria-label="ifPublic"
+                ng-change="watchIfPublic();saveArticle()">
+            </md-switch>
+            <span>开</span>
+        </md-list-item>
+        <md-list-item>
+            <p>是否允许转载</p>
+            <span>关</span>
+            <md-switch ng-model="article.ifAllowReprint" aria-label="ifAllowReprint"
+                       ng-disabled="!article.ifPublic" ng-change="saveArticle()">
+            </md-switch>
+            <span>开</span>
+        </md-list-item>
+        <md-list-item>
+            <p>是否允许评论</p>
+            <span>关</span>
+            <md-switch ng-model="article.ifAllowComment" aria-label="ifAllowComment"
+                       ng-disabled="!article.ifPublic" ng-change="saveArticle()">
+            </md-switch>
+            <span>开</span>
+        </md-list-item>
+        <md-list-item>
+            <p>是否允许联合创作</p>
+            <span>关</span>
+            <md-switch ng-model="article.ifAllowSecondAuthor" aria-label="ifAllowSecondAuthor"
+                       ng-disabled="!article.ifPublic" ng-change="saveArticle()">
+            </md-switch>
+            <span>开</span>
+        </md-list-item>
 
-            <md-subheader class="md-no-sticky">显示设置</md-subheader>
-            <md-list-item>
-                <p>个人主页置顶</p>
-                <span>关</span>
-                <md-switch ng-model="article.ifSetTop" aria-label="ifSetTop"
-                    ng-change="saveArticle()">
-                </md-switch>
-                <span>开</span>
-            </md-list-item>
-        </md-list>
-    </form>
+        <md-subheader class="md-no-sticky">显示设置</md-subheader>
+        <md-list-item>
+            <p>个人主页置顶</p>
+            <span>关</span>
+            <md-switch ng-model="article.ifSetTop" aria-label="ifSetTop"
+                ng-change="saveArticle()">
+            </md-switch>
+            <span>开</span>
+        </md-list-item>
+    </md-list>
 </md-content>

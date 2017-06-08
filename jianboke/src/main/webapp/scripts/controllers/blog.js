@@ -37,13 +37,16 @@ angular.module('jianboke')
       			Article.save($scope.article).$promise.then(function(resp) {
                       // 保存成功后提示用户去选择要归入Book的章节，跳转页面去进行操作。如果用户没有选择归类书籍，则直接在点击保存的时候提示用户即可。
                       if ($state.params.id != 'new') { //编辑
-                        $state.go('blog.readBlog', {id: $scope.article.id});
-                      } else {
+                        $state.go('blog.readBlog', {id: resp.data.id});
+                      } else { // 新建
                         $rootScope.confirmMessage('温馨提示: ', '保存成功！是否去归档此文章？', false, '是', '否', null)
                           .then(function() { // 去归档
-                            $state.go('blog.addToBook', {id: resp.id});
+                            console.log('是');
+                            console.log(resp);
+                            $state.go('blog.addToBook', {id: resp.data.id});
                           }, function() { // 不归档，查看
-                            $state.go('blog.readBlog', {id: $scope.article.id});
+                            console.log('否');
+                            $state.go('blog.readBlog', {id: resp.data.id});
                           });
                       }
                   });
@@ -98,4 +101,13 @@ angular.module('jianboke')
                     $scope.article.ifAllowSecondAuthor = false;
                 }
             });
+
+            $scope.watchIfPublic = function() {
+                if (!$scope.article) return;
+                if (!$scope.article.ifPublic) {
+                    $scope.article.ifAllowReprint = false;
+                    $scope.article.ifAllowComment = false;
+                    $scope.article.ifAllowSecondAuthor = false;
+                }
+            }
         });

@@ -1,0 +1,96 @@
+databaseChangeLog:
+  - property:
+      name: autoIncrement
+      value: true
+      dbms: mysql,h2,postgresql,sqlserver
+  - property:
+      name: now
+      value: now()
+      dbms: mysql, h2
+  - property:
+      name: now
+      value: sysdate
+      dbms: oracle
+  - property:
+      name: now
+      value: getdate()
+      dbms: sqlserver
+  - changeSet:
+      id: create_jb_account_default_setting
+      author: pengxg
+      changes:
+        - createTable:
+            tableName: account_default_setting
+            remarks: 账户默认设置。 包括文章的默认权限设置、主题设置等
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: ${autoIncrement}
+                  remarks: 标识
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  remarks: 用户id
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: is_dark_theme
+                  type: boolean
+                  defaultValueBoolean: false
+                  remarks: 是否黑夜主题。true：是，false： 否。默认为false
+              - column:
+                  name: if_accept_push
+                  type: boolean
+                  defaultValueBoolean: true
+                  remarks: 是否接收根据“兴趣标签”进行的文章推送，默认为true
+              - column:
+                  name: hobby_labels
+                  type: varchar(200)
+                  remarks: 兴趣标签，用英文逗号隔开，最多拥有20个兴趣标签，每个标签长度不得超过10。系统通过兴趣标签为用户推送相关博客文章
+              - column:
+                  name: default_if_public
+                  type: boolean
+                  defaultValueBoolean: true
+                  remarks: 默认是否公开（是否允许其他用户搜索到）
+              - column:
+                  name: default_if_allow_reprint
+                  type: boolean
+                  defaultValueBoolean: true
+                  remarks: 默认是否允许拷贝（即：转载，转载意味着拷贝了一个副本）
+              - column:
+                  name: default_if_allow_comment
+                  type: boolean
+                  defaultValueBoolean: true
+                  remarks: 默认是否允许评论
+              - column:
+                  name: default_if_allow_second_author
+                  type: boolean
+                  defaultValueBoolean: true
+                  remarks: 默认是否允许接收第二作者申请：设置为false，其他用户无法发出协同创作请求
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValueDate: ${now}
+                  remarks: 创建时间
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  remarks: 最后修改时间
+    # 添加外键约束
+  - changeSet:
+      id: fk_account_default_setting
+      author: pengxg
+      changes:
+      - addForeignKeyConstraint:
+          baseColumnNames: user_id
+          baseTableName: account_default_setting
+          constraintName: fd_account_default_setting_user_id
+          referencedColumnNames: id
+          referencedTableName: users

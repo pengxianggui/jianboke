@@ -44,7 +44,7 @@
 						    <md-grid-tile ng-repeat="book in books"
 						                  md-rowspan="2"
 						                  md-colspan="2">
-							  <md-button class="height-100-percent width-100-percent no-padding no-margin" ui-sref="book({bookId: book.id})">
+							  <md-button class="height-100-percent width-100-percent no-padding no-margin" ui-sref="book({bookId: book.id})" target="_blank">
 								  <img style="width: 100%; height: 100%" ng-src="{{book.bookCoverPath}}"/>
 							  </md-button>
 						      <md-grid-tile-footer>
