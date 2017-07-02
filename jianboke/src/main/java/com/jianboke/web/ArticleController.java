@@ -3,6 +3,7 @@ package com.jianboke.web;
 import java.sql.SQLException;
 import java.util.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.jianboke.domain.criteria.ArticleCriteria;
@@ -11,9 +12,11 @@ import com.jianboke.enumeration.ResourceName;
 import com.jianboke.mapper.ArticleMapper;
 import com.jianboke.model.ArticleModel;
 import com.jianboke.model.RequestResult;
+import com.jianboke.model.ValidationResult;
 import com.jianboke.service.ArticleService;
 import com.jianboke.service.BookChapterArticleService;
 import com.jianboke.service.UserAuhtorityService;
+import com.jianboke.utils.FileUploadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,7 @@ import com.jianboke.domain.Article;
 import com.jianboke.domain.User;
 import com.jianboke.repository.ArticleRepository;
 import com.jianboke.service.UserService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
@@ -50,6 +54,9 @@ public class ArticleController {
 
 	@Autowired
 	private BookChapterArticleService bookChapterArticleService;
+
+	@Autowired
+	private FileUploadUtils fileUploadUtils;
 
 	@RequestMapping(value = "/article", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
@@ -154,6 +161,15 @@ public class ArticleController {
 		} else {
 			return null;
 		}
+	}
+
+	@RequestMapping(value = "/article/img", consumes = "multipart/form-data", method = RequestMethod.POST)
+	public Map<String, Object> uploadArticleImg(@RequestParam("editormd-image-file") MultipartFile file, HttpServletResponse response) {
+		log.info("request to upload img:{}", file);
+		System.out.println("上传的图片内容为： ");
+		System.out.println(file.getOriginalFilename());
+		response.setHeader("X-Frame-Options", "SAMEORIGIN");// 解决IFrame拒绝的问题
+		return fileUploadUtils.uploadArticleImg(file);
 	}
 
 //	@RequestMapping(value = "/article/ifPublic", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
