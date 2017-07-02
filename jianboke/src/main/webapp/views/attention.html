@@ -1,0 +1,28 @@
+<md-content flex layout="column">
+    <md-card layout="row">
+        <md-button ng-click="toggleLeft()"
+                   class="md-primary md-icon-button" hide-gt-md style="margin: auto 4px">
+            <md-icon>menu</md-icon>
+        </md-button>
+        <md-input-container md-no-float class="no-margin margin-left-right-10" style="padding: 0 10px">
+            <md-select ng-model="query.findBy" placeholder="分类查询" style="margin-top: 8px;" ng-change="refreshAccountList()">
+                <md-option value="0">全部</md-option>
+                <md-option value="1">关注</md-option>
+                <md-option value="2">粉丝</md-option>
+            </md-select>
+        </md-input-container>
+        <span flex></span>
+        <form name="search" ng-submit="refreshArticleList()">
+            <md-input-container style="margin: 4px;" md-no-float>
+                <input id="article-flex-input" placeholder="过滤..." type="search" name="search" ng-model="query.filter">
+                <md-button class="md-icon-button" ng-if="query.filter" ng-click="clearFilter();">
+                    <md-icon>clear</md-icon>
+                </md-button>
+                <md-button class="md-icon-button" ng-if="!query.filter">
+                    <md-icon>search</md-icon>
+                </md-button>
+
+            </md-input-container>
+        </form>
+    </md-card>
+</md-content>

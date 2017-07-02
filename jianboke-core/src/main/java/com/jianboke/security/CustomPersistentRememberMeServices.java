@@ -154,7 +154,7 @@ public class CustomPersistentRememberMeServices extends AbstractRememberMeServic
 //      throw new CookieTheftException(
 //          "Invalid remember-me token (Series/token) mismatch. Implies previous cookie theft attack.");
       cancelCookie(request, response);
-      throw new RememberMeAuthenticationException("Remember-me login has expired");
+      throw new RememberMeAuthenticationException("Remember-me login has invalid");
     }
 
     if (persistentLogin.getLastUsed().plusDays(TOKEN_VALIDITY_DAYS).isBefore(LocalDateTime.now())) {

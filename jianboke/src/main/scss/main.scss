@@ -154,3 +154,27 @@ div.avator {
         height: 100%;
     }
 }
+
+@keyframes breath-button
+{
+    0%{
+        background: #1565c0;
+    }
+    50%{
+        background: #ff5722;
+    }
+    100%{
+        background: #1565c0;
+    }
+}
+
+.chose-item {
+    background: #1565c0;
+    animation: breath-button infinite 3s;
+    -moz-animation: breath-button infinite 3s; /* Firefox */
+    -webkit-animation: breath-button infinite 3s; /* Safari and Chrome */
+    -o-animation: breath-button infinite 3s;  /* Opera */
+    & md-icon {
+        color: #fff;
+    }
+}

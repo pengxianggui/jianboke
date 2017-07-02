@@ -21,6 +21,7 @@ angular.module('jianboke', [
 ]).run(function($rootScope, $state, $templateCache, Auth, $window, $mdDialog, $mdToast) {
     console.log('run.js');
     $rootScope.showDarkTheme = false;
+    $rootScope.currentState;
     $rootScope.changeTheme = function(param) {
         $rootScope.showDarkTheme = param;
     }
@@ -32,6 +33,7 @@ angular.module('jianboke', [
     });
 	
     $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+        $rootScope.currentState = toState;
         $rootScope.stateBelong = toState.data.belong;
         if (toState.name !== 'login' && $rootScope.previousStateName) {
             $rootScope.previousStateName = fromState.name;
@@ -41,6 +43,10 @@ angular.module('jianboke', [
           $window.document.title = '简博客 － ' + toState.data.title;
         }
     });
+
+    $rootScope.goToState = function(stateName) {
+        $state.go(stateName);
+    }
 
 	$rootScope.goToDashboard = function() {
 		$state.go('dashboard');
@@ -108,10 +114,10 @@ angular.module('jianboke', [
 		  return $mdDialog.show(alert);
     }
 })
-.controller('HeaderCtrl', function($scope, $rootScope, $state) {
-    console.log('HeaderCtrl');
-//    $scope.current = 'dashboard'; // 当前路由
-    $scope.go = function (router, param) {
-        $state.go(router, param);
-    }
-});
+//.controller('HeaderCtrl', function($scope, $rootScope, $state) {
+//    console.log('HeaderCtrl');
+////    $scope.current = 'dashboard'; // 当前路由
+//    $scope.go = function (router, param) {
+//        $state.go(router, param);
+//    }
+//});

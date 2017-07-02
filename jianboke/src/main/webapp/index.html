@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="bower_components/editor.md/css/editormd.min.css" />
 </head>
 <body ng-app="jianboke" layout="column" ng-cloak md-theme="{{showDarkTheme?'pxg-dark-theme':'default'}}">
-	<header style="z-index:1" ng-controller="HeaderCtrl">
+	<header style="z-index:1">
 		<md-toolbar class="md-hue-2">
 		<div class="md-toolbar-tools">
 			<md-button class="md-icon-button" aria-label="Settings"
@@ -27,9 +27,9 @@
 				<span>简博</span>
 			</h2>
 			<span ng-if="isAuthenticated()" style="height: 100%;" pxg-slide-effect>
-				<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='index'}" style="height: 100%; margin: 0;" ng-click="go('index')">首页</md-button>
-				<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='dashboard'}" style="height: 100%; margin: 0;" ng-click="go('dashboard')">个人主页</md-button>
-				<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='attention'}" style="height: 100%; margin: 0;" ng-click="go('attention')">关注</md-button>
+				<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='index'}" style="height: 100%; margin: 0;" ng-click="goToState('index')">首页</md-button>
+				<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='dashboard'}" style="height: 100%; margin: 0;" ng-click="goToState('dashboard.blogs')">个人主页</md-button>
+				<!--<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='attention'}" style="height: 100%; margin: 0;" ng-click="go('attention')">关注</md-button>-->
 			</span>
 			<span flex></span>
 			<md-menu-bar ng-if="isAuthenticated()">
@@ -64,7 +64,7 @@
 		</div>
 		</md-toolbar>
 	</header>
-	<main flex style="overflow: auto; z-index: 0">
+	<main flex style="overflow: auto; z-index: 0" layout="column">
 		<article ui-view layout="row" flex class="height-100-percent" ng-cloak></article>
 	</main>
 	<!-- bower:js -->

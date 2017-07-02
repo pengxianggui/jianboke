@@ -61,7 +61,10 @@ angular.module('jianboke')
                         this.setPreviewTheme('dark');
                         this.setEditorTheme('pastel-on-dark');
                     }
-                }
+                },
+                imageUpload    : true,
+                imageFormats   : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+                imageUploadURL : "./api/article/img",
             });
 
             scope.getValue = function() {
@@ -130,7 +133,6 @@ angular.module('jianboke')
 //                "background-color": "#fafafa",
                 "margin": "2px 4px"
             }
-            console.log($scope.chipsStyle);
         }
     }
 })

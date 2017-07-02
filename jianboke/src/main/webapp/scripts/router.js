@@ -3,7 +3,7 @@
 angular.module('jianboke')
 	.config(function($stateProvider, $urlRouterProvider, ACCESS_LEVELS) {
 	    console.log('router.js');
-		$urlRouterProvider.otherwise('/dashboard');
+		$urlRouterProvider.otherwise('/mine/dashboard');
 		$stateProvider
 		.state('index', {
 		    url: '/index/{userId}',
@@ -16,7 +16,7 @@ angular.module('jianboke')
 		    templateUrl: 'views/index_center.html'
 		})
 		.state('dashboard', {
-			url: '/dashboard',
+			url: '/mine',
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
 				title: '个人中心',
@@ -25,15 +25,44 @@ angular.module('jianboke')
 			controller: 'DashBoardCtrl',
 			templateUrl: 'views/dashboard.html'
 		})
-		.state('attention', {
+		.state('dashboard.blogs', {
+		    url: '/dashboard',
+		    data: {
+				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				belong: 'dashboard'
+		    },
+		    controller: 'BlogListCtrl',
+		    templateUrl: 'views/blogList.html'
+		})
+		.state('dashboard.attention', {
 			url: '/attention',
 			data: {
 				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
 				title: '我的关注',
-				belong: 'attention'
+				belong: 'dashboard'
 			},
 			controller: 'AttentionCtrl',
 			templateUrl: 'views/attention.html'
+		})
+		.state('dashboard.collection', {
+			url: '/collection',
+			data: {
+				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				title: '我的收藏',
+				belong: 'dashboard'
+			},
+			controller: 'CollectionCtrl',
+			templateUrl: 'views/collection.html'
+		})
+		.state('dashboard.message', {
+			url: '/message',
+			data: {
+				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				title: '我的消息',
+				belong: 'dashboard'
+			},
+			controller: 'MessageCtrl',
+			templateUrl: 'views/message.html'
 		})
 		.state('login', {
 			url: '/login',
@@ -158,16 +187,16 @@ angular.module('jianboke')
 		    }
 		})
 
-		.state('mycollection', {
-			url: '/mycollection',
-			data: {
-				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-				title: '我的收藏',
-                belong: 'dashboard'
-			},
-			controller: 'MyCollectionCtrl',
-			templateUrl: 'views/myCollection.html'
-		})
+//		.state('mycollection', {
+//			url: '/mycollection',
+//			data: {
+//				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+//				title: '我的收藏',
+//                belong: 'dashboard'
+//			},
+//			controller: 'MyCollectionCtrl',
+//			templateUrl: 'views/myCollection.html'
+//		})
 		.state('userset', {
 			url: '/userset',
 			data: {

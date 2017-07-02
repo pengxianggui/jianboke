@@ -57,9 +57,9 @@ angular.module('jianboke')
 	}).factory('AuthServerProvider', function($http) {
 		return {
 			login: function(credentials) {
-				var data = 'jbk_email=' + encodeURIComponent(credentials.email) +
-		          '&jbk_password=' + encodeURIComponent(credentials.password);
-		          + '&remember-me=' + credentials.rememberMe + '&submit=Login';
+				var data = 'jbk_username=' + encodeURIComponent(credentials.username) +
+		          '&jbk_password=' + encodeURIComponent(credentials.password) +
+		          '&remember-me=' + credentials.rememberMe + '&submit=Login';
 				return $http.post('api/authentication', data, { // api/authentication 这个路径由spring security配置并处理
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded'

@@ -10,10 +10,10 @@
 				</h2>
 				<p class="error" ng-show="authenticationError">用户登录失败，请检查输入</p>
 				<div class="inset"></div>
-				<md-input-container class="md-block"> <label>邮箱</label>
-				<input type="email" name="jbk_email" ng-model="email" required>
-				<div ng-messages="form.jbk_email.$error">
-					<div ng-message="required">请输入邮箱</div>
+				<md-input-container class="md-block"> <label>用户名</label>
+				<input type="text" name="jbk_username" ng-model="username" required>
+				<div ng-messages="form.jbk_username.$error">
+					<div ng-message="required">请输入用户名</div>
 				</div>
 				</md-input-container>
 				<md-input-container class="md-block"> 

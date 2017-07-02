@@ -34,14 +34,21 @@ angular.module('jianboke')
 	      });
 	      if ($scope.form.$valid) {
 	        Auth.login({
-	          email: $scope.email,
+	          username: $scope.username,
 	          password: $scope.password,
 	          rememberMe: $scope.rememberMe
 	        }).then(function(data) {
 	          //提示登录成功，并定向到dashboard路由；
 	        	console.log(data);
+                $scope.authenticationError = false;
 	        	$rootScope.popMessage("登录成功", true);
-	        	$state.go('dashboard');
+	        	console.log($rootScope.previousStateName);
+	        	if ($rootScope.previousStateName === 'login' || $rootScope.previousStateName === undefined) {
+                   $state.go('dashboard');
+                } else {
+                   console.log($rootScope);
+                   $rootScope.back();
+                }
 	        	try {
                     // 在cookie中保存密码按钮的状态,如果保存状态为true，同时保存用户名和密码
                     var expireDate = new Date();

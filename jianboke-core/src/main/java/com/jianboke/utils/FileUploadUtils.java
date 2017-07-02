@@ -102,4 +102,50 @@ public class FileUploadUtils extends ImgPathConfig {
 			}
 		}
 	}
+
+	/**
+	 * 上传文章markdown编辑器中的图片
+	 * @param file
+	 * @return
+	 */
+	public Map<String, Object> uploadArticleImg(MultipartFile file) {
+		log.info("begin ulpload article img...");
+		Map<String, Object> map = new HashMap<>();
+		String rootPath = this.getBaseUrl();
+		String filename = file.getOriginalFilename();
+		String imgPath = "img/article/" + filename; // 返回给前端
+		File saveFile = new File(rootPath + "/" + imgPath);
+		OutputStream os = null;
+		try {
+			os = new FileOutputStream(saveFile);
+			if (!saveFile.exists()) {
+				saveFile.createNewFile();
+			}
+			InputStream in = file.getInputStream();
+			byte buffer[] = new byte[4 * 1024];
+			int length = 0;
+			while((length = in.read(buffer)) != -1) {
+				os.write(buffer, 0, length);
+			}
+			os.flush();
+			map.put("success", 1);
+			map.put("message", "上传成功");
+			map.put("url", this.getMdImgRootPath() + imgPath);
+			return map;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			map.put("success", 0);
+			map.put("message", "上传失败");
+			map.put("url", imgPath);
+			return map;
+		} finally {
+			try {
+				os.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 }

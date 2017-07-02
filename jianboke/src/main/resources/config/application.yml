@@ -1,3 +1,20 @@
+server:
+  port: 6969
+#  session:
+#    cookie:
+#      name: SSID
+#  tomcat:
+#    remote-ip-header: X-Forwarded-For
+#    protocol-header: X-Forwarded-Proto
+#  compression:
+#    enabled: true
+#    mime-types: application/x-java-serialized-object,application/json,application/xml,text/html,text/xml,text/plain
+info:
+  build:
+    artifact: "@project.artifactId@"
+    name: "@project.name@"
+    description: "@project.description@"
+    version: "@project.version@"
 spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/jianboke?autoReconnect=true
@@ -11,8 +28,6 @@ logging:
     org.springframework: INFO
     org.hibernate: WARN
     liquibase: WARN
-server:
-  port: 6969
 app:
   work:
     directory: target/work
@@ -21,6 +36,7 @@ app:
 data:
   imgConfig:
     baseUrl: E:\idea_workspace\jianboke-dev\jianboke\src\main\resources\static
+    mdImgRootPath: http://localhost:6969/
   email:
     host: smtp.aliyun.com
     sender: jianboke@aliyun.com

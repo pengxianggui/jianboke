@@ -68,8 +68,8 @@ angular.module('jianboke')
         $scope.toggleValue = $mdMedia('gt-md'); // boolean
         $scope.currentchapOrArt = entity.data; //当前选中的chapter或article, 默认是当前书本
 
-        $scope.isOpenRight = function(){
-          return $mdSidenav('right').isOpen();
+        $scope.isOpenLeft = function(){
+          return $mdSidenav('left').isOpen();
         };
         if ($state.params.type === 'article' && $state.params.resourceId) {
             $scope.articleId = $state.params.resourceId;
