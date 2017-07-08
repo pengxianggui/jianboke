@@ -43,6 +43,12 @@
 		<artifactId>spring-boot-starter-test</artifactId>
 		<scope>test</scope>
 	</dependency>
+    <!-- 支持项目打war包后 部署到外部tomcat容器中 -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-tomcat</artifactId>
+        <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-logging</artifactId>
@@ -114,6 +120,12 @@
       <dependency>
           <groupId>com.fasterxml.jackson.datatype</groupId>
           <artifactId>jackson-datatype-hibernate5</artifactId>
+      </dependency>
+      <!-- 生成jpa高级查询的 Domain_ 类 -->
+      <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-jpamodelgen</artifactId>
+          <optional>true</optional>
       </dependency>
       <!--<dependency>-->
           <!--<groupId>org.mapstruct</groupId>-->

@@ -7,12 +7,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import com.jianboke.domain.criteria.ArticleCriteria;
+import com.jianboke.domain.criteria.ArticleCriteriaJDBC;
+import com.jianboke.domain.specification.ArticleSpecification;
 import com.jianboke.enumeration.HttpReturnCode;
 import com.jianboke.enumeration.ResourceName;
 import com.jianboke.mapper.ArticleMapper;
 import com.jianboke.model.ArticleModel;
 import com.jianboke.model.RequestResult;
 import com.jianboke.model.ValidationResult;
+import com.jianboke.repository.BookRepository;
 import com.jianboke.service.ArticleService;
 import com.jianboke.service.BookChapterArticleService;
 import com.jianboke.service.UserAuhtorityService;
@@ -20,6 +23,10 @@ import com.jianboke.utils.FileUploadUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -58,27 +65,43 @@ public class ArticleController {
 	@Autowired
 	private FileUploadUtils fileUploadUtils;
 
+	@Autowired
+	private BookRepository bookRepository;
+
+//	@RequestMapping(value = "/article", method = RequestMethod.GET)
+//	@Transactional(readOnly = true)
+//	public Map<String, Object> query(@ModelAttribute ArticleCriteriaJDBC criteria) {
+//		log.info("Rest request to get Articles by criteria :{}", criteria);
+//		Map<String, Object> map = new HashMap<>();
+//		try {
+//			List<ArticleModel> modelList = new ArrayList<>();
+//			articleService.queryByCriteria(criteria).forEach(article ->
+//					modelList.add(articleMapper.entityToModel(article)));
+//			map.put("result", "success");
+//			map.put("data", modelList);
+//		} catch (SQLException e) {
+//			if (log.isDebugEnabled()) {
+//				e.printStackTrace();
+//			}
+//			map.put("result", "fail");
+//			map.put("data", null);
+//		}
+//		return map;
+//	}
+
 	@RequestMapping(value = "/article", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
-	public Map<String, Object> query(@ModelAttribute ArticleCriteria criteria) {
-		log.info("Rest request to get Articles by criteria :{}", criteria);
-		Map<String, Object> map = new HashMap<>();
-		try {
-			List<ArticleModel> modelList = new ArrayList<>();
-			articleService.queryByCriteria(criteria).forEach(article ->
-					modelList.add(articleMapper.entityToModel(article)));
-			map.put("result", "success");
-			map.put("data", modelList);
-		} catch (SQLException e) {
-			if (log.isDebugEnabled()) {
-				e.printStackTrace();
-			}
-			map.put("result", "fail");
-			map.put("data", null);
+	public Page<ArticleModel> query(@ModelAttribute ArticleCriteria criteria, @PageableDefault Pageable pageable) {
+		log.info("Rest request to get Articles by criteria :{}, pageable:{}", criteria, pageable);
+		if (criteria.getBookId() != null) {
+			criteria.setBook(bookRepository.findOne(criteria.getBookId()));
 		}
-		return map;
+		Page<Article> page = articleRepository.findAll(new ArticleSpecification(criteria), pageable); // 分页查询
+		List<ArticleModel> list = new ArrayList<>();
+		page.getContent().forEach(t -> list.add(articleMapper.entityToModel(t)));
+		return new PageImpl<ArticleModel>(list, pageable, page.getTotalElements());
 	}
-	
+
 	/**
 	 * 根据关键字过滤.关键字为-1时，搜索所有的Article
 	 * @param filter

@@ -37,7 +37,7 @@ public class Book extends AbstractAuditingEntity {
 
 	@Column(name="second_author_id", nullable = true)
 	private Long secondAuthorId;
-	
+
 	public Long getSecondAuthorId() {
 		return secondAuthorId;
 	}

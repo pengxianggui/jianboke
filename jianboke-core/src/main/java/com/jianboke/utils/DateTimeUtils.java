@@ -5,12 +5,12 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
+ * 日期转换：Date —— LocalDateTime
  * Created by pengxg on 2017/4/24.
  */
 public class DateTimeUtils {
 
     public static LocalDateTime toLdt(Date date) {
-        System.out.println(date);
         if (date != null) {
             return LocalDateTime.ofInstant(Instant.ofEpochMilli(date.getTime()), ZoneOffset.UTC);
         }

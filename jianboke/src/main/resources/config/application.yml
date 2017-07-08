@@ -21,6 +21,8 @@ spring:
     driverClassName: com.mysql.jdbc.Driver
     username: root
     password: 123456
+    validation-query: SELECT 1
+    test-on-borrow: true
 logging:
   file: target/jianboke.log
   level:

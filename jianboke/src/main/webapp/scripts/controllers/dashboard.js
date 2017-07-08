@@ -3,7 +3,6 @@
 angular.module('jianboke')
 	.controller('DashBoardCtrl', function($scope, $timeout, $mdSidenav, $log, $state, $mdDialog, Book, Article, $rootScope) {
 		console.log('DashBoardCtrl');
-		console.log($state.current.name);
 		$scope.state = $state.current.name;
 		$scope.setChoseItem = function(param) {
 		    $scope.choseItem = param;
@@ -66,25 +65,109 @@ angular.module('jianboke')
 	    getBooks();
 	})
 	.controller('BlogListCtrl', function($scope, $timeout, $state, Article, Book, $mdSidenav, $log, $mdDialog, $rootScope) {
-	    console.log('BlogListCtrl');
-
-	    var pageSize = 10;
-        $scope.query;
-        $scope.articles = [];
-        $scope.end = false; // 文章显示是否到底了
-        $scope.goToWrite = function() {
-            $state.go('blog.newblog');
+	    var bookmark; // 书签：保留页码
+	    $scope.selected = [];
+	    $scope.query = { // 搜索的条件
+            filter: '',
+            bookId: '0',
+            order: '-id',
+            page: 1,
+            size: 10
         }
+
+        $scope.advancedSearchFlag = false; // 高级搜索区域默认隐藏
+        $scope.advancedSearchToggle = function(flag) {
+          $scope.advancedSearchFlag = !flag;
+        }
+
+        $scope.onChange = function() {
+          var sort = $scope.query.order;
+          if (sort && sort.length > 0) {
+            if (sort.charAt(0) === '-') {
+              sort = sort.substring(1) + ',desc'; //降序
+            } else {
+              sort = sort + ',asc'; // 升序
+            }
+//            sort = sort + ", title,asc";
+          }
+          return Article.get({
+            page: $scope.query.page - 1,
+            size: $scope.query.size,
+            sort: sort,
+            filter: $scope.query.filter,
+            bookId: $scope.query.bookId
+          }, function(value, responseHeaders) {
+            $scope.data = value;
+            console.log($scope.data.content);
+          }).$promise;
+        }
+
+        $scope.advancedSearchSave = function(e) {
+          $rootScope.showLoading();
+          $scope.selected = [];
+          var sort = $scope.query.order;
+          if (sort && sort.length > 0) {
+            if (sort.charAt(0) === '-') {
+              sort = sort.substring(1) + ',desc';
+            } else {
+              sort = sort + ',asc';
+            }
+          }
+          var params = {
+              page: $scope.query.page - 1,
+              size: $scope.query.size,
+              sort:sort,
+              ifPublic: $scope.query.advancedSearchIfPublic,
+              ifAllowReprint:$scope.query.advancedSearchIfAllowReprint,
+              ifAllowComment:$scope.query.advancedSearchIfAllowComment
+          };
+          return Article.get(params, function(value, responseHeaders) {
+            $scope.data = value;
+            $rootScope.hideLoading();
+          }).$promise;
+        }
+
+        $scope.cleanAdvancedSearch = function() { //清除高级搜索条件
+          $scope.query.advancedSearchIfPublic = null;
+          $scope.query.advancedSearchIfAllowReprint = null;
+          $scope.query.advancedSearchIfAllowComment = null;
+          $scope.promise = $scope.onChange();
+        }
+
+        $scope.refresh = function(event) {
+          $scope.advancedSearchFlag = false;
+          $scope.cleanAdvancedSearch();
+        }
+
+        // 翻页
+        $scope.pageRefresh = function() {
+          if ($scope.advancedSearchFlag == false) {//收起，调取所有数据
+            $scope.promise = $scope.onChange();
+          } else {//未收起，根据条件查询
+            $scope.promise = $scope.advancedSearchSave();
+          }
+        }
+
+        $scope.$watch('query.filter', function(newValue, oldValue) { //快速搜索过滤
+          if (!oldValue) bookmark = $scope.query.page;
+          if (newValue !== oldValue) $scope.query.page = 1;
+          if (!newValue) $scope.query.page = bookmark;
+          $scope.refresh();
+        });
+
+        // 清除过滤字符
+        $scope.clearFilter = function() {
+            $scope.query.filter = '';
+            $scope.refresh();
+        }
+
         // 删除文章
         $scope.remove = function(id) {
             $rootScope.confirmMessage("提示:", "删除文章会一并删除该文章的归档记录。确定要这样做吗？", true, "确定", "取消")
               .then(function() {
                 Article.delete({id: id}).$promise.then(function(data) {
                     $rootScope.popMessage("删除成功！", true);
-                    // 重新从第一行开始查询
-                    $scope.articles = [];
-                    initQueryPage($scope.query.findBy, null, null, $scope.query.filter);
-                    getAllArticle($scope.query); // 重新获取articles
+                    $scope.refresh();
                 }).catch(function(httpResponse) {
                     $rootScope.popMessage("删除失败！", false);
                 });
@@ -101,9 +184,11 @@ angular.module('jianboke')
                     }
                 },
                 template: '<pxg-blog-set article="article"></pxg-blog-set>',
-//                templateUrl: 'views/blog.set.html',
+                // templateUrl: 'views/blog.set.html',
                 parent: angular.element(document.body),
                 clickOutsideToClose: true
+            }).then(function(){},function() {
+                $scope.refresh();
             });
         }
 
@@ -113,65 +198,7 @@ angular.module('jianboke')
             });
         };
 
-        // 追加式获取所有article,分页，排序，分组查询
-        var getAllArticle = function(criteria) {
-            Article.get(criteria, function(result, responseHeader) {
-                if (result.result == 'success') {
-                    if (result.data.length > 0)
-                        $scope.articles.push.apply($scope.articles, result.data);
-                        console.log($scope.articles);
-                    if (result.data.length < pageSize)
-                        $scope.end = true;
-                } else {
-                    $rootScope.popMessage("加载失败", false);
-                }
-            }).$promise;
-        };
-
-        // 加载更多...
-        $scope.getMoreArticle = function() {
-            initQueryPage($scope.query.findBy, ++$scope.query.page, $scope.query.initSize, $scope.query.filter); // 通过initPage++实现加载下一页
-            getAllArticle($scope.query);
-        }
-
-        $scope.tiles = [
-             {'icon': '', 'title': 'title1', 'background': 'md-bg-green'},
-             {'icon': '', 'title': 'title2', 'background': 'md-bg-gray'},
-             {'icon': '', 'title': 'title3', 'background': 'md-bg-purple'},
-             {'icon': '', 'title': 'title4', 'background': 'md-bg-blue'},
-             {'icon': '', 'title': 'title5', 'background': 'md-bg-black'},
-             {'icon': '', 'title': 'title6', 'background': 'md-bg-green'}
-        ];
-
-        // 刷新articleList
-        $scope.refreshArticleList = function() {
-            $scope.articles = [];
-            $scope.end = false;
-            initQueryPage($scope.query.findBy, null, null, $scope.query.filter);
-            getAllArticle($scope.query);
-        }
-
-        // 清除过滤字符
-        $scope.clearFilter = function() {
-            $scope.query.filter = '';
-            $scope.refreshArticleList();
-        }
-
-        var initialize = function() { // 初始化dashboard.html所需的数据
-            initQueryPage(); //初始化
-            getBooks();
-            getAllArticle($scope.query);
-        }
-        // 初始化查询: 不传入值，则为初始值
-        var initQueryPage = function(findBy, page, size, filter) {
-            $scope.query = {
-                findBy: findBy?findBy:'all', // 默认所有
-                page: page?page:1, // 默认查询第一页
-                size: size?size:pageSize, // 默认每次查询的数量
-                filter: filter?filter:''
-            };
-        }
-        initialize();
+        getBooks();
 	})
 	.controller('AttentionCtrl', function($scope, $timeout, $state, $mdSidenav, $log, $mdDialog){
 	    console.log('AttentionCtrl');

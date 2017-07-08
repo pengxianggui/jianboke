@@ -17,6 +17,8 @@ angular.module('jianboke', [
      'ui.validate',
      'ngFileUpload',
      "integralui",
+    'fixed.table.header',
+    'md.data.table',
      "mdPickers"
 ]).run(function($rootScope, $state, $templateCache, Auth, $window, $mdDialog, $mdToast) {
     console.log('run.js');
@@ -113,6 +115,31 @@ angular.module('jianboke', [
 	        .ok("知道了");
 		  return $mdDialog.show(alert);
     }
+
+    $templateCache.put('loading.html', '<md-dialog style="background-color:transparent;box-shadow:none;z-index:99999;overflow:hidden">' +
+      '<div layout="row" layout-sm="column" layout-align="space-around" aria-label="wait">' +
+        '<md-progress-circular md-mode="indeterminate"></md-progress-circular>' +
+//      '<div loader-css="line-scale"></div>' +
+      '</div>' +
+      '</md-dialog>');
+
+    /**
+     * 显示遮罩
+     */
+    $rootScope.showLoading = function () {
+      $mdDialog.show({
+        templateUrl: 'loading.html',
+        parent: angular.element(document.body),
+        clickOutsideToClose: false,
+        fullscreen: false
+      });
+    };
+    /**
+     * 隐藏遮罩
+     */
+    $rootScope.hideLoading = function () {
+      $mdDialog.cancel();
+    };
 })
 //.controller('HeaderCtrl', function($scope, $rootScope, $state) {
 //    console.log('HeaderCtrl');

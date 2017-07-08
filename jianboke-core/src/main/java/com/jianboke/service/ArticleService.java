@@ -3,7 +3,7 @@ package com.jianboke.service;
 import com.jianboke.domain.AccountDefaultSetting;
 import com.jianboke.domain.Article;
 import com.jianboke.domain.BookChapterArticle;
-import com.jianboke.domain.criteria.ArticleCriteria;
+import com.jianboke.domain.criteria.ArticleCriteriaJDBC;
 import com.jianboke.model.ArticleModel;
 import com.jianboke.repository.AccountDefaultSettingRepository;
 import com.jianboke.repository.ArticleRepository;
@@ -55,7 +55,7 @@ public class ArticleService {
     private PreparedStatement stmt = null;
     private ResultSet rs = null;
 
-    public List<Article> queryByCriteria(ArticleCriteria criteria) throws SQLException {
+    public List<Article> queryByCriteria(ArticleCriteriaJDBC criteria) throws SQLException {
         List<Article> resultList;
         String findBy = criteria.getFindBy(),
                filter = criteria.getFilter();
@@ -139,7 +139,6 @@ public class ArticleService {
             a.setCreatedDate(DateTimeUtils.toLdt(rs.getDate("created_date")));
             a.setLastModifiedDate(DateTimeUtils.toLdt(rs.getDate("last_modified_date")));
             temp.add(a);
-            System.out.println(a.toString());
         }
         return temp;
     }

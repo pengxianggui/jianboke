@@ -47,7 +47,7 @@ angular.module('jianboke')
                    $state.go('dashboard');
                 } else {
                    console.log($rootScope);
-                   $rootScope.back();
+                   $state.go($rootScope.previousStateName);
                 }
 	        	try {
                     // 在cookie中保存密码按钮的状态,如果保存状态为true，同时保存用户名和密码

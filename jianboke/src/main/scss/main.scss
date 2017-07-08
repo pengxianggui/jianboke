@@ -77,6 +77,12 @@ md-card.white-card-toolbar {
 .padding-10 {
     padding: 10px;
 }
+
+.padding-top-10-bottom-5 {
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
 // 定义$mdToast的主题样式
 md-toast.md-success-theme .md-toast-content {
   background-color: #4CAF50;

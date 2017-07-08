@@ -1,42 +1,32 @@
 package com.jianboke.domain.criteria;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jianboke.domain.Book;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
- * 用于后端传参的匹配
- * Created by pengxg on 2017/3/25.
+ * Created by pengxg on 2017/7/3.
  */
-@JsonIgnoreProperties(ignoreUnknown = true) // 忽略前端传来参数不匹配的字段
 public class ArticleCriteria {
-    private String findBy;
-    private Integer page;
-    private Integer size;
+
     private String filter;
+    private Long bookId;
+    private Book book;
+    private String title;
+    private String labels;
+    private String secondAuthorName;
+    private Boolean ifOriginal;
+    private Boolean ifPublic;
+    private Boolean ifAllowReprint;
+    private Boolean ifAllowComment;
+    private Boolean ifAllowSecondAuthor;
 
-    public String getFindBy() {
-        return findBy;
+    public Book getBook() {
+        return book;
     }
 
-    public void setFindBy(String findBy) {
-        this.findBy = findBy;
-    }
-
-    public Integer getPage() {
-        return page;
-    }
-
-    public void setPage(Integer page) {
-        this.page = page;
-    }
-
-    public Integer getSize() {
-        return size;
-    }
-
-    public void setSize(Integer size) {
-        this.size = size;
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     public String getFilter() {
@@ -45,6 +35,78 @@ public class ArticleCriteria {
 
     public void setFilter(String filter) {
         this.filter = filter;
+    }
+
+    public Long getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getLabels() {
+        return labels;
+    }
+
+    public void setLabels(String labels) {
+        this.labels = labels;
+    }
+
+    public String getSecondAuthorName() {
+        return secondAuthorName;
+    }
+
+    public void setSecondAuthorName(String secondAuthorName) {
+        this.secondAuthorName = secondAuthorName;
+    }
+
+    public Boolean isIfOriginal() {
+        return ifOriginal;
+    }
+
+    public void setIfOriginal(Boolean ifOriginal) {
+        this.ifOriginal = ifOriginal;
+    }
+
+    public Boolean isIfPublic() {
+        return ifPublic;
+    }
+
+    public void setIfPublic(Boolean ifPublic) {
+        this.ifPublic = ifPublic;
+    }
+
+    public Boolean isIfAllowReprint() {
+        return ifAllowReprint;
+    }
+
+    public void setIfAllowReprint(Boolean ifAllowReprint) {
+        this.ifAllowReprint = ifAllowReprint;
+    }
+
+    public Boolean isIfAllowComment() {
+        return ifAllowComment;
+    }
+
+    public void setIfAllowComment(Boolean ifAllowComment) {
+        this.ifAllowComment = ifAllowComment;
+    }
+
+    public Boolean isIfAllowSecondAuthor() {
+        return ifAllowSecondAuthor;
+    }
+
+    public void setIfAllowSecondAuthor(Boolean ifAllowSecondAuthor) {
+        this.ifAllowSecondAuthor = ifAllowSecondAuthor;
     }
 
     @Override

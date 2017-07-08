@@ -1,16 +1,14 @@
 package com.jianboke.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.jianboke.annotation.ColumnComment;
+
+import java.util.Collection;
 
 @Entity
 @Table(name = "articles")
@@ -72,6 +70,14 @@ public class Article extends AbstractAuditingEntity {
 	@Column(name = "if_set_top")
 	@ColumnComment("是否在个人主页置顶")
 	private boolean ifSetTop = false; //默认false
+
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable(name = "book_chapter_articles",
+			joinColumns = { @JoinColumn(name = "article_id", referencedColumnName = "id")},
+			inverseJoinColumns = { @JoinColumn(name = "book_id", referencedColumnName = "id")}
+	)
+	private Collection<Book> books;
 	
 	public Long getSecondAuthorId() {
 		return secondAuthorId;
@@ -175,6 +181,14 @@ public class Article extends AbstractAuditingEntity {
 
 	public void setIfSetTop(boolean ifSetTop) {
 		this.ifSetTop = ifSetTop;
+	}
+
+	public Collection<Book> getBooks() {
+		return books;
+	}
+
+	public void setBooks(Collection<Book> books) {
+		this.books = books;
 	}
 
 	@Override

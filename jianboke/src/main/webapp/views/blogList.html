@@ -1,14 +1,14 @@
 <md-content flex layout="column">
-    <md-card layout="row">
+    <md-card layout="row" layout-align="center center">
         <md-button ng-click="toggleLeft()"
                    class="md-primary md-icon-button" hide-gt-md style="margin: auto 4px">
             <md-icon>menu</md-icon>
         </md-button>
         <md-input-container md-no-float class="no-margin margin-left-right-10" style="padding: 0 10px">
-            <md-select ng-model="query.findBy" placeholder="分类查询" style="margin-top: 8px;" ng-change="refreshArticleList()">
-                <md-option value="all">全部</md-option>
+            <md-select ng-model="query.bookId" placeholder="分类查询" ng-change="refresh();">
+                <md-option value="0">全部</md-option>
                 <md-option ng-repeat="book in books" value="{{book.id}}">{{book.bookName}}</md-option>
-                <md-option value="alone">未分类</md-option>
+                <md-option value="-1">未分类</md-option>
             </md-select>
         </md-input-container>
         <!--<md-input-container md-no-float class="margin-left-right-10" style="color: black">-->
@@ -18,6 +18,26 @@
         <!--<md-option value="title">博客标题</md-option>-->
         <!--</md-select>-->
         <!--</md-input-container>-->
+        <span ng-show="advancedSearchFlag">
+            <md-input-container md-no-float class="no-margin margin-left-right-10" style="padding: 0 10px">
+                <md-select ng-model="query.advancedSearchIfPublic" placeholder="是否公开">
+                    <md-option value="true">是</md-option>
+                    <md-option value="false">否</md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container md-no-float class="no-margin margin-left-right-10" style="padding: 0 10px">
+                <md-select ng-model="query.advancedSearchIfAllowReprint" placeholder="是否允许转载">
+                    <md-option value="true">是</md-option>
+                    <md-option value="false">否</md-option>
+                </md-select>
+            </md-input-container>
+            <md-input-container md-no-float class="no-margin margin-left-right-10" style="padding: 0 10px">
+                <md-select ng-model="query.advancedSearchIfAllowComment" placeholder="是否允许评论">
+                    <md-option value="true">是</md-option>
+                    <md-option value="false">否</md-option>
+                </md-select>
+            </md-input-container>
+        </span>
         <span flex></span>
         <form name="search" ng-submit="refreshArticleList()">
             <md-input-container style="margin: 4px;" md-no-float>
@@ -28,67 +48,82 @@
                 <md-button class="md-icon-button" ng-if="!query.filter">
                     <md-icon>search</md-icon>
                 </md-button>
-
             </md-input-container>
         </form>
+        <md-button class="md-icon-button" ng-click="advancedSearchToggle(advancedSearchFlag)">
+            <md-tooltip>高级搜索</md-tooltip>
+            <md-icon>{{advancedSearchFlag ? 'gps_fixed' : 'location_searching'}}</md-icon>
+        </md-button>
     </md-card>
-    <div class="article-list" flex>
-        <md-content flex>
-            <md-list class="md-dense" flex>
-                <md-list-item class="md-2-line" layout="row" ng-repeat="article in articles" >
-                    <div class="md-list-item-text" layout="column">
-                        <div class="no-margin" layout="row">
-									<span>
-										<a class="h2 article-title" ng-class="{true:'article-title-dark'}[showDarkTheme]" ui-sref="blog.readBlog({id:article.id})" target="_blank"
-                                           ng-bind="article.title"></a>
-									</span>
-                            <span flex></span>
-                            <pxg-chips-show chips-data="article.labels" chips-style="chipsStyle"></pxg-chips-show>
+    <md-content style="padding:10px" flex layout="column">
+        <md-table-container flex>
+            <table md-table md-row-select multiple ng-model="selected" md-progress="promise">
+                <thead fix-head md-head md-order="query.order" md-on-reorder="advancedSearchSave">
+                <tr md-row>
+                    <th md-column md-order-by="title">标题</th>
+                    <th md-column width="10%">操作</th>
+                </tr>
+                </thead>
+                <tbody md-body>
+                <tr md-row md-select="article" md-select-id="{{article.id}}" ng-repeat="article in data.content">
+                    <td md-cell>
+                        <div class="md-list-item-text" layout="column">
+                            <div flex class="no-margin padding-top-10-bottom-5" layout="row">
+                                <h3 class="no-margin">
+                                    <a class="h2 article-title" ng-class="{true:'article-title-dark'}[showDarkTheme]" ui-sref="blog.readBlog({id:article.id})" target="_blank"
+                                       ng-bind="article.title"></a>
+                                </h3>
+                                <span flex></span>
+                                <pxg-chips-show chips-data="article.labels" chips-style="chipsStyle"></pxg-chips-show>
+                            </div>
+                            <span style="padding-bottom: 5px;" class="md-hue-1">时间、喜欢数量、评论数量....</span>
                         </div>
-                        <h3 style="padding: 2px 0;" class="md-hue-1">时间、喜欢数量、评论数量....</h3>
-                    </div>
-                    <div>
-                        <md-button class="md-icon-button no-margin" ui-sref="blog.edit({id: article.id})">
-                            <md-tooltip md-direction="bottom">编辑</md-tooltip>
-                            <md-icon>edit</md-icon>
-                        </md-button>
-                        <md-button class="md-icon-button no-margin" ng-click="updateArticleSet(article)">
-                            <md-tooltip md-direction="bottom">权限</md-tooltip>
-                            <md-icon>lock</md-icon>
-                        </md-button>
-                        <md-button class="md-icon-button no-margin" ng-click="remove(article.id)">
-                            <md-tooltip md-direction="bottom">删除</md-tooltip>
-                            <md-icon>delete</md-icon>
-                        </md-button>
-                        <!--
-                        <md-menu class="md-dense">
-                            <md-button class="md-icon-button" ng-mouseenter="$mdMenu.open()">
-                                <md-icon>settings</md-icon>
+                    </td>
+                    <td md-cell>
+                        <div style="width: 96px;">
+                            <md-button class="md-icon-button no-margin" ui-sref="blog.edit({id: article.id})">
+                                <md-tooltip md-direction="bottom">编辑</md-tooltip>
+                                <md-icon>edit</md-icon>
                             </md-button>
-                            <md-menu-content width="1" ng-mouseleave="$mdMenu.close()">
-                                <md-menu-item class="md-dense">
-                                    <md-button ng-click="remove(article.id)">
-                                        <md-icon>delete</md-icon>
-                                        <span>删除</span>
-                                    </md-button>
-                                </md-menu-item>
-                                <md-menu-item>
-                                    <md-button ng-click="updateArticleSet(article)">
-                                        <md-icon>lock</md-icon>
-                                        <span>权限设置</span>
-                                    </md-button>
-                                </md-menu-item>
-                            </md-menu-content>
-                        </md-menu>
-                        -->
-                    </div>
-                </md-list-item>
-                <md-divider></md-divider>
-                <md-list-item>
-                    <div class="load-more" ng-if="!end"><md-button ng-click="getMoreArticle()">加载更多...</md-button></div>
-                    <div class="load-more" ng-if="end">已经到底了</div>
-                </md-list-item>
-            </md-list>
-        </md-content>
-    </div>
+                            <!--
+                            <md-button class="md-icon-button no-margin" ng-click="updateArticleSet(article)">
+                                <md-tooltip md-direction="bottom">权限</md-tooltip>
+                                <md-icon>lock</md-icon>
+                            </md-button>
+                            <md-button class="md-icon-button no-margin" ng-click="remove(article.id)">
+                                <md-tooltip md-direction="bottom">删除</md-tooltip>
+                                <md-icon>delete</md-icon>
+                            </md-button>
+                            -->
+                            <md-menu class="md-dense">
+                                <md-button class="md-icon-button" ng-click="$mdMenu.open()">
+                                    <md-icon>settings</md-icon>
+                                </md-button>
+                                <md-menu-content width="1" ng-mouseleave="$mdMenu.close()">
+                                    <md-menu-item class="md-dense">
+                                        <md-button ng-click="remove(article.id)">
+                                            <md-icon>delete</md-icon>
+                                            <span>删除</span>
+                                        </md-button>
+                                    </md-menu-item>
+                                    <md-menu-item>
+                                        <md-button ng-click="updateArticleSet(article)">
+                                            <md-icon>lock</md-icon>
+                                            <span>权限设置</span>
+                                        </md-button>
+                                    </md-menu-item>
+                                </md-menu-content>
+                            </md-menu>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+        <md-table-pagination md-label="{page: '页', rowsPerPage: '每页行数:', of: '共'}"
+                             md-limit="query.size" md-limit-options="[10, 20, 50, 100]"
+                             md-page="query.page" md-total="{{data.totalElements}}"
+                             md-on-paginate="pageRefresh" md-page-select>
+        </md-table-pagination>
+    </md-content>
 </md-content>
