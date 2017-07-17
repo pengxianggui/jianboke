@@ -20,6 +20,7 @@ import com.jianboke.service.ArticleService;
 import com.jianboke.service.BookChapterArticleService;
 import com.jianboke.service.UserAuhtorityService;
 import com.jianboke.utils.FileUploadUtils;
+import com.jianboke.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,6 +161,38 @@ public class ArticleController {
 		return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_ERROR, "保存失败"));
 	}
 
+	// 暂时弃用，批量设置文章权限放在树的组节点进行操作会更好，而不是文章列表页
+	@RequestMapping(value = "/article/updateBlogSet", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<RequestResult> updateBlogSet(@RequestParam("ids") String ids,
+													   @RequestParam("ifPublic") Boolean ifPublic,
+													   @RequestParam("ifAllowReprint") Boolean ifAllowReprint,
+													   @RequestParam("ifAllowComment") Boolean ifAllowComment,
+													   @RequestParam("ifAllowSecondAuthor") Boolean ifAllowSecondAuthor,
+													   @RequestParam("ifSetTop") Boolean ifSetTop) {
+		log.info("REST request to set blogs which ids is:{}", ids);
+		if (ids == null || ids.trim().equals("")) return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_PARAM_WRONG, "参数错误:ids"));
+		List<Article> articles = new ArrayList<>();
+		List<String> idList = StringUtils.split(ids, ",");
+		idList.stream().map(idStr -> Long.parseLong(idStr)).forEach(id -> {
+			if (userAuhtorityService.ifHasAuthority(ResourceName.ARTICLE, id)) { // 权限校验
+				Optional.ofNullable(articleRepository.findOne(id)).map(article -> {
+					article.setIfPublic(ifPublic);
+					article.setIfAllowReprint(ifAllowReprint);
+					article.setIfAllowComment(ifAllowComment);
+					article.setIfAllowSecondAuthor(ifAllowSecondAuthor);
+					article.setIfSetTop(ifSetTop);
+					Article a = articleRepository.saveAndFlush(article);
+					if (a != null) articles.add(a);
+					return a;
+				}).orElseGet(null);
+			}
+		});
+		if (idList.size() == articles.size()) // 全部更新成功
+			return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS));
+		else // 部分更新成功 or 全部更新失败
+			return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_ERROR, articles));
+	}
+
 	@RequestMapping(value = "/article/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ArticleModel> get(@PathVariable Long id) {
 		log.debug("REST request to get a Article by id:{}", id);
@@ -171,6 +204,7 @@ public class ArticleController {
 		}
 		return ResponseEntity.ok().body(null); // 不能把没有权限的资源返回
 	}
+
 	@javax.transaction.Transactional
 	@RequestMapping(value = "/article/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Article remove(@PathVariable Long id) {
@@ -193,6 +227,16 @@ public class ArticleController {
 		System.out.println(file.getOriginalFilename());
 		response.setHeader("X-Frame-Options", "SAMEORIGIN");// 解决IFrame拒绝的问题
 		return fileUploadUtils.uploadArticleImg(file);
+	}
+
+	@javax.transaction.Transactional
+	@RequestMapping(value = "/article/deleteBatch/{ids}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Boolean> deleteBatch(@PathVariable String ids) {
+		log.info("REST request to batch delete articles:{}", ids);
+		if (ids == null || ids.trim().equals("")) return ResponseEntity.ok().body(Boolean.FALSE);
+		StringUtils.split(ids, ",").stream().map(id -> Long.parseLong(id))
+				.forEach(t -> remove(t));
+		return ResponseEntity.ok().body(Boolean.TRUE);
 	}
 
 //	@RequestMapping(value = "/article/ifPublic", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)

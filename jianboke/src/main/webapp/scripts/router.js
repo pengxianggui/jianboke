@@ -32,7 +32,12 @@ angular.module('jianboke')
 				belong: 'dashboard'
 		    },
 		    controller: 'BlogListCtrl',
-		    templateUrl: 'views/blogList.html'
+		    templateUrl: 'views/blogList.html',
+		    resolve: {
+		        books: function(Book) {
+		            return Book.query().$promise;
+		        }
+		    }
 		})
 		.state('dashboard.attention', {
 			url: '/attention',

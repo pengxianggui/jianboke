@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.jianboke.domain.Article;
 import com.jianboke.mapper.ChapterMapper;
 import com.jianboke.model.ChapterModel;
-import com.jianboke.repository.ArticleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.jianboke.domain.Chapter;
 import com.jianboke.repository.ChapterRepository;
-import com.jianboke.utils.ChapterModelComparator;
+import com.jianboke.comparator.ChapterModelComparator;
 
 /**
  * 生成章节树形数据结构的数据，返回前端。
@@ -27,7 +25,7 @@ public class TreeOfChapterService {
 
 	private static final Logger log = LoggerFactory.getLogger(TreeOfChapterService.class);
 	private Long expandedChapterId; //标识要定位的文章的上级id(迭代赋值)
-	
+
 	@Autowired
 	private ChapterRepository chapterRepository;
 
@@ -39,20 +37,22 @@ public class TreeOfChapterService {
 
 	@Autowired
 	private ChapterMapper chapterMapper;
-	
+
 	private ChapterModelComparator chapterModelComparator = new ChapterModelComparator();
 
 	/**
 	 * 获取一本书的章节层级结构信息。返回数据为树形结构。用BookChapterArticleModel封装
 	 * @param bookId : 传入的书本id
+	 * @param fixChapter : 需要定为的叶子章节
 	 * @return ChapterModel : 包含层级结构模型
 	 */
-	public List<ChapterModel> getTreeWithoutArticle(Long bookId) {
+	public List<ChapterModel> getTreeWithoutArticle(Long bookId, Chapter fixChapter) {
+		if (fixChapter != null && fixChapter.getId() != null && !fixChapter.getId().toString().equals("")) {
+			expandedChapterId = fixChapter.getId();
+		}
 		List<Chapter> chapterList = chapterRepository.findAllByBookId(bookId);
 		List<ChapterModel> chapterModelList = new ArrayList<>();
-		chapterList.forEach(chapter -> {
-			chapterModelList.add(chapterMapper.entityToModel(chapter));
-		});
+		chapterList.forEach(chapter -> chapterModelList.add(chapterMapper.entityToModel(chapter)));
 		
 		List<ChapterModel> rootNodes = new ArrayList<ChapterModel>(); // 存放当前chapterList中的根节点
 		List<ChapterModel> notRootNodes = new ArrayList<ChapterModel>(); //存放非根节点
@@ -75,6 +75,7 @@ public class TreeOfChapterService {
 				chapterModel.setLevel(0);
 				chapterModel.setIsArticle(false);
 				chapterModel.setItems(getChildChapter(notRootNodes, chapterModel.getId(), 0, -1l));
+				chapterModel.setExpanded(true);
 			}
 		}
 		return rootNodes;

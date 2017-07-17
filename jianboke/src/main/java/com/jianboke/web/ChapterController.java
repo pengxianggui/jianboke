@@ -53,13 +53,22 @@ public class ChapterController {
 
 	@Autowired
 	private ChapterMapper chapterMapper;
+
+	@Autowired
+	private BookChapterArticleRepository bookChapterArticleRepository;
 	
-	@RequestMapping(value = "/chapter/listChapterTreeWithoutArticle/{bookId}", method = RequestMethod.GET)
-	public ChapterModel listChapterTreeWithoutArticle(@PathVariable Long bookId) {
+	@RequestMapping(value = "/chapter/listChapterTreeWithoutArticle/{bookId}/{articleId}", method = RequestMethod.GET)
+	public ChapterModel listChapterTreeWithoutArticle(@PathVariable Long bookId, @PathVariable Long articleId) {
 		// todo 权限校验
 
-		log.info("REST Request to get A tree of Chapters that's bookId is: {}", bookId);
-		List<ChapterModel> chapterList = treeOfChapterService.getTreeWithoutArticle(bookId);
+		log.info("REST Request to get A tree of Chapters that's bookId is: {}, articleId:{}", bookId, articleId);
+		List<Chapter> chapters = bookChapterArticleRepository.queryAllChapterParentOfArticleUnderTheBook(bookId, articleId);
+		log.info("the number of chapters which under book:{}, parent of article:{}", bookId, articleId);
+		Chapter fixChapter = null;
+		if (chapters != null && chapters.size() > 0) {
+			fixChapter = chapters.get(0);
+		}
+		List<ChapterModel> chapterList = treeOfChapterService.getTreeWithoutArticle(bookId, fixChapter);
 		return chapterList.get(0);
 	}
 

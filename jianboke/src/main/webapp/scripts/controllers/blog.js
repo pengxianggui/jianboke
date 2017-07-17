@@ -23,7 +23,6 @@ angular.module('jianboke')
       			ev.stopPropagation();
       		});
       		$scope.saveArticle = function() {
-      			console.log($scope.article.content);
       			if ($scope.article.content == null || $scope.article.content == '') {
       				$rootScope.tipMessage('正文内容不能为空!');
       				return;
@@ -52,62 +51,62 @@ angular.module('jianboke')
                   });
       		}
       	})
-      	.controller('ReadBlogCtrl', function($rootScope, $scope, entity, Article, Book, Account, $mdSidenav) {
-      	    console.log('ReadBlogCtrl');
-            $scope.shareOpen = false; // 分享
-            $scope.toggleRight = buildToggler('right');
-            $scope.isOpenRight = function(){
-                return $mdSidenav('right').isOpen();
-            };
+    .controller('ReadBlogCtrl', function($rootScope, $scope, entity, Article, Book, Account, $mdSidenav) {
+        console.log('ReadBlogCtrl');
+        $scope.shareOpen = false; // 分享
+        $scope.toggleRight = buildToggler('right');
+        $scope.isOpenRight = function(){
+            return $mdSidenav('right').isOpen();
+        };
 
-            $scope.article = entity;
-            console.log(entity);
-            $scope.authorNameArr = [];
-            var getAuthorName = function(article) {
-                $scope.authorNameArr.push($rootScope.account.username);
-                if (article.secondAuthorId) {
-                    Account.getUsername({id: article.secondAuthorId}).$promise.then(function(result) {
-                        $scope.authorNameArr.push(result.data);
-                    }).catch(function(httpResponse){});
-                }
+        $scope.article = entity;
+        console.log(entity);
+        $scope.authorNameArr = [];
+        var getAuthorName = function(article) {
+            $scope.authorNameArr.push($rootScope.account.username);
+            if (article.secondAuthorId) {
+                Account.getUsername({id: article.secondAuthorId}).$promise.then(function(result) {
+                    $scope.authorNameArr.push(result.data);
+                }).catch(function(httpResponse){});
             }
-            getAuthorName($scope.article);
+        }
+        getAuthorName($scope.article);
 
-            function buildToggler(navID) {
-              return function() {
-                $mdSidenav(navID).toggle().then(function() {
-                    console.log('toggle over');
-                });
-              };
-            }
-      	})
-        .controller('BlogSetCtrl', function ($scope, $rootScope, Article, $state) {
-            console.log('BlogSetCtrl');
-            console.log($scope.article);
-            $scope.saveArticle = function() {
-                Article.update($scope.article).$promise.then(function(resp) {
-                    if (resp.code === '0000') {
-                        $rootScope.popMessage('设置成功', true);
-                    } else {
-                        $rootScope.popMessage(resp.data, false);
-                    }
-                });
-            };
-
-            $scope.$watch('article.ifPublic', function(newValue, oldValue) {
-                if (!newValue) {
-                    $scope.article.ifAllowReprint = false;
-                    $scope.article.ifAllowComment = false;
-                    $scope.article.ifAllowSecondAuthor = false;
+        function buildToggler(navID) {
+          return function() {
+            $mdSidenav(navID).toggle().then(function() {
+                console.log('toggle over');
+            });
+          };
+        }
+    })
+    .controller('BlogSetCtrl', function ($scope, $rootScope, Article, $state) {
+        console.log('BlogSetCtrl');
+        console.log($scope.article);
+        $scope.saveArticle = function() {
+            Article.update($scope.article).$promise.then(function(resp) {
+                if (resp.code === '0000') {
+                    $rootScope.popMessage('设置成功', true);
+                } else {
+                    $rootScope.popMessage(resp.data, false);
                 }
             });
+        };
 
-            $scope.watchIfPublic = function() {
-                if (!$scope.article) return;
-                if (!$scope.article.ifPublic) {
-                    $scope.article.ifAllowReprint = false;
-                    $scope.article.ifAllowComment = false;
-                    $scope.article.ifAllowSecondAuthor = false;
-                }
+        $scope.$watch('article.ifPublic', function(newValue, oldValue) {
+            if (!newValue) {
+                $scope.article.ifAllowReprint = false;
+                $scope.article.ifAllowComment = false;
+                $scope.article.ifAllowSecondAuthor = false;
             }
         });
+
+        $scope.watchIfPublic = function() {
+            if (!$scope.article) return;
+            if (!$scope.article.ifPublic) {
+                $scope.article.ifAllowReprint = false;
+                $scope.article.ifAllowComment = false;
+                $scope.article.ifAllowSecondAuthor = false;
+            }
+        }
+    });

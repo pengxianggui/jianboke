@@ -81,7 +81,7 @@ public class BookController {
 	public Book createBook(@Valid @RequestBody Book book) {
 		User user = userService.getUserWithAuthorities();
 		book.setAuthorId(user.getId());
-		Book b = bookRepository.save(book);
+		Book b = bookService.saveBook(book);
 		log.debug("REST request to save Book: {}", book);
 		return b;
 	}

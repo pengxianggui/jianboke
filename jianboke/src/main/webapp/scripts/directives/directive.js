@@ -37,7 +37,7 @@ angular.module('jianboke')
 .directive('pxgMarkDown', function($timeout,$rootScope) {
 	return {
         restrict: 'E',
-        template: '<md-content flex style="z-index: 1" data-ng-init="setValue()">' +
+        template: '<md-content flex style="z-index: 1; overflow: hidden" data-ng-init="setValue()">' +
 //			            '<md-button ng-click="setValue()"></md-button>' +
                     '<div id="editormd" flex style="z-index: 89;"></div>' +
                     '<textarea ng-model="value" style="display:none"></textarea>' +
@@ -188,6 +188,20 @@ angular.module('jianboke')
 //                    console.log('鼠标离开 button');
 //                })
             }
+        }
+    }
+})
+.directive('pxgHoverAction', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, ele, attrs) {
+            var bookArea = $(ele).find(".book-area")[0];
+            $(ele).mouseenter(function() {
+                $(bookArea).height($(ele).innerHeight() + 'px');
+            });
+            $(ele).mouseleave(function() {
+                $(bookArea).height(0);
+            })
         }
     }
 })

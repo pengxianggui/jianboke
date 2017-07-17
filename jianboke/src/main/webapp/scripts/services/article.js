@@ -10,6 +10,22 @@ angular.module('jianboke')
 			update: {
 			    url: 'api/article',
 			    method: 'PUT'
-			}
+			},
+			deleteBatch: {
+			    url: 'api/article/deleteBatch/:ids',
+			    method: 'DELETE'
+			},
+            updateBlogSet: {
+                url: 'api/article/updateBlogSet',
+                method: 'POST',
+                params: {
+                    ids: "@ids",
+                    ifPublic: "@ifPublic",
+                    ifAllowReprint: "@ifAllowReprint",
+                    ifAllowComment: "@ifAllowComment",
+                    ifAllowSecondAuthor: "@ifAllowSecondAuthor",
+                    ifSetTop: "@ifSetTop"
+                }
+            }
 		})
 	})

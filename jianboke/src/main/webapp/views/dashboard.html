@@ -6,13 +6,17 @@
 			<md-content> 
 				<md-card md-theme="{{ showDarkTheme ? 'pxg-dark-theme' : 'default' }}" md-theme-watch layout="column">
 					<md-content class="md-padding" layout="row" layout-align="center center" style="text-align: center">
-						<span layout="column" flex>
-							<md-icon ng-style="{'font-size': 100 + 'px', height: 100 + 'px', width: 100 + 'px'}">
-								account_circle
-							</md-icon>
+						<span layout="column" flex layout-align="center center">
+							<div class="avator">
+								<md-icon ng-style="{'font-size': 100 + 'px', height: 100 + 'px', width: 100 + 'px'}"
+									ng-if="!account.avatarPath">
+									account_circle
+								</md-icon>
+								<img ng-if="account.avatarPath" ng-src="{{account.avatarPath}}">
+							</div>
 							<span>{{account.username}}</span>
 							<span layout="column" layout-align="center center">
-								<md-button class="md-raised md-warn" style="width: 50%"  ui-sref="blog.edit({id: 'new'})">
+								<md-button class="md-raised md-warn" ui-sref="blog.edit({id: 'new'})">
 									<md-icon>edit</md-icon>
 									<span>写篇文档</span>
 								</md-button>
@@ -53,22 +57,33 @@
 						<md-grid-list  md-cols="6" md-cols-sm="6" md-cols-md="6" md-cols-gt-md="6"
 							 md-row-height="3:4" md-gutter-gt-sm="2px">
 						    <md-grid-tile ng-repeat="book in books"
-						                  md-rowspan="2"
+						                  md-rowspan="2" pxg-hover-action
 						                  md-colspan="2">
-							  <md-button class="height-100-percent width-100-percent no-padding no-margin" ui-sref="book({bookId: book.id})" target="_blank">
-								  <img style="width: 100%; height: 100%" ng-src="{{book.bookCoverPath}}"/>
-							  </md-button>
-						      <md-grid-tile-footer>
-						      	<h3 style="margin:0 auto">{{book.bookName}}</h3>
-						      </md-grid-tile-footer>
-						   </md-grid-tile>
-						   <md-grid-tile  md-rowspan="2" md-colspan="2"
+								<!--
+							  	<md-button class="height-100-percent width-100-percent no-padding no-margin" ui-sref="book({bookId: book.id})"
+										 style="background-image:url({{book.bookCoverPath}}); background-size: 100% 100%;">
+							  	</md-button>
+							  	-->
+							  	<img src="{{book.bookCoverPath}}" style="height: 100%; width: 100%">
+							  	<div layout="column" layout-align="space-around center" class="book-area">
+									<md-button class="no-margin md-primary md-icon-button" flex="1" ng-click="popToAddBook($event, book);">
+									  <md-icon>edit</md-icon>
+									</md-button>
+									<md-button class="no-margin md-primary md-icon-button" flex="1" ui-sref="book({bookId: book.id})">
+									  <md-icon>remove_red_eye</md-icon>
+									</md-button>
+							  	</div>
+						      	<md-grid-tile-footer>
+						      		<h3>{{book.bookName}}</h3>
+						      	</md-grid-tile-footer>
+						   	</md-grid-tile>
+						   	<md-grid-tile  md-rowspan="2" md-colspan="2"
 						                  class="book-add-grid-item">
 						   		<md-button class="height-100-percent width-100-percent no-padding no-margin"
 						   			ng-click="popToAddBook($event);">
 							      <md-icon>add</md-icon>
 						   		</md-button>
-						   </md-grid-tile>
+						   	</md-grid-tile>
 					   </md-grid-list>
 					</md-content>
 				</md-card> 

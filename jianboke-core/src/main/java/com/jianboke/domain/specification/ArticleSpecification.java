@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,9 +77,12 @@ public class ArticleSpecification extends AbstractSpecification<Article>{
             expressions.add(cb.equal(root.get(Article_.ifPublic), criteria.isIfPublic()));
         }
 
-        query.orderBy(cb.desc(root.get(Article_.ifSetTop)));
-
-
-        return predicate;
+        // 把Predicate应用到CriteriaQuery中去,因为还可以给CriteriaQuery添加其他的功能，比如排序、分组之类的
+        query.where(predicate);
+        List<Order> orders = new ArrayList<>();
+        orders.add(cb.desc(root.get(Article_.ifSetTop))); // 置顶
+        orders.add(cb.desc(root.get(Article_.id))); // id倒序
+        query.orderBy(orders);
+        return query.getRestriction();
     }
 }

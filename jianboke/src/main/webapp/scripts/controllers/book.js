@@ -5,6 +5,9 @@ angular.module('jianboke')
 	    console.log('AddToBookCtrl');
 	    $scope.type = 'EDIT';
 	    $scope.article = entity;
+	    console.log(entity);
+	    $scope.book = entity.books[0];
+	    $scope.articleId = entity.id;
 	})
 	.controller('BookAddCtrl', function($scope, $mdDialog, Upload, $timeout, Entity, Book, $rootScope, $state) { // 添加一本书
 		console.log('BookAddCtrl');
@@ -125,7 +128,7 @@ angular.module('jianboke')
 //            showContent();
 //        }, 1000);
       })
-      .controller('LeftCtrl', function ($scope, $timeout, $mdSidenav, $log) {
+    .controller('LeftCtrl', function ($scope, $timeout, $mdSidenav, $log) {
         $scope.close = function () {
           // Component lookup should always be available since we are not using `ng-if`
           $mdSidenav('left').close()
@@ -133,8 +136,8 @@ angular.module('jianboke')
               $log.debug("close LEFT is done");
             });
         };
-      })
-      .controller('RightCtrl', function ($scope, $timeout, $mdSidenav, $log) {
+    })
+    .controller('RightCtrl', function ($scope, $timeout, $mdSidenav, $log) {
         $scope.close = function () {
           // Component lookup should always be available since we are not using `ng-if`
           $mdSidenav('right').close()
@@ -142,8 +145,8 @@ angular.module('jianboke')
               $log.debug("close RIGHT is done");
             });
         };
-      })
-      .controller('BookContentCtrl', function ($scope, entity, $stateParams, $state) {
+    })
+    .controller('BookContentCtrl', function ($scope, entity, $stateParams, $state) {
         console.log('BookContentCtrl');
         $scope.datType = $stateParams.type;
         if ($scope.datType === 'chapter') {
@@ -151,4 +154,4 @@ angular.module('jianboke')
         } else {
             $scope.content = entity.content;
         }
-      })
+    })

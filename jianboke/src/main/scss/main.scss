@@ -158,6 +158,7 @@ div.avator {
     & > img {
         width: 100%;
         height: 100%;
+        border-radius: 50px;
     }
 }
 
@@ -183,4 +184,27 @@ div.avator {
     & md-icon {
         color: #fff;
     }
+}
+
+.setTop td:first-child{
+    background-image: url(/png/setTop.png);
+    background-repeat: no-repeat;
+}
+
+.bookGridFooter {
+    text-align: center;
+}
+
+.book-area {
+    background-color: rgba(0, 0, 0, .8);
+    height: 0;
+    width: 100%;
+    top: 0;
+    position: absolute;
+    overflow: hidden;
+    transition: height 0.4s;
+    z-index: 1;
+    -moz-transition: height 0.4s; /* Firefox 4 */
+    -webkit-transition: height 0.4s; /* Safari and Chrome */
+    -o-transition: height 0.4s; /* Opera */
 }

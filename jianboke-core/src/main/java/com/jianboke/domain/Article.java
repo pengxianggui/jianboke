@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.jianboke.annotation.ColumnComment;
 
 import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "articles")
@@ -74,10 +75,10 @@ public class Article extends AbstractAuditingEntity {
 	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "book_chapter_articles",
-			joinColumns = { @JoinColumn(name = "article_id", referencedColumnName = "id")},
+			joinColumns = {@JoinColumn(name = "article_id", referencedColumnName = "id")},
 			inverseJoinColumns = { @JoinColumn(name = "book_id", referencedColumnName = "id")}
 	)
-	private Collection<Book> books;
+	private Set<Book> books;
 	
 	public Long getSecondAuthorId() {
 		return secondAuthorId;
@@ -183,11 +184,11 @@ public class Article extends AbstractAuditingEntity {
 		this.ifSetTop = ifSetTop;
 	}
 
-	public Collection<Book> getBooks() {
+	public Set<Book> getBooks() {
 		return books;
 	}
 
-	public void setBooks(Collection<Book> books) {
+	public void setBooks(Set<Book> books) {
 		this.books = books;
 	}
 

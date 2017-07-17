@@ -1,5 +1,5 @@
 <md-content flex layout="column">
-    <md-card layout="row" layout-align="center center">
+    <md-card layout="row" layout-align="center center" ng-show="selected.length == 0">
         <md-button ng-click="toggleLeft()"
                    class="md-primary md-icon-button" hide-gt-md style="margin: auto 4px">
             <md-icon>menu</md-icon>
@@ -41,7 +41,7 @@
         <span flex></span>
         <form name="search" ng-submit="refreshArticleList()">
             <md-input-container style="margin: 4px;" md-no-float>
-                <input id="article-flex-input" placeholder="过滤..." type="search" name="search" ng-model="query.filter">
+                <input id="article-flex-input" placeholder="搜索..." type="search" name="search" ng-model="query.filter">
                 <md-button class="md-icon-button" ng-if="query.filter" ng-click="clearFilter();">
                     <md-icon>clear</md-icon>
                 </md-button>
@@ -50,9 +50,32 @@
                 </md-button>
             </md-input-container>
         </form>
+        <!-- todo 如何设计高级搜索的页面呈现方式
         <md-button class="md-icon-button" ng-click="advancedSearchToggle(advancedSearchFlag)">
             <md-tooltip>高级搜索</md-tooltip>
             <md-icon>{{advancedSearchFlag ? 'gps_fixed' : 'location_searching'}}</md-icon>
+        </md-button>
+        --->
+    </md-card>
+    <md-card layout="row" layout-align="center center" ng-show="selected.length > 0">
+        <md-button ng-click="toggleLeft()"
+                   class="md-primary md-icon-button" hide-gt-md style="margin: auto 4px">
+            <md-icon>menu</md-icon>
+        </md-button>
+        <span flex></span>
+        <!--
+        <md-button ng-click="addToBookBatch()" class="md-primary md-icon-button" style="margin: auto 4px;">
+            <md-tooltip>批量归档</md-tooltip>
+            <md-icon>content_copy</md-icon>
+        </md-button>
+        <md-button ng-click="updateArticleSetBatch()" class="md-primary md-icon-button" style="margin: auto 4px;">
+            <md-tooltip>批量设权</md-tooltip>
+            <md-icon>lock</md-icon>
+        </md-button>
+        -->
+        <md-button ng-click="deleteBatch()" class="md-primary md-icon-button" style="margin: auto 4px;">
+            <md-tooltip>批量删除</md-tooltip>
+            <md-icon style="color: red">delete</md-icon>
         </md-button>
     </md-card>
     <md-content style="padding:10px" flex layout="column">
@@ -60,12 +83,13 @@
             <table md-table md-row-select multiple ng-model="selected" md-progress="promise">
                 <thead fix-head md-head md-order="query.order" md-on-reorder="advancedSearchSave">
                 <tr md-row>
-                    <th md-column md-order-by="title">标题</th>
+                    <th md-column>标题</th>
                     <th md-column width="10%">操作</th>
                 </tr>
                 </thead>
                 <tbody md-body>
-                <tr md-row md-select="article" md-select-id="{{article.id}}" ng-repeat="article in data.content">
+                <tr md-row md-select="article" md-select-id="{{article.id}}" ng-repeat="article in data.content"
+                    ng-class="{'setTop':article.ifSetTop}">
                     <td md-cell>
                         <div class="md-list-item-text" layout="column">
                             <div flex class="no-margin padding-top-10-bottom-5" layout="row">
@@ -101,15 +125,21 @@
                                 </md-button>
                                 <md-menu-content width="1" ng-mouseleave="$mdMenu.close()">
                                     <md-menu-item class="md-dense">
-                                        <md-button ng-click="remove(article.id)">
-                                            <md-icon>delete</md-icon>
-                                            <span>删除</span>
+                                        <md-button ng-click="addToBook(article.id)">
+                                            <md-icon>content_copy</md-icon>
+                                            <span>归档变更</span>
                                         </md-button>
                                     </md-menu-item>
-                                    <md-menu-item>
+                                    <md-menu-item class="md-dense">
                                         <md-button ng-click="updateArticleSet(article)">
                                             <md-icon>lock</md-icon>
                                             <span>权限设置</span>
+                                        </md-button>
+                                    </md-menu-item>
+                                    <md-menu-item class="md-dense">
+                                        <md-button ng-click="remove(article.id)">
+                                            <md-icon>delete</md-icon>
+                                            <span>删除</span>
                                         </md-button>
                                     </md-menu-item>
                                 </md-menu-content>

@@ -1,6 +1,7 @@
 package com.jianboke.repository;
 
 import com.jianboke.domain.BookChapterArticle;
+import com.jianboke.domain.Chapter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -38,4 +39,7 @@ public interface BookChapterArticleRepository extends JpaRepository<BookChapterA
     @Modifying
     @Query("DELETE BookChapterArticle bca WHERE bca.articleId =:articleId")
     void deleteByArticleId(@Param("articleId") Long articleId);
+
+    @Query(value = "SELECT c from Chapter c, BookChapterArticle bca where c.id = bca.parentId and bca.articleId=:articleId and bca.bookId=:bookId")
+    List<Chapter> queryAllChapterParentOfArticleUnderTheBook(@Param("bookId") Long bookId, @Param("articleId") Long articleId);
 }

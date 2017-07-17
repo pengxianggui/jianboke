@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,9 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private ChapterService chapterService;
+
     /**
      * 根据articleId查找书本。一篇文章可能归类到多本书下
      * @param articleId
@@ -42,5 +46,16 @@ public class BookService {
             }
         });
         return bookList;
+    }
+
+    /**
+     * 保存一本书,并初始化章节内容
+     * @param book
+     */
+    @Transactional
+    public Book saveBook(Book book) {
+        Book b = bookRepository.saveAndFlush(book);
+        chapterService.initChapterForBook(book);
+        return b;
     }
 }

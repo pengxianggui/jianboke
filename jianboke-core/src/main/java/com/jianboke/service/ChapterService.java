@@ -1,9 +1,11 @@
 package com.jianboke.service;
 
+import com.jianboke.domain.Book;
 import com.jianboke.domain.BookChapterArticle;
 import com.jianboke.domain.Chapter;
 import com.jianboke.model.ChapterModel;
 import com.jianboke.repository.BookChapterArticleRepository;
+import com.jianboke.repository.BookRepository;
 import com.jianboke.repository.ChapterRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by pengxg on 2017/3/15.
@@ -26,6 +29,9 @@ public class ChapterService {
 
     @Autowired
     private BookChapterArticleService bookChapterArticleService;
+
+    @Autowired
+    private BookRepository bookRepository;
 
     /**
      * 传入一个ChapterModel,保存它对应的chapter，如果model对应的id为空，则表示新增，如果model对应的id不为空，则表示更新
@@ -129,4 +135,19 @@ public class ChapterService {
         return true;
     }
 
+    /**
+     * 初始化一个本书的章节。当新建一本书时，章节表里并不会有任何数据。直接遍历树会产生错误
+     * @param book
+     * @return
+     */
+    public Chapter initChapterForBook(Book book) {
+        Chapter c = new Chapter();
+        c.setName(book.getBookName());
+        c.setBookId(book.getId());
+        c.setDescription(null);
+        c.setParentId(null);
+        c.setSortNum(0);
+        chapterRepository.saveAndFlush(c);
+        return c;
+    }
 }

@@ -2,6 +2,8 @@ package com.jianboke.utils;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -20,6 +22,24 @@ public class StringUtils {
             str += String.valueOf(new Random().nextInt(10));
         }
         return str;
+    }
+
+    /**
+     * 传入字符串和分隔符，返回list。如： "1,2,3", 分隔符为","， 则返回1,2,3组成的list
+     * @param source
+     * @param delimiter
+     * @return
+     */
+    public static List<String> split(String source, String delimiter) {
+        if (source == null || delimiter == null) {
+            return new ArrayList<String>();
+        } else {
+            List<String> result = new ArrayList<String>();
+            for (String s : source.split(delimiter)) {
+                result.add(s);
+            }
+            return result;
+        }
     }
 
 }

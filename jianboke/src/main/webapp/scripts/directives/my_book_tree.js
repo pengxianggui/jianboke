@@ -212,7 +212,10 @@ angular.module('jianboke')
 			      IntegralUITreeViewService.beginLoad($scope.treeName, null, {type: 'linear', speed: 'fast', opacity: 0.25});
                   var promise;
                   if ($scope.type == 'EDIT') {
-                    promise = Chapter.getTree({"bookId": $scope.selectedBook.id}).$promise;
+                    promise = Chapter.getTree({
+                        "bookId": $scope.selectedBook.id,
+                        "articleId": $scope.articleId?$scope.articleId:-1
+                    }).$promise;
                   } else {
                     promise = BookChapterArticle.getTree({
                         "bookId": $scope.selectedBook.id,

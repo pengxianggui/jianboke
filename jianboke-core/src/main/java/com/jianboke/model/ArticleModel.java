@@ -1,16 +1,18 @@
 package com.jianboke.model;
 
+import com.jianboke.domain.Book;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by pengxg on 2017/4/23.
  */
-public class ArticleModel {
+public class ArticleModel extends BaseModel{
 
-    private Long id;
     private String title;
     private String content;
     private String labels;
@@ -23,16 +25,7 @@ public class ArticleModel {
     private boolean ifAllowComment;
     private boolean ifAllowSecondAuthor;
     private boolean ifSetTop = false;
-    private LocalDateTime createdDate;
-    private LocalDateTime lastModifiedDate;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Set<BookModel> books;
 
     public String getTitle() {
         return title;
@@ -130,24 +123,29 @@ public class ArticleModel {
         this.ifSetTop = ifSetTop;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+    public Set<BookModel> getBooks() {
+        return books;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public LocalDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
+    public void setBooks(Set<BookModel> books) {
+        this.books = books;
     }
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        return "ArticleModel{" +
+                "title='" + title + '\'' +
+                ", labels='" + labels + '\'' +
+                ", authorId=" + authorId +
+                ", secondAuthorId=" + secondAuthorId +
+                ", ifOriginal=" + ifOriginal +
+                ", originalAuthorName='" + originalAuthorName + '\'' +
+                ", ifPublic=" + ifPublic +
+                ", ifAllowReprint=" + ifAllowReprint +
+                ", ifAllowComment=" + ifAllowComment +
+                ", ifAllowSecondAuthor=" + ifAllowSecondAuthor +
+                ", ifSetTop=" + ifSetTop +
+                ", books=" + books +
+                '}';
     }
 }

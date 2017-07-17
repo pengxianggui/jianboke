@@ -5,7 +5,7 @@
                 <h3 ng-bind="article.title"></h3>
                 <span flex></span>
                 <span style="font-style: italic; font-size: 15px;">created-date:
-                    <span ng-bind="article.createdDate | localDateTimeToStr"></span>
+                    <span ng-bind="article.createdDate | date: 'yyyy-MM-dd HH:mm:ss'"></span>
                 </span>
             </div>
         </md-toolbar>
@@ -36,7 +36,7 @@
                                     <md-icon>sort</md-icon>
                                 </md-button>
                                 <md-button class="md-icon-button md-secondary" ng-click="deleteArticle(a)">
-                                    <md-tooltip>删除</md-tooltip>
+                                    <md-tooltip>移除</md-tooltip>
                                     <md-icon>delete</md-icon>
                                 </md-button>
                                 <md-divider></md-divider>
