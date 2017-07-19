@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import com.jianboke.domain.AccountDefaultSetting;
 import com.jianboke.domain.VerificationCode;
 import com.jianboke.enumeration.HttpReturnCode;
 import com.jianboke.mapper.UsersMapper;
 import com.jianboke.model.*;
+import com.jianboke.repository.AccountDefaultSettingRepository;
 import com.jianboke.repository.UserRepository;
 import com.jianboke.repository.VerificationCodeRepository;
 import com.jianboke.security.SecurityUtils;
@@ -54,6 +56,9 @@ public class AccountController {
 
     @Autowired
     private FileUploadUtils fileUploadUtils;
+
+    @Autowired
+    private AccountDefaultSettingRepository accountDefaultSettingRepository;
     
     @RequestMapping(value = "/account", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -153,5 +158,29 @@ public class AccountController {
             return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS));
         }
         return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_ERROR));
+    }
+
+    @RequestMapping(value = "/account/getShowDarkTheme", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RequestResult> getShowDarkTheme() {
+        log.info("REST resquest to get showDarkTheme or not...");
+        User user = userService.getUserWithAuthorities();
+        return accountDefaultSettingRepository.findOneByUserId(user.getId())
+                .map(setting -> {
+                    System.out.println(setting.toString());
+                    return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, setting.isDarkTheme()));
+                })
+                .orElseGet(null);
+    }
+
+    @RequestMapping(value = "/account/saveShowDarkTheme/{showDarkTheme}", method = RequestMethod.GET)
+    public void saveShowDarkTheme(@PathVariable Boolean showDarkTheme) {
+        log.info("REST request to save showDarkTheme:{}", showDarkTheme);
+        User user = userService.getUserWithAuthorities();
+        accountDefaultSettingRepository.findOneByUserId(user.getId())
+            .map(setting -> {
+            setting.setDarkTheme(showDarkTheme);
+            accountDefaultSettingRepository.saveAndFlush(setting);
+            return setting;
+        });
     }
 }

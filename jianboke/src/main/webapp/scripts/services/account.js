@@ -26,6 +26,14 @@ angular.module('jianboke')
         updateUsername: {
             url: 'api/account/updateUsername/:username',
             method: 'GET'
+        },
+        isShowDarkTheme: {
+           url: 'api/account/getShowDarkTheme',
+           method: 'GET'
+        },
+        saveShowDarkTheme: {
+            url: 'api/account/saveShowDarkTheme/:showDarkTheme',
+            method: 'GET'
         }
     });
   });

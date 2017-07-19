@@ -37,6 +37,10 @@ angular.module('jianboke')
 				return Principal.identity().then(function(account) {
 					$rootScope.account = account; //将账号信息保存到$rootScope中
 		            $rootScope.isAuthenticated = Principal.isAuthenticated; //相当于把获取“是否已经认证的get方法”放到$rootScope下，方便使用
+                    Account.isShowDarkTheme().$promise.then(function(resp) {
+                        if (resp.code == '0000') $rootScope.showDarkTheme = resp.data;
+                        else $rootScope.showDarkTheme = false;
+                    })
 		            var isAuthenticated = Principal.isAuthenticated(); //获取是否已经认证的boolean值
 		            if (isAuthenticated && $rootScope.toState.name === 'login') { // 已经有认证(登录)的不能到登录页面
 		            	$state.go('dashboard');
