@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('jianboke')
-	.factory('authExpiredInterceptor', function($rootScope, $injector, $q) { // 权限过期拦截器
+	.factory('authInterceptor', function($rootScope, $injector, $q) { // 权限拦截器
 		return {
 			responseError: function(response) {
 				/*
@@ -11,9 +11,12 @@ angular.module('jianboke')
 				 * 且不包含'/api/authenentication'-------------------？
 				 * 才执行拦截器的定向到login页面的功能
 				 */
-				if (response.status === 401 && response.data.path !== undefined 
-						&& response.data.path.indexOf('/api/account') === -1 
-						&& response.data.path.indexOf('/api/authentication') === -1){
+				 console.log(response.data.path);
+				if (response.status === 401
+				        && response.data.path !== undefined
+						&& response.data.path !== '/api/account'
+						&& response.data.path.indexOf('/api/authentication') === -1
+						){
 					var Auth = $injector.get('Auth'), //显式获取Auth服务
 			          	$state = $injector.get('$state');
 					var to = $rootScope.toState,

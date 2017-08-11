@@ -22,4 +22,11 @@ angular.module('jianboke')
             method: 'GET'
         }
     })
+}).factory('PubBookChapterArticle', function($resource) {
+    return $resource('pub/bookChapterArticle/:id', {}, {
+        getTree: {
+            url: 'pub/bookChapterArticle/listTreeWithArticle/:bookId/:articleId',
+            method: 'GET'
+        }
+    })
 });

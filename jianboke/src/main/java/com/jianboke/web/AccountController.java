@@ -1,12 +1,15 @@
 package com.jianboke.web;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import com.jianboke.domain.AccountDefaultSetting;
+import com.jianboke.domain.Article;
 import com.jianboke.domain.VerificationCode;
+import com.jianboke.domain.criteria.AccountCriteria;
+import com.jianboke.domain.criteria.ArticleCriteria;
+import com.jianboke.domain.specification.ArticleSpecification;
+import com.jianboke.domain.specification.UserSpecification;
 import com.jianboke.enumeration.HttpReturnCode;
 import com.jianboke.mapper.UsersMapper;
 import com.jianboke.model.*;
@@ -19,6 +22,10 @@ import com.jianboke.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -67,15 +74,6 @@ public class AccountController {
     	return Optional.ofNullable(userService.getUserWithAuthorities())
                 .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
-    }
-
-    @RequestMapping(value = "/account/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, String> getAccountName(@PathVariable Long id) {
-        log.info("查询账户名");
-        Map<String, String> map = new HashMap<>();
-        String username = userService.findUsernameById(id);
-        map.put("data", username);
-        return map;
     }
 
     @RequestMapping(value = "/account/usernameUniqueValid", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -182,5 +180,84 @@ public class AccountController {
             accountDefaultSettingRepository.saveAndFlush(setting);
             return setting;
         });
+    }
+
+    /**
+     * 分页、关键字搜索库中所有相关博客。用于全局搜索
+     * @param criteria 只有filter有值
+     * @param pageable
+     * @return
+     */
+    @RequestMapping(value = "/account/queryAll", method = RequestMethod.GET)
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public Page<UsersModel> queryAll(@ModelAttribute AccountCriteria criteria, @PageableDefault Pageable pageable) {
+        User u = userService.getUserWithAuthorities();
+        log.info("The User:{} search the users under the global with criteria:{}", u, criteria);
+        Page<User> page = userRepository.findAll(new UserSpecification(criteria), pageable);
+        List<UsersModel> list = new ArrayList<>();
+        page.getContent().forEach(t -> {
+            UsersModel model = usersMapper.entityToModel(t);
+            if (u.getAttentions().contains(t)) { // 已关注的
+                model.setAttention(true);
+            } else {
+                model.setAttention(false);
+            }
+            list.add(model);
+        });
+        return new PageImpl<>(list, pageable, page.getTotalElements());
+    }
+
+    /**
+     * 获取当前用户下所有的关注用户or粉丝
+     * @param findBy
+     * @return
+     */
+    @RequestMapping(value = "/account/query/{findBy}", method = RequestMethod.GET)
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public ResponseEntity<RequestResult> query(@PathVariable String findBy) {
+        User user = userService.getUserWithAuthorities();
+        List<UsersModel> models = new ArrayList<>();
+        log.info("get all attentions or fans under the User:{}, findBy:{}", user, findBy);
+        if (findBy == null) return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_PARAM_WRONG));
+        Set<User> hasAttentionsSet = userService.getAttentionsByUser(user);
+        if (findBy.equals("attentions")) { // 查找关注者
+            hasAttentionsSet.forEach(u -> {
+                UsersModel model = usersMapper.entityToModel(u);
+                model.setAttention(true);
+                models.add(model);
+            });
+        } else { // 查找粉丝
+            userService.getFansByUser(user).forEach(u -> {
+                UsersModel model = usersMapper.entityToModel(u);
+                if (hasAttentionsSet.contains(u)) { // 已关注的
+                    model.setAttention(true);
+                } else {
+                    model.setAttention(false);
+                }
+                models.add(model);
+            });
+        }
+        return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, models));
+    }
+
+    /**
+     * 关注 or 取消关注
+     * @param userId 操作对象
+     * @return
+     */
+    @RequestMapping(value = "/account/follow/{userId}", method = RequestMethod.GET)
+    public ResponseEntity<RequestResult> follow(@PathVariable Long userId) {
+        User fromU = userService.getUserWithAuthorities();
+        User toU = userRepository.findOne(userId);
+        log.info("the User:{} rest request to follow the User:{}", fromU, toU);
+        if (fromU.getAttentions().contains(toU)) {
+            log.info("attention already! cancel attention...");
+            fromU.getAttentions().remove(toU);
+        } else {
+            log.info("haven't attention. attention...");
+            fromU.getAttentions().add(toU);
+        }
+        userRepository.saveAndFlush(fromU);
+        return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS));
     }
 }

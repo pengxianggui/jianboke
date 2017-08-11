@@ -7,6 +7,8 @@ import com.jianboke.enumeration.ResourceName;
 import com.jianboke.repository.ArticleRepository;
 import com.jianboke.repository.BookRepository;
 import com.jianboke.repository.ChapterRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserAuhtorityService {
+
+
+    private final Logger log = LoggerFactory.getLogger(UserAuhtorityService.class);
 
     @Autowired
     private ArticleRepository articleRepository;
@@ -76,13 +81,14 @@ public class UserAuhtorityService {
 
     private boolean ifHasArticleAuthority(Long resourceId) {
         User currentUser = userService.getUserWithAuthorities();
+        log.info("currentUser:{}", currentUser);
         Article article = articleRepository.findOne(resourceId);
         if (article == null) return true;
         String authorId = "", secondAuthorId = "";
         if (article.getAuthorId() != null) authorId = article.getAuthorId().toString();
         if (article.getSecondAuthorId() != null) secondAuthorId = article.getSecondAuthorId().toString();
-        if (authorId.equals(currentUser.getId().toString())
-                || secondAuthorId.equals(currentUser.getId().toString())) {
+        log.info("secondAuthorId:{}", secondAuthorId);
+        if (currentUser != null && (authorId.equals(currentUser.getId().toString()) || secondAuthorId.equals(currentUser.getId().toString()))) {
             return true;
         }
         return false;

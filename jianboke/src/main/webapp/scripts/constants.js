@@ -3,7 +3,6 @@
 angular.module('jianboke')
 	.constant('ACCESS_LEVELS', {
 		user: 'ROLE_USER',
-		admin: 'ROLE_ADMIN',
 		pub: 'PUB'
 	})
 	.constant('ACCOUNT_MENU', {

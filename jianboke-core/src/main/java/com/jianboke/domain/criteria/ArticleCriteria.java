@@ -7,12 +7,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 /**
  * Created by pengxg on 2017/7/3.
  */
-public class ArticleCriteria {
+public class ArticleCriteria extends BaseCriteria{
 
     private String filter;
     private Long bookId;
     private Book book;
     private String title;
+    private Long authorId; // 作者id，也包括第二作者
     private String labels;
     private String secondAuthorName;
     private Boolean ifOriginal;
@@ -107,6 +108,14 @@ public class ArticleCriteria {
 
     public void setIfAllowSecondAuthor(Boolean ifAllowSecondAuthor) {
         this.ifAllowSecondAuthor = ifAllowSecondAuthor;
+    }
+
+    public Long getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
     }
 
     @Override

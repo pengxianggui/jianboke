@@ -11,8 +11,7 @@
         </md-toolbar>
         <md-card flex layout="column" flex style="height: 100%;">
             <md-content flex layout="row" class="no-padding">
-                <my-book-tree></my-book-tree>
-                <md-card flex class="no-margin">
+                <my-edit-book-tree>
                     <md-toolbar layout="row" class="md-accent md-hue-2" style="height: 40px; min-height: 30px;">
                         <div class="md-toolbar-tools" style="height: 40px; min-height: 30px;">
                             <span ng-if="currentChapter == null">章节名</span>
@@ -43,7 +42,7 @@
                             </md-list-item>
                         </md-list>
                     </md-content>
-                </md-card>
+                </my-edit-book-tree>
             </md-content>
             <md-card-actions ng-if="currentChapter != null" layout="row" layout-align="end center">
                 <md-button class="md-primary md-raised" ng-disabled="currentChapter.items && currentChapter.items.length > 0"

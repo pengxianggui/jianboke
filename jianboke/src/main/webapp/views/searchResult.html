@@ -1,0 +1,85 @@
+<div layout="row" flex layout-align="center start">
+    <md-content layout="row" flex class="padding-top-10-bottom-5"
+                flex-sm="100" flex-gt-sm="90" flex-gt-md="80">
+        <div style="width: 200px;">
+            <md-list flex>
+                <md-list-item ng-click="showItem('article')" ng-class="{'list-hover' : active=='article'}">
+                    <md-icon>description</md-icon>
+                    <div flex class="md-list-item-text">博客</div>
+                </md-list-item>
+                <md-list-item ng-click="showItem('user')" ng-class="{'list-hover' : active=='user'}">
+                    <md-icon>account_circle</md-icon>
+                    <div flex class="md-list-item-text">用户</div>
+                </md-list-item>
+            </md-list>
+        </div>
+        <div flex style="overflow: auto">
+            <md-content class="md-padding" ng-if="active=='article'">
+                <md-table-container flex>
+                    <table md-table md-progress="articlePromise">
+                        <tbody md-body>
+                            <tr md-row ng-repeat="article in articles.content">
+                            <td md-cell>
+                                <div class="md-list-item-text" layout="column">
+                                    <div flex class="no-margin padding-top-10-bottom-5" layout="row">
+                                        <h3 class="no-margin">
+                                            <a class="h2 article-title" ng-class="{true:'article-title-dark'}[showDarkTheme]" ui-sref="blog.readBlog({id:article.id})" target="_blank"
+                                               ng-bind="article.title"></a>
+                                        </h3>
+                                        <span flex></span>
+                                        <pxg-chips-show chips-data="article.labels" chips-style="chipsStyle"></pxg-chips-show>
+                                    </div>
+                                    <span style="padding-bottom: 5px;" class="md-hue-1">时间、喜欢数量、评论数量....</span>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+                <md-table-pagination md-label="{page: '页', rowsPerPage: '每页行数:', of: '共'}"
+                                     md-limit="queryArticle.size" md-limit-options="[10, 20, 50]"
+                                     md-page="queryArticle.page" md-total="{{articles.totalElements}}"
+                                     md-on-paginate="articlePageRefresh" md-page-select>
+                </md-table-pagination>
+            </md-content>
+            <md-content class="md-padding" ng-if="active=='user'">
+                <md-table-container flex layout-align="start start">
+                    <!--<md-content class="md-padding" layout-xs="column" layout="row" flex>-->
+                    <md-card style="float: left" flex-sm="100" flex-gt-sm="50" flex-gt-md="30" md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}"
+                             md-theme-watch ng-repeat="user in users.content">
+                        <md-card-title >
+                            <md-card-title-text style="margin-right: 10px; width: 120px;">
+                                <a class="md-headline" ui-sref="accountCenter({username: user.username})" target="_blank">{{user.username}}</a>
+                                <span class="md-subhead">introduces</span>
+                            </md-card-title-text>
+                            <md-card-title-media>
+                                <div class="md-media-sm card-media">
+                                    <div class="width-height-100" style="float: right">
+                                        <md-icon ng-style="{'font-size': 100 + 'px', height: 100 + 'px', width: 100 + 'px'}"
+                                                 ng-if="!user.avatarPath">
+                                            account_circle
+                                        </md-icon>
+                                        <img class="width-height-100" ng-if="user.avatarPath" ng-src="{{user.avatarPath}}">
+                                    </div>
+                                </div>
+                            </md-card-title-media>
+                        </md-card-title>
+                        <md-card-actions layout="row" layout-align="end center">
+                            <md-button class="md-primary md-raised" ng-click="follow(user)" ng-if="!user.attention">关注</md-button>
+                            <md-button class="md-raised" ng-click="follow(user)" ng-if="user.attention">取消关注</md-button>
+                            <md-button class="md-icon-button" ng-click="praise(user)">
+                                <md-icon>star</md-icon>
+                            </md-button>
+                        </md-card-actions>
+                    </md-card>
+                    <!--</md-content>-->
+                </md-table-container>
+                <md-table-pagination md-label="{page: '页', rowsPerPage: '每页行数:', of: '共'}"
+                                     md-limit="queryUser.size" md-limit-options="[10, 20, 50]"
+                                     md-page="queryUser.page" md-total="{{users.totalElements}}"
+                                     md-on-paginate="userPageRefresh" md-page-select>
+                </md-table-pagination>
+            </md-content>
+        </div>
+    </md-content>
+</div>

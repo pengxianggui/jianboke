@@ -3,7 +3,6 @@
 angular.module('jianboke')
 	.controller('AddToBookCtrl', function($scope, entity, IntegralUITreeViewService) { // 文章归档
 	    console.log('AddToBookCtrl');
-	    $scope.type = 'EDIT';
 	    $scope.article = entity;
 	    console.log(entity);
 	    $scope.book = entity.books[0];
@@ -59,7 +58,6 @@ angular.module('jianboke')
 		}
 	})
 	.controller('BookCtrl', function($scope, entity, Book, $timeout, $mdSidenav, $log, $state, $stateParams, $location, Chapter, Article, $mdMedia) {
-	    $scope.type = 'READ'; // markdown指令模式
 	    var dataType; // markdown解析的是chapter还是article
 	    $scope.book = entity.data;
 	    console.log('BookCtrl');
@@ -89,6 +87,7 @@ angular.module('jianboke')
 
         // 单击树list时
         $scope.onItemClick = function(e) {
+
             if (!e.item) {
                 return;
             }
@@ -149,9 +148,14 @@ angular.module('jianboke')
     .controller('BookContentCtrl', function ($scope, entity, $stateParams, $state) {
         console.log('BookContentCtrl');
         $scope.datType = $stateParams.type;
+        console.log(entity);
         if ($scope.datType === 'chapter') {
             $scope.content = entity.description;
         } else {
-            $scope.content = entity.content;
+            if (entity.code == '4001') {
+                $scope.content = '此片博客可能没有公开';
+            } else {
+                $scope.content = entity.data.content;
+            }
         }
     })

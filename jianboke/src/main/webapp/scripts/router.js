@@ -3,22 +3,13 @@
 angular.module('jianboke')
 	.config(function($stateProvider, $urlRouterProvider, ACCESS_LEVELS) {
 	    console.log('router.js');
-		$urlRouterProvider.otherwise('/mine/dashboard');
+//		$urlRouterProvider.otherwise('/mine/dashboard');
+		$urlRouterProvider.otherwise('/');
 		$stateProvider
-		.state('index', {
-		    url: '/index/{userId}',
-			data: {
-				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-				title: '首页',
-				belong: 'index'
-			},
-		    controller: 'IndexCtrl',
-		    templateUrl: 'views/index_center.html'
-		})
 		.state('dashboard', {
 			url: '/mine',
 			data: {
-				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				access_level: [ACCESS_LEVELS.user],
 				title: '个人中心',
 				belong: 'dashboard'
 			},
@@ -28,7 +19,7 @@ angular.module('jianboke')
 		.state('dashboard.blogs', {
 		    url: '/dashboard',
 		    data: {
-				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				access_level: [ACCESS_LEVELS.user],
 				belong: 'dashboard'
 		    },
 		    controller: 'BlogListCtrl',
@@ -42,7 +33,7 @@ angular.module('jianboke')
 		.state('dashboard.attention', {
 			url: '/attention',
 			data: {
-				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				access_level: [ACCESS_LEVELS.user],
 				title: '我的关注',
 				belong: 'dashboard'
 			},
@@ -52,7 +43,7 @@ angular.module('jianboke')
 		.state('dashboard.collection', {
 			url: '/collection',
 			data: {
-				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				access_level: [ACCESS_LEVELS.user],
 				title: '我的收藏',
 				belong: 'dashboard'
 			},
@@ -62,7 +53,7 @@ angular.module('jianboke')
 		.state('dashboard.message', {
 			url: '/message',
 			data: {
-				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				access_level: [ACCESS_LEVELS.user],
 				title: '我的消息',
 				belong: 'dashboard'
 			},
@@ -88,29 +79,19 @@ angular.module('jianboke')
 			templateUrl: 'views/register.html'
 		})
 		.state('blog', {
-			url: '/blog',
+			url: '/blog/{id}',
 			abstract: true,
 			data: {
-				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				access_level: [ACCESS_LEVELS.user],
 				title: '博客',
 				belong: 'dashboard'
 			},
 			templateUrl: 'views/blog.html',
-			controller: 'BlogCtrl'
-		})
-		.state('blog.edit', {
-			url: '/{id}',
-			data: {
-				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-				title: '新建Blog',
-				belong: 'dashboard'
-			},
-			controller: 'NewBlogCtrl',
-			templateUrl: 'views/newBlog.html',
+			controller: 'BlogCtrl',
 			resolve: {
-			    entity: function($stateParams, Article) {
-			        var obj;
-			        if($stateParams.id == 'new') {
+                entity: function($stateParams, Article) {
+                    var obj;
+                    if($stateParams.id == 'new') {
                       obj = {
                         id: null,
                         title: '',
@@ -119,32 +100,60 @@ angular.module('jianboke')
                         authorId: null,
                         bookId: null
                       }
-			        } else {
-			          obj = Article.get({id: $stateParams.id}).$promise;
-			        }
-			        return obj;
-			    }
-			}
+                    } else {
+                      obj = Article.get({id: $stateParams.id}).$promise;
+                    }
+                    return obj;
+                }
+            }
+		})
+		.state('blog.edit', {
+			url: '/',
+			data: {
+				access_level: [ACCESS_LEVELS.user],
+				title: '新建Blog',
+				belong: 'dashboard'
+			},
+			controller: 'NewBlogCtrl',
+			templateUrl: 'views/newBlog.html',
+//			resolve: {
+//			    entity: function($stateParams, Article) {
+//			        var obj;
+//			        if($stateParams.id == 'new') {
+//                      obj = {
+//                        id: null,
+//                        title: '',
+//                        content: '',
+//                        labels: '',
+//                        authorId: null,
+//                        bookId: null
+//                      }
+//			        } else {
+//			          obj = Article.get({id: $stateParams.id}).$promise;
+//			        }
+//			        return obj;
+//			    }
+//			}
 		})
 		.state('blog.readBlog', {
-			url: '/readblog/{id}',
+			url: '/readBlog',
 			data: {
-				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				access_level: [ACCESS_LEVELS.user],
 				title: '阅读Blog',
                 belong: 'dashboard'
 			},
 			controller: 'ReadBlogCtrl',
 			templateUrl: 'views/readBlog.html',
-			resolve: {
-			    entity: function($stateParams, Article) {
-			        return Article.get({id: $stateParams.id}).$promise;
-			    }
-			}
+//			resolve: {
+//			    entity: function($stateParams, Article) {
+//			        return Article.get({id: $stateParams.id}).$promise;
+//			    }
+//			}
 		})
 		.state('blog.addToBook', {
 		    url: '/addToBook/{id}',
 		    data: {
-		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+		        access_level: [ACCESS_LEVELS.user],
 		        title: '文章归档',
                 belong: 'dashboard'
 		    },
@@ -159,34 +168,33 @@ angular.module('jianboke')
 		.state('book', {
 		    url: '/book/{bookId}',
 		    data: {
-		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
-		        title: '书',
-                belong: 'dashboard'
+		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.pub],
+		        title: '书'
 		    },
 		    controller: 'BookCtrl',
 		    templateUrl: 'views/book.html',
 		    resolve: {
-		        entity: function($stateParams, Book) {
-		            return Book.get({id: $stateParams.bookId}).$promise;
+		        entity: function($stateParams, PubBook) {
+		            return PubBook.get({id: $stateParams.bookId}).$promise;
 		        }
 		    }
 		})
 		.state('book.content', {
 		    url: '/{type}/{resourceId}', // type: 'chapter' or 'article'; resourceId : 'chapter.id' or 'article.id'
 		    data: {
-		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.pub],
 		        title: '书',
                 belong: 'dashboard'
 		    },
 		    controller: 'BookContentCtrl',
 		    templateUrl: 'views/book.content.html',
 		    resolve: {
-		        entity: function($stateParams, Article, Chapter) {
+		        entity: function($stateParams, PubArticle, PubChapter) {
 		            console.log($stateParams.type);
 		            if ($stateParams.type === 'article') {
-		                return Article.get({id: $stateParams.resourceId}).$promise;
+		                return PubArticle.get({id: $stateParams.resourceId}).$promise;
 		            } else {
-		                return Chapter.get({id: $stateParams.resourceId}).$promise;
+		                return PubChapter.get({id: $stateParams.resourceId}).$promise;
 		            }
 		        }
 		    }
@@ -195,7 +203,7 @@ angular.module('jianboke')
 //		.state('mycollection', {
 //			url: '/mycollection',
 //			data: {
-//				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+//				access_level: [ACCESS_LEVELS.user],
 //				title: '我的收藏',
 //                belong: 'dashboard'
 //			},
@@ -205,7 +213,7 @@ angular.module('jianboke')
 		.state('userset', {
 			url: '/userset',
 			data: {
-				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.admin],
+				access_level: [ACCESS_LEVELS.user],
 				title: '用户设置',
                 belong: 'dashboard'
 			},
@@ -216,5 +224,80 @@ angular.module('jianboke')
 		            return AccountDefaultSetting.get().$promise;
 		        }
 		    }
+		})
+		.state('searchAll', {
+		    url: '/searchResult/{keyWord}',
+		    data: {
+				access_level: [ACCESS_LEVELS.pub],
+				title: '搜索结果',
+                belong: 'dashboard'
+		    },
+		    controller: 'SearchCtrl',
+		    templateUrl: 'views/searchResult.html',
+		    resolve: {
+		        articles: function(PubArticle, $stateParams) {
+                    return PubArticle.queryAll({keyWord: $stateParams.keyWord}).$promise;
+		        },
+		        users: function(PubAccount, $stateParams) {
+                    return PubAccount.queryAll({keyWord: $stateParams.keyWord}).$promise;
+		        },
+		        books: function(Book, $stateParams) {
+                    return $stateParams.keyWord;
+		        }
+		    }
+		})
+		.state('index', {
+		    url: '/',
+			data: {
+				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.pub],
+				title: '首页',
+				belong: 'index'
+			},
+		    controller: 'IndexCtrl',
+		    templateUrl: 'views/index_center.html'
+		})
+		.state('accountCenter', {
+		    url: '/u/{username}',
+		    data: {
+		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.pub],
+		        title: '用户-',
+		        belong: 'index'
+		    },
+		    controller: 'AccountCenterCtrl',
+		    templateUrl: 'views/public/account.center.html',
+		    resolve: {
+		        userEntity: function(PubAccount, $stateParams) {
+                    return PubAccount.getByUsername({username: $stateParams.username}).$promise;
+		        },
+		        articlesEntity: function(PubArticle, $stateParams) {
+                    return PubArticle.queryAllByUsername({username: $stateParams.username}).$promise;
+		        },
+		        booksEntity: function(PubBook, $stateParams) {
+                    return PubBook.queryAllByUsername({username: $stateParams.username}).$promise;
+		        }
+		    }
+		})
+		.state('pubReadBlog', {
+			url: '/article/{id}',
+			data: {
+				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.pub],
+				title: '阅读Blog',
+                belong: 'dashboard'
+			},
+			controller: 'PubReadBlogCtrl',
+			templateUrl: 'views/public/blog.read.html',
+			resolve: {
+			    entity: function($stateParams, PubArticle) {
+			        return PubArticle.get({id: $stateParams.id}).$promise;
+			    }
+			}
+		})
+		.state('noAuth', {
+		    url: '/wrong',
+		    data: {
+				access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.pub],
+				title: '无权限'
+		    },
+		    templateUrl: 'views/public/noAuth.html'
 		})
 	});

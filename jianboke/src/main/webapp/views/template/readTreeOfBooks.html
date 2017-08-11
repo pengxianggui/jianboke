@@ -1,0 +1,23 @@
+<div layout="row" flex style="height: 100%;" class="no-padding">
+    <md-card flex class="no-margin">
+        <md-toolbar layout="row" layout-align="center center" class="" style="height: 40px; min-height: 30px;">
+            <div>
+                <md-icon>book</md-icon>
+                <span>{{selectedBook.bookName}}</span>
+            </div>
+        </md-toolbar>
+        <md-content flex class="md-padding" layout="column" style="padding: 10px 0 0 0;">
+            <iui-treeview style="z-index:10; border: 0" ng-class="{'dark-tree': showDarkTheme}" flex name="{{treeName}}" class="category-tree" items="nodes" load-complete="onLoadComplete()"
+                          template-settings="customItemTemplate" item-icons="icon-book" show-icons="true"
+                          allow-focus="false" auto-expand="true" show-lines="true" events="treeEvents">
+            </iui-treeview>
+        </md-content>
+    </md-card>
+
+    <!-- 模板树节点-READ -->
+    <script  type="text/ng-template" id="'item-template-READ.html'">
+        <div class="category-item" layout="row">
+            <span class="item-text">{{obj.groupName}}</span>
+        </div>
+    </script>
+</div>

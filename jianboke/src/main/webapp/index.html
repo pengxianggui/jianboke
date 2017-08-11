@@ -19,51 +19,66 @@
 <link rel="stylesheet" href="bower_components/editor.md/css/editormd.min.css" />
 </head>
 <body ng-app="jianboke" layout="column" ng-cloak md-theme="{{showDarkTheme?'pxg-dark-theme':'default'}}">
-	<header style="z-index:1">
+	<header style="z-index:1" ng-controller="HeaderCtrl">
 		<md-toolbar class="md-hue-2">
-		<div class="md-toolbar-tools">
+		<div class="md-toolbar-tools" layout="row" layout-align="start center">
 			<md-button class="md-icon-button" aria-label="Settings"
 				ng-disabled="true"> <md-icon>book</md-icon> </md-button>
-			<h2 hide-xs style="margin-right: 50px;">
+			<h2 hide-xs style="margin-right: 50px; cursor: pointer; outline: none;" ng-click="goToState('index')">
 				<span>简博</span>
 			</h2>
-			<span ng-if="isAuthenticated()" style="height: 100%;" pxg-slide-effect>
-				<!--<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='index'}" style="height: 100%; margin: 0;" ng-click="goToState('index')">首页</md-button>-->
-				<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='dashboard'}" style="height: 100%; margin: 0;" ng-click="goToState('dashboard.blogs')">个人主页</md-button>
-				<!--<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='attention'}" style="height: 100%; margin: 0;" ng-click="go('attention')">关注</md-button>-->
-			</span>
-			<!-- todo 搜索框 -->
-
-			<span flex></span>
-			<md-menu-bar ng-if="isAuthenticated()">
-				<md-menu md-position-mode="target-right target" md-offset="-100 50">
-					<md-button ng-click="$mdMenu.open()" class="md-icon-button">
-						<md-icon>settings_applications</md-icon>
-					</md-button>
-					<md-menu-content width="4" class="no-padding">
-						<md-menu-item style="height: auto;" layout="row">
-							<md-content flex class="no-margin" layout="row" layout-align="center center">
-								<div flex class="md-toolbar-tool">
-									<md-icon>brightness_4</md-icon>
-									<span>夜间模式</span>
-								</div>
-							</md-content>
-							<md-content flex class="no-padding no-margin" layout="row" layout-align="center center">
-								<span>关</span>
-								<md-switch ng-model="showDarkTheme" ng-change="changeTheme(showDarkTheme)" aria-label="Switch 1" md-theme-watch>
-								</md-switch>
-								<span>开</span>
-							</md-content>
-						</md-menu-item>
-					</md-menu-content>
-				</md-menu>
-			</md-menu-bar>
-			<pxg-account-menu ng-if="isAuthenticated()">
-				<!-- <md-button class="md-fab md-primary md-mini" ng-if="isAuthenticated()" ng-click="showAccountMenu()">
-					<md-icon>account_circle</md-icon>
-				</md-button> -->
-			</pxg-account-menu>
-			<!-- <md-button ng-click="logout()">登出</md-button> -->
+			<div flex layout="row" layout="center center" class="md-toolbar-tools no-padding">
+				<span style="height: 100%;" pxg-slide-effect>
+					<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='index'}" style="height: 100%; margin: 0;" ng-click="goToState('index')">首页</md-button>
+					<md-button ng-if="isAuthenticated()" class="nav" ng-class="{'md-raised md-warn': stateBelong=='dashboard'}" style="height: 100%; margin: 0;" ng-click="goToState('dashboard.blogs')">个人主页</md-button>
+					<!--<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='attention'}" style="height: 100%; margin: 0;" ng-click="go('attention')">关注</md-button>-->
+				</span>
+				<span flex layout="row" layout-align="center center">
+					<!-- todo 搜索框 -->
+					<form name="searchAllForm" class="margin-left-right-10" autocomplete="off"
+						  layout="row" layout-align="start center" ng-submit="searchAll(searchKey)">
+						<input id="search-all" class="no-margin padding-5-10" placeholder="搜索..." type="search"
+							   name="searchKey" ng-model="searchKey">
+						<md-button class="md-icon-button" ng-click="searchAll(searchKey)">
+							<md-icon>search</md-icon>
+						</md-button>
+					</form>
+				</span>
+				<!-- todo 暂时屏蔽黑夜主题设置：需要更改为本地存储
+				<md-menu-bar>
+					<md-menu md-position-mode="target-right target" md-offset="-100 50">
+						<md-button ng-click="$mdMenu.open()" class="md-icon-button">
+							<md-icon>settings_applications</md-icon>
+						</md-button>
+						<md-menu-content width="4" class="no-padding">
+							<md-menu-item style="height: auto;" layout="row">
+								<md-content flex class="no-margin" layout="row" layout-align="center center">
+									<div flex class="md-toolbar-tool">
+										<md-icon>brightness_4</md-icon>
+										<span>夜间模式</span>
+									</div>
+								</md-content>
+								<md-content flex class="no-padding no-margin" layout="row" layout-align="center center">
+									<span>关</span>
+									<md-switch ng-model="showDarkTheme" ng-change="changeTheme(showDarkTheme)" aria-label="Switch 1" md-theme-watch>
+									</md-switch>
+									<span>开</span>
+								</md-content>
+							</md-menu-item>
+						</md-menu-content>
+					</md-menu>
+				</md-menu-bar>
+				-->
+				<pxg-account-menu ng-if="isAuthenticated()">
+					<!-- <md-button class="md-fab md-primary md-mini" ng-if="isAuthenticated()" ng-click="showAccountMenu()">
+						<md-icon>account_circle</md-icon>
+					</md-button> -->
+				</pxg-account-menu>
+				<div  ng-if="!isAuthenticated()">
+					<a ui-sref="login">登录</a> || <a ui-sref="register">注册</a>
+				</div>
+				<!-- <md-button ng-click="logout()">登出</md-button> -->
+			</div>
 		</div>
 		</md-toolbar>
 	</header>
@@ -131,6 +146,11 @@
 	<script src="scripts/services/bookChapterArticle.js"></script>
 	<script src="scripts/services/accountDefaultSetting.js"></script>
 
+	<!-- public service -->
+	<script src="scripts/services/public/pub.article.js"></script>
+	<script src="scripts/services/public/pub.account.js"></script>
+	<script src="scripts/services/public/pub.book.js"></script>
+
 	<!-- controllers -->
 	<script src="scripts/controllers/dashboard.js"></script>
 	<script src="scripts/controllers/blog.js"></script>
@@ -140,7 +160,12 @@
 	<script src="scripts/controllers/article.js"></script>
 	<script src="scripts/controllers/userSet.js"></script>
 	<script src="scripts/controllers/index_center.js"></script>
-	<script src="scripts/controllers/attention.js"></script>
+	<script src="scripts/controllers/search.js"></script>
+
+	<!-- public controller -->
+	<script src="scripts/controllers/public/accountCenter.js"></script>
+	<script src="scripts/controllers/public/pub.article.js"></script>
+
 
 	<!-- directive -->
 	<!--<script src="scripts/directives/my_directive.js"></script>-->

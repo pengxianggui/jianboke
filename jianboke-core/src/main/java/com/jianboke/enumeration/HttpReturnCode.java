@@ -9,7 +9,9 @@ public enum HttpReturnCode {
     JBK_VERIFICATION_CODE_WRONG("0002", "verification code is wrong", "验证码不正确"),
     JBK_UPLOAD_FAIL("0003", "resource upload fail", "上传失败"),
     JBK_PARAM_WRONG("0004", "request param is wrong", "参数错误"),
+    JBK_ATTENTION_ALREADY("0005", "attention already", "已经关注，不能重复关注"),
 
+    JBK_WITHOUT_AUTHORITY("4001", "without authority", "请求的资源没有权限"),
     JBK_RESOURCE_NOT_FOUND("4004", "request resource is not found", "资源没有找到"),
     JBK_ERROR("5000", "An error occurren!", "发生错误！"),
     ;

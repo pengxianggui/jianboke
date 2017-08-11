@@ -88,6 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/api/account/emailUniqueValid").permitAll()
 			.antMatchers("/api/account/sendEmailValidCode").permitAll()
 			.antMatchers("/api/account/register").permitAll()
+			.antMatchers("/pub/**").permitAll() // 公开资源：无需登录
 			.anyRequest().authenticated(); // 其他路径都会被加上权限拦截;
 	}
 	
@@ -97,10 +98,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	    .antMatchers("/bower_components/**")
 	    .antMatchers("/fonts/**")
 	    .antMatchers("/images/**")
+	    .antMatchers("/img/**")
 	    .antMatchers("/scripts/**")
 	    .antMatchers("/style/**")
 	    .antMatchers("/views/**")
-	    .antMatchers("/resources/**");
+	    .antMatchers("/resources/**")
+		.antMatchers("/favicon.ico");
 	}
 	
 //	@Override

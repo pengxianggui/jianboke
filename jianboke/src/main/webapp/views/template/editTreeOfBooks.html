@@ -6,7 +6,7 @@
 		            <md-option ng-value="book" ng-selected="selectedBook.id == book.id" ng-repeat="book in books">{{book.bookName}}</md-option>
 		        </md-select>
 		      </md-input-container>
-		      <div class="" style="height: 40px;" ng-if="type=='EDIT'">
+		      <div class="" style="height: 40px;">
 				<md-button class="md-icon-button" ng-click="refreshTree()">
 		          <md-tooltip>刷新</md-tooltip>
 		          <md-icon>refresh</md-icon>
@@ -33,6 +33,7 @@
 			</iui-treeview>
 		</md-content>
 	</md-card>
+	<md-card flex class="no-margin" ng-transclude></md-card>
 <!--
 	<md-card flex>
     <md-toolbar layout="row" class="md-hue-2" style="background: rgb(140,158,255); height: 40px; min-height: 30px;">
@@ -92,12 +93,6 @@
 				<md-icon>list</md-icon>
 				<md-tooltip>显示文章</md-tooltip>
 			</md-button>
-		</div>
-	</script>
-	<!-- 模板树节点-READ -->
-	<script  type="text/ng-template" id="'item-template-READ.html'">
-		<div class="category-item" layout="row">
-			<span class="item-text">{{obj.groupName}}</span>
 		</div>
 	</script>
 </div>

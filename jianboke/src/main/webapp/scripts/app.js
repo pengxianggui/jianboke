@@ -22,12 +22,7 @@ angular.module('jianboke', [
      "mdPickers"
 ]).run(function($rootScope, $state, $templateCache, Auth, $window, $mdDialog, $mdToast, Account) {
     console.log('run.js');
-    $rootScope.showDarkTheme = false;
-    $rootScope.currentState;
-    $rootScope.changeTheme = function(param) {
-        $rootScope.showDarkTheme = param;
-        Account.saveShowDarkTheme({showDarkTheme: $rootScope.showDarkTheme});
-    }
+//    $rootScope.showDarkTheme = false;
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) { 
         $templateCache.remove(toState.templateUrl); //清除路由缓存
         $rootScope.toState = toState;
@@ -142,10 +137,22 @@ angular.module('jianboke', [
       $mdDialog.cancel();
     };
 })
-//.controller('HeaderCtrl', function($scope, $rootScope, $state) {
-//    console.log('HeaderCtrl');
-////    $scope.current = 'dashboard'; // 当前路由
-//    $scope.go = function (router, param) {
-//        $state.go(router, param);
-//    }
-//});
+.controller('HeaderCtrl', function($scope, $rootScope, $state, Account) {
+    console.log('HeaderCtrl');
+    $scope.searchKey;
+    $rootScope.showDarkTheme = false;
+    $scope.changeTheme = function(param) {
+        $rootScope.showDarkTheme = param;
+        Account.saveShowDarkTheme({showDarkTheme: $rootScope.showDarkTheme});
+    }
+
+    // 全局搜索
+    $scope.searchAll = function(searchKey) {
+        console.log(searchKey);
+        if (searchKey) {
+//            var url = $state.href('searchAll', {keyWord : searchKey});
+//            window.open(url, "_blank");
+            $state.go('searchAll', {keyWord : searchKey});
+        }
+    }
+});

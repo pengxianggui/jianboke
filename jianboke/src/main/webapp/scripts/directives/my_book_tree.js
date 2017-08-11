@@ -2,19 +2,21 @@
 
 angular.module('jianboke')
 	// book章节树Block
-	.directive('myBookTree', function(Book, IntegralUITreeViewService, $rootScope, Chapter, BookChapterArticle, $state) {
+	.directive('myEditBookTree', function(Book, IntegralUITreeViewService, $rootScope, Chapter, BookChapterArticle, $state) {
 		return {
 			restrict: 'AE',
-			templateUrl: 'views/template/treeOfBooks.html',
+			templateUrl: 'views/template/editTreeOfBooks.html',
 			replace: true,
 //			scope: {
-//			    type: '@', // type 有两个值: READ(阅读模式) 和 EDIT(编辑模式)
-//			    pxgData: '=',
-//			    pxgAction: '&'
+//			    pxgBook: '=',
+//			    pxgArticleId: '='
 //			},
+			scope: false,
+			transclude: true,
 			controller: function($scope, $mdDialog) {
 				$scope.treeName = 'categoryTree';
-				$scope.selectedBook;
+//				$scope.selectedBook = $scope.pxgBook;
+//				$scope.articleId = $scope.pxgArticleId;
 				if ($scope.book) {
 				    $scope.selectedBook = $scope.book;
 				    console.log($scope.selectedBook);
@@ -166,11 +168,12 @@ angular.module('jianboke')
 			    var clearList = function () {
 			    	IntegralUITreeViewService.clearItems($scope.treeName);
 			    };
-			    if ($scope.type == 'EDIT') { // 选取模板
-			        $scope.customItemTemplate = {url: '\'item-template-EDIT.html\''};
-			    } else {
-			        $scope.customItemTemplate = {url: '\'item-template-READ.html\''};
-			    }
+                $scope.customItemTemplate = {url: '\'item-template-EDIT.html\''};
+//			    if ($scope.type == 'EDIT') { // 选取模板
+//			        $scope.customItemTemplate = {url: '\'item-template-EDIT.html\''};
+//			    } else {
+//			        $scope.customItemTemplate = {url: '\'item-template-READ.html\''};
+//			    }
 
 			    var addItem = function (parent, chapterGroup) {
 			        var node = {
@@ -211,18 +214,21 @@ angular.module('jianboke')
 				$scope.refreshTree = function () {
 			      IntegralUITreeViewService.beginLoad($scope.treeName, null, {type: 'linear', speed: 'fast', opacity: 0.25});
                   var promise;
-                  if ($scope.type == 'EDIT') {
-                    promise = Chapter.getTree({
-                        "bookId": $scope.selectedBook.id,
-                        "articleId": $scope.articleId?$scope.articleId:-1
-                    }).$promise;
-                  } else {
-                    promise = BookChapterArticle.getTree({
-                        "bookId": $scope.selectedBook.id,
-                        "articleId": $scope.articleId?$scope.articleId:-1
-                    }).$promise;
-                  }
-			      promise.then(function (value, responseHeaders) {
+//                  if ($scope.type == 'EDIT') {
+//                    promise = Chapter.getTree({
+//                        "bookId": $scope.selectedBook.id,
+//                        "articleId": $scope.articleId?$scope.articleId:-1
+//                    }).$promise;
+//                  } else {
+//                    promise = BookChapterArticle.getTree({
+//                        "bookId": $scope.selectedBook.id,
+//                        "articleId": $scope.articleId?$scope.articleId:-1
+//                    }).$promise;
+//                  }
+			      Chapter.getTree({
+                      "bookId": $scope.selectedBook.id,
+                      "articleId": $scope.articleId?$scope.articleId:-1
+                  }).$promise.then(function (value, responseHeaders) {
 			        console.log(value);
 			        $scope.nodes = value;
 			        IntegralUITreeViewService.suspendLayout($scope.treeName);
@@ -337,9 +343,9 @@ angular.module('jianboke')
 
 			    $scope.$watch('selectedBook', function(newValue, oldValue) {
 			    	if (newValue != null) {
-			    	    if($scope.type === 'READ') {
-			    	        $state.go('book', {bookId: newValue.id});
-			    	    }
+//			    	    if($scope.type === 'READ') {
+//			    	        $state.go('book', {bookId: newValue.id});
+//			    	    }
 			    		$scope.refreshTree();
 			    	}
 			    });
@@ -369,7 +375,6 @@ angular.module('jianboke')
                         $scope.listTable({id: currentChapter.id});
                     })
                 }
-
 
 
 			    // 添加/编辑节点时的弹出框对应的控制器
@@ -436,4 +441,111 @@ angular.module('jianboke')
                 }
 			}
 		}
+	})
+	.directive('myReadBookTree', function(Book, IntegralUITreeViewService, PubChapter, PubBookChapterArticle, PubArticle, $state, $rootScope) {
+	    return {
+            restrict: 'AE',
+            templateUrl: 'views/template/readTreeOfBooks.html',
+            replace: true,
+            scope: {
+                pxgBook: '=',
+                pxgArticleId: '='
+            },
+            controller: function($scope, $mdDialog) {
+                var dataType;
+                $scope.treeName = 'categoryTree';
+                $scope.selectedBook = $scope.pxgBook;
+                $scope.articleId = $scope.pxgArticleId;
+                $scope.nodes = [];
+
+                var clearList = function () {
+                    IntegralUITreeViewService.clearItems($scope.treeName);
+                };
+
+                $scope.treeEvents = {
+                  itemClick: function (e) {
+                    return $scope.onItemClick(e);
+                  }
+                };
+
+                // 单击树list时
+                $scope.onItemClick = function(e) {
+                    if (!e.item) {
+                        return;
+                    }
+                    var resourceId;
+                    if (e.item.isArticle) {
+                        console.log('m2pm2pm2p.......');
+                        dataType = 'article';
+                        $scope.articleId = e.item.id.split('-')[0];
+//                        $scope.currentchapOrArt = PubArticle.get({id: $scope.articleId});
+                    } else {
+                        dataType = 'chapter';
+//                        $scope.currentchapOrArt = PubChapter.get({id: e.item.id.split('-')[0]});;
+                    }
+                    resourceId = e.item.id.split('-')[0];
+                    $state.go('book.content', {type: dataType, resourceId: resourceId});
+                }
+
+			    var addItem = function (parent, chapterGroup) {
+                    var node = {
+                      groupName: chapterGroup.groupName,
+                      text: chapterGroup.groupName,
+                      id: chapterGroup.id + '-' + chapterGroup.parentId,
+                      bookId: chapterGroup.bookId,
+                      description: chapterGroup.description,
+                      parentId: chapterGroup.parentId,
+                      parentName: chapterGroup.parentName,
+                      //items:category.nodes,
+                      sortNum: chapterGroup.sortNum,
+                      isArticle: chapterGroup.isArticle,
+    //			          icon: 'icon-book',
+                      templateObj: {
+                        id: chapterGroup.id + '-' + chapterGroup.parentId,
+                        text: chapterGroup.groupName,
+                        groupName: chapterGroup.groupName,
+                        bookId: chapterGroup.bookId,
+                        parentId: chapterGroup.parentId,
+                        parentName: chapterGroup.parentName,
+                        description: chapterGroup.description,
+                        //items:category.nodes,
+                        sortNum: chapterGroup.sortNum,
+    //			            icon: 'icon-book',
+                      },
+                      expanded: chapterGroup.expanded,
+                    };
+                    IntegralUITreeViewService.addItem($scope.treeName, node, parent);
+                    if (chapterGroup.items) {
+                        chapterGroup.items.forEach(function (t) {
+                        addItem(node, t); //迭代
+                      });
+                    }
+                };
+                $scope.customItemTemplate = {url: '\'item-template-READ.html\''};
+
+                // 加载树
+                $scope.refreshTree = function () {
+                    IntegralUITreeViewService.beginLoad($scope.treeName, null, {type: 'linear', speed: 'fast', opacity: 0.25});
+                    PubBookChapterArticle.getTree({
+                      "bookId": $scope.selectedBook.id,
+                      "articleId": $scope.articleId?$scope.articleId:-1
+                    }).$promise.then(function (value, responseHeaders) {
+                        console.log(value);
+                        $scope.nodes = value;
+                        IntegralUITreeViewService.suspendLayout($scope.treeName);
+                        clearList();
+                        addItem(null, $scope.nodes);
+                        IntegralUITreeViewService.resumeLayout($scope.treeName);
+                    }).catch(function (httpResponse) {
+                        $scope.loading = false;
+                        $rootScope.popMessage('加载失败', false);
+                    });
+                };
+                $scope.onLoadComplete = function () {
+                  IntegralUITreeViewService.endLoad($scope.treeName);
+                };
+
+                $scope.refreshTree();
+            }
+        }
 	})

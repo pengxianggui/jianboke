@@ -1,12 +1,25 @@
 'use strict';
 
 angular.module('jianboke')
-	.controller('BlogCtrl', function($scope, $rootScope) {
+	.controller('BlogCtrl', function($scope, $rootScope, entity, $mdSidenav) {
+        $scope.article = entity;
 
+        $scope.shareOpen = false; // 分享
+        $scope.toggleRight = buildToggler('right');
+        $scope.isOpenRight = function(){
+            return $mdSidenav('right').isOpen();
+        };
+        function buildToggler(navID) {
+          return function() {
+            $mdSidenav(navID).toggle().then(function() {
+                console.log('toggle over');
+            });
+          };
+        }
 	})
-	.controller('NewBlogCtrl', function($scope, $element, $mdConstant, entity, Book, $mdDialog, Article, $rootScope, $state) {
+	.controller('NewBlogCtrl', function($scope, $element, $mdConstant, Book, $mdDialog, Article, $rootScope, $state) {
       		console.log('NewBlogCtrl');
-            $scope.article = entity;
+//            $scope.article = entity;
       		if ($state.params.id != 'new') {
       		    if ($scope.article == null || $scope.article.labels == null) {
       		        $scope.labels = [];
@@ -51,39 +64,46 @@ angular.module('jianboke')
                   });
       		}
       	})
-    .controller('ReadBlogCtrl', function($rootScope, $scope, entity, Article, Book, Account, $mdSidenav) {
+    .controller('ReadBlogCtrl', function($rootScope, $scope, Article, Book, PubAccount, $mdSidenav) {
         console.log('ReadBlogCtrl');
-        $scope.shareOpen = false; // 分享
-        $scope.toggleRight = buildToggler('right');
-        $scope.isOpenRight = function(){
-            return $mdSidenav('right').isOpen();
-        };
+//        $scope.shareOpen = false; // 分享
+//        $scope.toggleRight = buildToggler('right');
+//        $scope.isOpenRight = function(){
+//            return $mdSidenav('right').isOpen();
+//        };
 
-        $scope.article = entity;
-        console.log(entity);
+//        $scope.article = entity;
+//        console.log(entity);
+
         $scope.authorNameArr = [];
         var getAuthorName = function(article) {
-            $scope.authorNameArr.push($rootScope.account.username);
+//            $scope.authorNameArr.push($rootScope.account.username);
             if (article.secondAuthorId) {
-                Account.getUsername({id: article.secondAuthorId}).$promise.then(function(result) {
+                PubAccount.getAuthorNameByArticleId({id: article.id}).$promise.then(function(result) {
                     $scope.authorNameArr.push(result.data);
                 }).catch(function(httpResponse){});
             }
         }
         getAuthorName($scope.article);
 
-        function buildToggler(navID) {
-          return function() {
-            $mdSidenav(navID).toggle().then(function() {
-                console.log('toggle over');
-            });
-          };
-        }
+//        function buildToggler(navID) {
+//          return function() {
+//            $mdSidenav(navID).toggle().then(function() {
+//                console.log('toggle over');
+//            });
+//          };
+//        }
     })
     .controller('BlogSetCtrl', function ($scope, $rootScope, Article, $state) {
         console.log('BlogSetCtrl');
         console.log($scope.article);
+        var articleTemp = angular.copy($scope.article);
         $scope.saveArticle = function() {
+            if ($scope.article.id == null || $scope.article.id == '') {
+                $scope.article = angular.copy(articleTemp); // 复原
+                $rootScope.popMessage('请先保存该文章', false);
+                return;
+            }
             Article.update($scope.article).$promise.then(function(resp) {
                 if (resp.code === '0000') {
                     $rootScope.popMessage('设置成功', true);

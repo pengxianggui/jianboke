@@ -26,6 +26,10 @@ angular.module('jianboke')
                     ifAllowSecondAuthor: "@ifAllowSecondAuthor",
                     ifSetTop: "@ifSetTop"
                 }
+            },
+            queryAll: {
+                url: 'api/article/queryAll',
+                method: 'GET'
             }
 		})
 	})

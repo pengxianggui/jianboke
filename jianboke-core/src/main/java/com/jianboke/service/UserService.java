@@ -1,8 +1,11 @@
 package com.jianboke.service;
 
+import com.jianboke.domain.FansRelation;
 import com.jianboke.domain.Mail;
 import com.jianboke.domain.VerificationCode;
+import com.jianboke.model.ArticleModel;
 import com.jianboke.model.UsersModel;
+import com.jianboke.repository.FansRelationRepository;
 import com.jianboke.utils.MailUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +19,9 @@ import com.jianboke.repository.UserRepository;
 import com.jianboke.security.SecurityUtils;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -32,6 +38,9 @@ public class UserService {
 	  @Autowired
 	  private MailUtil mailUtil;
 
+	  @Autowired
+	  private FansRelationRepository fansRelationRepository;
+
 
 	  /**
 	   * 获取当前登录的用户的User对象。
@@ -39,8 +48,14 @@ public class UserService {
 	   */
 	  @Transactional(readOnly = true)
 	  public User getUserWithAuthorities() {
-		  User user = userRepository.findOneByUsername(SecurityUtils.getCurrentUsername()).get();
-		  return user;
+		  String username = SecurityUtils.getCurrentUsername();
+		  log.info("username:{}", username);
+		  if (username != null) {
+			  return userRepository.findOneByUsername(username)
+					  .map(user -> user)
+					  .orElse(null);
+		  }
+		  return null;
 	  }
 	  
 	  /**
@@ -160,4 +175,29 @@ public class UserService {
 		return LocalDateTime.now().isBefore(ldt.plusMinutes(30)) // 30min有效期
 				&& model.getValidCode().equals(verificationCode.getCode());
 	}
+
+	/**
+	 * 获取用户的所有粉丝
+	 * @param user
+	 * @return
+	 */
+	public Set<User> getFansByUser(User user) {
+		List<FansRelation> frList = fansRelationRepository.findAllByToUserId(user.getId());
+		Set<User> set = new HashSet<>();
+		frList.forEach(fansRelation -> set.add(fansRelation.getFromUser()));
+		return set;
+	}
+
+	/**
+	 * 获取用户所有关注的用户
+	 * @param user
+	 * @return
+	 */
+	public Set<User> getAttentionsByUser(User user) {
+		List<FansRelation> frList = fansRelationRepository.findAllByFromUserId(user.getId());
+		Set<User> set = new HashSet<>();
+		frList.forEach(fansRelation -> set.add(fansRelation.getToUser()));
+		return set;
+	}
+
 }

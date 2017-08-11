@@ -1,14 +1,11 @@
 package com.jianboke.domain;
 
 import java.util.Collection;
+import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.security.core.GrantedAuthority;
@@ -40,13 +37,21 @@ public class User extends AbstractAuditingEntity implements UserDetails {
 	@Column(name = "email", unique = true, nullable = false)
 	private String email;
 	
-	@Column(name = "phone_num", unique = true, nullable = true)
+	@Column(name = "phone_num", unique = true)
 	private String phonenum;
 
 
-	@Column(name = "avatar_path", nullable = true)
+	@Column(name = "avatar_path")
 	@ColumnComment("头像存储路径")
 	private String avatarPath;
+
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable( name = "fans_relation",
+		joinColumns = @JoinColumn(name = "from_user_id", referencedColumnName = "id"),
+		inverseJoinColumns = @JoinColumn(name = "to_user_id", referencedColumnName = "id")
+	)
+	private Set<User> attentions; // 关注者
 //
 //	public Long getId() {
 //		return id;
@@ -95,7 +100,16 @@ public class User extends AbstractAuditingEntity implements UserDetails {
 	public void setAvatarPath(String avatarPath) {
 		this.avatarPath = avatarPath;
 	}
-//
+
+	public Set<User> getAttentions() {
+		return attentions;
+	}
+
+	public void setAttentions(Set<User> attentions) {
+		this.attentions = attentions;
+	}
+
+	//
 //	@Override
 //	public String toString() {
 //		return "User [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email
@@ -131,5 +145,4 @@ public class User extends AbstractAuditingEntity implements UserDetails {
 		// TODO Auto-generated method stub
 		return true;
 	}
-
 }

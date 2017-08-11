@@ -1,0 +1,82 @@
+databaseChangeLog:
+  - property:
+      name: autoIncrement
+      value: true
+      dbms: mysql,h2,postgresql,sqlserver
+  - property:
+      name: now
+      value: now()
+      dbms: mysql, h2
+  - property:
+      name: now
+      value: sysdate
+      dbms: oracle
+  - property:
+      name: now
+      value: getdate()
+      dbms: sqlserver
+  - changeSet:
+      id: create_jb_fans_relation
+      author: pengxg
+      changes:
+        - createTable:
+            tableName: fans_relation
+            remarks: 粉丝关注关系表
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: ${autoIncrement}
+                  remarks: 标识
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: from_user_id
+                  type: bigint
+                  remarks: 此条记录的发起人id
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: to_user_id
+                  type: bigint
+                  remarks: 此条记录的接受人id
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValueDate: ${now}
+                  remarks: 创建时间
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  remarks: 最后修改时间
+#              - column:
+#                  name: rel_type
+#                  type: varchar(10)
+#                  remarks: 关系类型，枚举值(0, 1),1表示关注关系，0表示拉黑关系
+#                  constraints:
+#                    unique: false
+#                    nullable: false
+    # 添加外键约束
+  - changeSet:
+      id: fk_fans_relation
+      author: pengxg
+      changes:
+      - addForeignKeyConstraint:
+          baseColumnNames: from_user_id
+          baseTableName: fans_relation
+          constraintName: fd_from_user_id
+          referencedColumnNames: id
+          referencedTableName: users
+      - addForeignKeyConstraint:
+          baseColumnNames: to_user_id
+          baseTableName: fans_relation
+          constraintName: fd_to_user_id
+          referencedColumnNames: id
+          referencedTableName: users

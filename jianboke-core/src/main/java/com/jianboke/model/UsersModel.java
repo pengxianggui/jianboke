@@ -13,25 +13,15 @@ import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UsersModel {
+public class UsersModel extends BaseModel {
 
-    private Long id;
     private String username;
     private String password;
     private String email;
     private String phonenum;
     private String avatarPath;
-    private LocalDateTime createdDate;
-    private LocalDateTime lastModifiedDate;
     private String validCode; // 验证码
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private boolean isAttention; // 是否已关注
 
     public String getUsername() {
         return username;
@@ -73,28 +63,20 @@ public class UsersModel {
         this.avatarPath = avatarPath;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(LocalDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public LocalDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
     public String getValidCode() {
         return validCode;
     }
 
     public void setValidCode(String validCode) {
         this.validCode = validCode;
+    }
+
+    public boolean isAttention() {
+        return isAttention;
+    }
+
+    public void setAttention(boolean attention) {
+        isAttention = attention;
     }
 
     @Override

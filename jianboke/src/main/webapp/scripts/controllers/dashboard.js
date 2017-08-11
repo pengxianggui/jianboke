@@ -227,25 +227,41 @@ angular.module('jianboke')
 
         }
 	})
-	.controller('AttentionCtrl', function($scope, $timeout, $state, $mdSidenav, $log, $mdDialog){
+	.controller('AttentionCtrl', function($scope, $timeout, $state, $mdSidenav, $log, $mdDialog, Account, $rootScope){
+	    var bookmark;
 	    console.log('AttentionCtrl');
-	    var initialize = function() { // 初始化dashboard.html所需的数据
-            console.log($scope.query);
-            initQueryPage(); //初始化
-//            getBooks();
-//            getAllArticle($scope.query);
+        $scope.query = {
+            findBy: 'attentions'
         }
-        // 初始化查询: 不传入值，则为初始值
-        var initQueryPage = function(findBy, page, size, filter) {
-            $scope.query = {
-                findBy: findBy?findBy:'0', // 默认所有
-                page: page?page:1, // 默认查询第一页
-                size: size?size:pageSize, // 默认每次查询的数量
-                filter: filter?filter:''
-            };
-            console.log($scope.query);
+        // 查询条件变更时触发搜索
+        $scope.onChange = function() {
+          return Account.query({
+            findBy: $scope.query.findBy
+          }, function(resp, responseHeaders) {
+            $scope.users = resp.data;
+            console.log($scope.users);
+          }).$promise;
         }
-        initialize();
+
+        // 刷新数据
+        $scope.refresh = function(event) {
+          $scope.promise = $scope.onChange();
+        }
+        $scope.onChange();
+
+        // 关注 or 取消关注
+        $scope.follow = function(param) {
+            console.log(param);
+            Account.follow({userId: param.id}).$promise.then(function(resp) {
+                if (resp.code == '0000') {
+                    $rootScope.popMessage('操作成功', true);
+                    param.attention = !param.attention;
+                }
+                $scope.onChange();
+            }, function() {
+                $rootScope.popMessage('操作失败, 请稍后重试', false);
+            });
+        }
 	})
 	.controller('CollectionCtrl', function($scope, $timeout, $state, $mdSidenav, $log, $mdDialog){
 	    console.log('CollectionCtrl');

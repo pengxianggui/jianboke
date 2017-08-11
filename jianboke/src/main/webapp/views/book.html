@@ -1,12 +1,12 @@
 <md-content layout="row" flex>
 
-    <md-sidenav class="md-sidenav-left" md-component-id="left"
-            md-is-locked-open="$mdMedia('gt-md') && toggleValue" layout="column">
+    <md-sidenav class="md-sidenav-left" md-component-id="left" md-is-locked-open="toggleValue"
+            md-is-open="toggleValue" layout="column" md-disable-backdrop>
         <!--<md-toolbar class="md-theme-indigo">-->
             <!--<h1 class="md-toolbar-tools">目录(搜索框)</h1>-->
         <!--</md-toolbar>-->
         <md-content layout-padding flex style="padding: 0">
-            <my-book-tree layout="column"></my-book-tree>
+            <my-read-book-tree layout="column" pxg-book="book" pxg-article-id="articleId"></my-read-book-tree>
         </md-content>
     </md-sidenav>
 
@@ -36,9 +36,11 @@
                     -->
                 </span>
             </span>
+            <!-- todo comment show
             <md-button ng-click="toggleRight()"  class="md-primary md-icon-button">
                 <md-icon>comment</md-icon>
             </md-button>
+            -->
             <!--<pxg-markdown-parse md-id="content" md-data="content"></pxg-markdown-parse>-->
         </div>
         <article flex ui-view layout="row" class="height-100-percent no-padding" ng-cloak></article>

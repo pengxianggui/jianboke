@@ -3,10 +3,6 @@
 angular.module('jianboke')
   .factory('Account', function($resource) {
     return $resource('api/account/:id', {}, {
-        getUsername: {
-            url: 'api/account/:id',
-            method: 'GET'
-        },
         usernameUniqueValid: {
             url: 'api/account/usernameUniqueValid',
             method: 'POST'
@@ -33,6 +29,18 @@ angular.module('jianboke')
         },
         saveShowDarkTheme: {
             url: 'api/account/saveShowDarkTheme/:showDarkTheme',
+            method: 'GET'
+        },
+        queryAll: {
+            url: 'api/account/queryAll',
+            method: 'GET'
+        },
+        query: {
+            url: 'api/account/query/:findBy',
+            method: 'GET'
+        },
+        follow: {
+            url: 'api/account/follow/:userId',
             method: 'GET'
         }
     });

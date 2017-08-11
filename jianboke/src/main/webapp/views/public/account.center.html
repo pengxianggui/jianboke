@@ -1,0 +1,124 @@
+<div layout="row" flex layout-align="center start">
+    <div layout="row" layout-align="start start" flex flex-gt-md="70" flex-md="80" flex-sm="90" flex-xs="100">
+        <div flex>
+            <md-card class="padding-10" layout="row" layout-align="start none">
+                <div class="avator">
+                    <md-icon ng-style="{'font-size': 100 + 'px', height: 100 + 'px', width: 100 + 'px'}"
+                             ng-if="!user.avatarPath">
+                        account_circle
+                    </md-icon>
+                    <img ng-if="user.avatarPath" ng-src="{{user.avatarPath}}">
+                </div>
+                <div flex>
+                    <h1>{{user.username}}</h1>
+                    <span>关注：{{attentionsNum}}</span>
+                    <span>粉丝：{{fansNum}}</span>
+                    <span>文章：{{articlesNum}}</span>
+                    <!--<span>收获的赞</span>-->
+                </div>
+            </md-card>
+            <!---->
+            <div ng-cloak>
+                <md-tabs md-border-bottom md-dynamic-height>
+                    <md-tab label="文章">
+                        <md-content class="md-padding">
+                            <div class="md-list-item-text" layout="column" ng-repeat="article in articles">
+                                <div flex class="no-margin padding-top-10-bottom-5" layout="row">
+                                    <h3 class="no-margin">
+                                        <a class="h2 article-title" ng-class="{true:'article-title-dark'}[showDarkTheme]"
+                                           ui-sref="pubReadBlog({id:article.id})" target="_blank"
+                                           ng-bind="article.title"></a>
+                                    </h3>
+                                    <span flex></span>
+                                    <pxg-chips-show chips-data="article.labels" chips-style="chipsStyle"></pxg-chips-show>
+                                </div>
+                                <span style="padding-bottom: 5px;" class="md-hue-1">时间、喜欢数量、评论数量....</span>
+                            </div>
+                            <hr style="border-style: dotted; color: #b0b0b0">
+                        </md-content>
+                    </md-tab>
+                    <md-tab label="关注">
+                        <md-content class="md-padding" flex layout="row" layout-align="start start">
+                            <md-card style="min-width: 200px;" flex-sm="100" flex-gt-sm="50" flex-gt-md="30" md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}"
+                                     md-theme-watch ng-repeat="user in attentions">
+                                <md-card-title >
+                                    <md-card-title-text style="margin-right: 10px; width: 120px;">
+                                        <a class="md-headline" ui-sref="accountCenter({username: user.username})" target="_blank">{{user.username}}</a>
+                                        <span class="md-subhead">introduces</span>
+                                    </md-card-title-text>
+                                    <md-card-title-media>
+                                        <div class="md-media-sm card-media">
+                                            <div class="width-height-100" style="float: right">
+                                                <md-icon ng-style="{'font-size': 100 + 'px', height: 100 + 'px', width: 100 + 'px'}"
+                                                         ng-if="!user.avatarPath">
+                                                    account_circle
+                                                </md-icon>
+                                                <img class="width-height-100" ng-if="user.avatarPath" ng-src="{{user.avatarPath}}">
+                                            </div>
+                                        </div>
+                                    </md-card-title-media>
+                                </md-card-title>
+                                <md-card-actions layout="row" layout-align="end center">
+                                    <md-button class="md-primary md-raised" ng-click="follow(user)" ng-if="!user.attention">关注</md-button>
+                                    <md-button class="md-raised" ng-click="follow(user)" ng-if="user.attention">取消关注</md-button>
+                                    <md-button class="md-icon-button" ng-click="praise(user)">
+                                        <md-icon>star</md-icon>
+                                    </md-button>
+                                </md-card-actions>
+                            </md-card>
+                        </md-content>
+                    </md-tab>
+                    <md-tab label="粉丝">
+                        <md-content class="md-padding" flex layout="row" layout-align="start start">
+                            <md-card style="min-width: 200px;" flex-sm="100" flex-gt-sm="50" flex-gt-md="30" md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}"
+                                     md-theme-watch ng-repeat="user in attentions">
+                                <md-card-title >
+                                    <md-card-title-text style="margin-right: 10px; width: 120px;">
+                                        <a class="md-headline" ui-sref="accountCenter({username: user.username})" target="_blank">{{user.username}}</a>
+                                        <span class="md-subhead">introduces</span>
+                                    </md-card-title-text>
+                                    <md-card-title-media>
+                                        <div class="md-media-sm card-media">
+                                            <div class="width-height-100" style="float: right">
+                                                <md-icon ng-style="{'font-size': 100 + 'px', height: 100 + 'px', width: 100 + 'px'}"
+                                                         ng-if="!user.avatarPath">
+                                                    account_circle
+                                                </md-icon>
+                                                <img class="width-height-100" ng-if="user.avatarPath" ng-src="{{user.avatarPath}}">
+                                            </div>
+                                        </div>
+                                    </md-card-title-media>
+                                </md-card-title>
+                                <md-card-actions layout="row" layout-align="end center">
+                                    <md-button class="md-primary md-raised" ng-click="follow(user)" ng-if="!user.attention">关注</md-button>
+                                    <md-button class="md-raised" ng-click="follow(user)" ng-if="user.attention">取消关注</md-button>
+                                    <md-button class="md-icon-button" ng-click="praise(user)">
+                                        <md-icon>star</md-icon>
+                                    </md-button>
+                                </md-card-actions>
+                            </md-card>
+                        </md-content>
+                    </md-tab>
+                </md-tabs>
+            </div>
+            <!--<div style="height: 1000px; background: red"></div>-->
+        </div>
+        <md-card style="width: 300px;" class="padding-10">
+            <div style="">
+                <label>个人介绍：</label>
+                <div class="padding-10 margin-top-bottom-5" style="border: 1px solid #b0b0b0; border-radius: 10px;">内容</div>
+            </div>
+            <div style="">
+                <label>作品：</label>
+                <div class="padding-10 margin-top-bottom-5" style="border: 1px solid #b0b0b0; border-radius: 10px;">
+                    <ul class="no-margin no-padding" style="list-style: none;s">
+                        <li ng-repeat="book in books">
+                            <md-icon>book</md-icon>
+                            <a style="color: grey; text-decoration: none;" ui-sref="book({bookId: book.id})" target="_blank">{{book.bookName}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </md-card>
+    </div>
+</div>

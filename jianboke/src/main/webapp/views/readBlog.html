@@ -1,5 +1,6 @@
 <md-content layout="row" flex>
-    <div layout="column" style="z-index:1" ng-if="isAuthenticated()">
+    <!--
+    <div layout="column" style="z-index:1" ng-if="isAuthenticated()" ng-if="article.authorId == account.id">
         <md-sidenav id="little-sidenav" class="md-sidenav-left" md-component-id="left" flex style="width: 100%;"
                     md-is-locked-open="true" md-whiteframe="4">
             <md-content flex layout="column" layout-align="start center" style="overflow: hidden">
@@ -38,13 +39,6 @@
                         <md-icon>send</md-icon>
                     </md-button>
                 </div>
-                <!--
-                <div md-theme="{{ showDarkTheme ? 'pxg-dark-theme' : 'default' }}" md-theme-watch>
-                    <md-button class="md-fab md-mini md-bg-gray" ng-class="{'md-bg-blue': notifications_hover}" ng-mouseover="notifications_hover=true" ng-mouseleave="notifications_hover=false">
-                        <md-icon>notifications_active</md-icon>
-                    </md-button>
-                </div>
-                -->
                 <div md-theme="{{ showDarkTheme ? 'pxg-dark-theme' : 'default' }}" md-theme-watch>
                     <md-button class="md-fab md-mini md-default" ng-class="{'md-warn': settings_hover}"
                                ng-mouseover="settings_hover=true" ng-mouseleave="settings_hover=false" ng-click="toggleRight()">
@@ -55,6 +49,7 @@
             </md-content>
         </md-sidenav>
     </div>
+    -->
     <md-content layout="row" layout-align="center start" flex style="overflow: auto">
         <md-content flex-xs="100" flex-sm="90" flex-gt-sm="80" class="padding-10" style="overflow: initial;">
             <md-head layout="row" layout-align="start end" style="margin: 20px 0;">
@@ -73,14 +68,15 @@
             <pxg-markdown-parse flex md-id="article_{{article.id}}" md-data="article.content"></pxg-markdown-parse>
         </md-content>
     </md-content>
+    <!--
     <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right">
         <md-toolbar class="md-theme-light">
             <h1 class="md-toolbar-tools">博客设置</h1>
         </md-toolbar>
         <pxg-blog-set article="article"></pxg-blog-set>
     </md-sidenav>
-
-    <div class="lock-size nail-float-write" ng-if="isAuthenticated()">
+    -->
+    <div class="lock-size nail-float-write" ng-if="isAuthenticated()" ng-if="article.authorId == account.id">
         <md-fab-speed-dial md-open="demo.isOpen" md-direction="up" ng-class="demo.selectedMode">
             <md-fab-trigger>
                 <md-button aria-label="menu" class="md-fab md-warn" ui-sref="blog.edit({id: article.id})">

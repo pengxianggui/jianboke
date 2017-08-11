@@ -21,6 +21,7 @@ import com.jianboke.service.BookChapterArticleService;
 import com.jianboke.service.UserAuhtorityService;
 import com.jianboke.utils.FileUploadUtils;
 import com.jianboke.utils.StringUtils;
+import javafx.scene.shape.Circle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,12 @@ public class ArticleController {
 //		return map;
 //	}
 
+	/**
+	 * 获取分页、动态查询当前用户下所有文章
+	 * @param criteria
+	 * @param pageable
+	 * @return
+	 */
 	@RequestMapping(value = "/article", method = RequestMethod.GET)
 	@Transactional(readOnly = true)
 	public Page<ArticleModel> query(@ModelAttribute ArticleCriteria criteria, @PageableDefault Pageable pageable) {
@@ -97,10 +104,29 @@ public class ArticleController {
 		if (criteria.getBookId() != null) {
 			criteria.setBook(bookRepository.findOne(criteria.getBookId()));
 		}
+		User u = userService.getUserWithAuthorities(); // 当前用户
+		criteria.setAuthorId(u.getId());
 		Page<Article> page = articleRepository.findAll(new ArticleSpecification(criteria), pageable); // 分页查询
 		List<ArticleModel> list = new ArrayList<>();
 		page.getContent().forEach(t -> list.add(articleMapper.entityToModel(t)));
-		return new PageImpl<ArticleModel>(list, pageable, page.getTotalElements());
+		return new PageImpl<>(list, pageable, page.getTotalElements());
+	}
+
+	/**
+	 * 分页、关键字搜索库中所有相关博客。用于全局搜索
+	 * @param criteria 只有filter有值
+	 * @param pageable
+	 * @return
+	 */
+	@RequestMapping(value = "/article/queryAll", method = RequestMethod.GET)
+	@Transactional(readOnly = true)
+	public Page<ArticleModel> queryAll(@ModelAttribute ArticleCriteria criteria, @PageableDefault Pageable pageable) {
+		User u = userService.getUserWithAuthorities();
+		log.info("The User:{} search the articles under the global with criteria:{}", u, criteria);
+		Page<Article> page = articleRepository.findAll(new ArticleSpecification(criteria), pageable);
+		List<ArticleModel> list = new ArrayList<>();
+		page.getContent().forEach(t -> list.add(articleMapper.entityToModel(t)));
+		return new PageImpl<>(list, pageable, page.getTotalElements());
 	}
 
 	/**

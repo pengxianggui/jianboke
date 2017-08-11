@@ -5,24 +5,71 @@
             <md-icon>menu</md-icon>
         </md-button>
         <md-input-container md-no-float class="no-margin margin-left-right-10" style="padding: 0 10px">
-            <md-select ng-model="query.findBy" placeholder="分类查询" style="margin-top: 8px;" ng-change="refreshAccountList()">
-                <md-option value="0">全部</md-option>
-                <md-option value="1">关注</md-option>
-                <md-option value="2">粉丝</md-option>
+            <md-select ng-model="query.findBy" placeholder="分类查询" style="margin: 8px; 0;" ng-change="onChange()">
+                <md-option value="attentions">关注</md-option>
+                <md-option value="fans">粉丝</md-option>
             </md-select>
         </md-input-container>
         <span flex></span>
-        <form name="search" ng-submit="refreshArticleList()">
-            <md-input-container style="margin: 4px;" md-no-float>
-                <input id="article-flex-input" placeholder="过滤..." type="search" name="search" ng-model="query.filter">
-                <md-button class="md-icon-button" ng-if="query.filter" ng-click="clearFilter();">
-                    <md-icon>clear</md-icon>
-                </md-button>
-                <md-button class="md-icon-button" ng-if="!query.filter">
-                    <md-icon>search</md-icon>
-                </md-button>
-
-            </md-input-container>
-        </form>
     </md-card>
+    <md-content style="padding:10px" flex layout="row" layout-align="start start">
+        <!--
+        <md-table-container flex>
+            <table md-table md-row-select multiple md-progress="promise">
+                <thead fix-head md-head>
+                <tr md-row>
+                    <th md-column>信息</th>
+                    <th md-column width="10%">操作</th>
+                </tr>
+                </thead>
+                <tbody md-body>
+                <tr md-row ng-repeat="user in users">
+                    <td md-cell>
+                        <div class="md-list-item-text" layout="column">
+                            <div flex class="no-margin padding-top-10-bottom-5" layout="row">
+                                {{user.username}}
+                            </div>
+                            <span style="padding-bottom: 5px;" class="md-hue-1">时间、喜欢数量、评论数量....</span>
+                        </div>
+                    </td>
+                    <td md-cell>
+                        <div style="width: 96px;">
+                            <md-button class="no-margin" ng-click="cancelFollow(user)">
+                                取消关注
+                            </md-button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+        -->
+        <md-card style="float: left" flex-sm="100" flex-gt-sm="50" flex-gt-md="30" md-theme="{{ showDarkTheme ? 'dark-grey' : 'default' }}"
+                 md-theme-watch ng-repeat="user in users">
+            <md-card-title >
+                <md-card-title-text style="margin-right: 10px; width: 120px;">
+                    <a class="md-headline" ui-sref="accountCenter({username: user.username})" target="_blank">{{user.username}}</a>
+                    <span class="md-subhead">introduces</span>
+                </md-card-title-text>
+                <md-card-title-media>
+                    <div class="md-media-sm card-media">
+                        <div class="width-height-100" style="float: right">
+                            <md-icon ng-style="{'font-size': 100 + 'px', height: 100 + 'px', width: 100 + 'px'}"
+                                     ng-if="!user.avatarPath">
+                                account_circle
+                            </md-icon>
+                            <img class="width-height-100" ng-if="user.avatarPath" ng-src="{{user.avatarPath}}">
+                        </div>
+                    </div>
+                </md-card-title-media>
+            </md-card-title>
+            <md-card-actions layout="row" layout-align="end center">
+                <md-button class="md-primary md-raised" ng-click="follow(user)" ng-if="!user.attention">关注</md-button>
+                <md-button class="md-raised" ng-click="follow(user)" ng-if="user.attention">取消关注</md-button>
+                <md-button class="md-icon-button" ng-click="praise(user)">
+                    <md-icon>star</md-icon>
+                </md-button>
+            </md-card-actions>
+        </md-card>
+    </md-content>
 </md-content>

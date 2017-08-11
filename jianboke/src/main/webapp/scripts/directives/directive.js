@@ -62,6 +62,9 @@ angular.module('jianboke')
                         this.setEditorTheme('pastel-on-dark');
                     }
                 },
+                onchange: function() {
+                    scope.$apply(scope.getValue);
+                },
                 imageUpload    : true,
                 imageFormats   : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
                 imageUploadURL : "./api/article/img",
@@ -70,9 +73,6 @@ angular.module('jianboke')
             scope.getValue = function() {
                 scope.content = scope.editor.getMarkdown();
             }
-            iElement.on('change keyup blur input propertychange click', function() {
-                scope.$apply(scope.getValue);
-            });
         }
     }
 })
@@ -123,7 +123,7 @@ angular.module('jianboke')
                         '<span ng-repeat="item in data" ng-bind="item" ng-style="style"></span>' +
                   '</span>',
         controller: function($scope) {
-            if(!Array.isArray($scope.chipsData) && $scope.chipsData != '') {
+            if(!Array.isArray($scope.chipsData) && $scope.chipsData != null && $scope.chipsData != '') {
                 $scope.data = $scope.chipsData.split(",");
             }
             $scope.style = $scope.style || {

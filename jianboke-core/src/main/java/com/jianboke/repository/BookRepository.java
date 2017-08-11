@@ -9,4 +9,5 @@ import com.jianboke.domain.Book;
 
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
 	List<Book> findAllByAuthorId(Long authorId);
+
 }

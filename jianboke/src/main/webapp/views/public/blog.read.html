@@ -1,0 +1,30 @@
+<md-content layout="row" flex>
+    <md-content layout="row" layout-align="center start" flex style="overflow: auto">
+        <md-content flex-xs="100" flex-sm="90" flex-gt-sm="80" class="padding-10" style="overflow: initial;">
+            <md-head layout="row" layout-align="start end" style="margin: 20px 0;">
+                <span class="title" ng-bind="article.title"></span>
+                <pxg-chips-show chips-data="article.labels" chips-style="chipsStyle"></pxg-chips-show>
+                <span flex></span>
+                <span class="author-box">
+                    <span class="author-label">作者</span>
+                    <span ng-repeat="authorName in authorNameArr">
+                        <span ng-bind="authorName"></span>
+                        <span ng-if="$index != (authorNameArr.length - 1)">, </span>
+                    </span>
+                </span>
+            </md-head>
+
+            <pxg-markdown-parse flex md-id="article_{{article.id}}" md-data="article.content"></pxg-markdown-parse>
+        </md-content>
+    </md-content>
+    <div class="lock-size nail-float-write" ng-if="isAuthenticated()" ng-if="article.authorId == account.id">
+        <md-fab-speed-dial md-open="demo.isOpen" md-direction="up" ng-class="demo.selectedMode">
+            <md-fab-trigger>
+                <md-button aria-label="menu" class="md-fab md-warn" ui-sref="blog.edit({id: article.id})">
+                    <md-tooltip>编辑</md-tooltip>
+                    <md-icon>edit</md-icon>
+                </md-button>
+            </md-fab-trigger>
+        </md-fab-speed-dial>
+    </div>
+</md-content>
