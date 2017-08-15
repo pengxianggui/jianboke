@@ -205,4 +205,23 @@ angular.module('jianboke')
         }
     }
 })
+.directive('pxgScrollBottomLoading', function() {
+    return {
+        restrict: 'AE',
+        scope: {
+            pxgLoadAction: '&'
+        },
+        link: function(scope, ele, attrs) {
+            $(ele).scroll(function() {
+                var _this = $(this);
+//                console.log('可见高度:' + _this.height());
+//                console.log('内容高度:' + _this.get(0).scrollHeight);
+//                console.log('滚动高度:' + _this.scrollTop());
+                if (_this.scrollTop() / (_this.get(0).scrollHeight -_this.height()) > 0.99999) { // 滚动条逼近底部时，加载
+                    scope.pxgLoadAction();
+                }
+            });
+        }
+    }
+})
 ;

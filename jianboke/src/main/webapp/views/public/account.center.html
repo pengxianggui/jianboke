@@ -1,6 +1,8 @@
-<div layout="row" flex layout-align="center start">
-    <div layout="row" layout-align="start start" flex flex-gt-md="70" flex-md="80" flex-sm="90" flex-xs="100">
-        <div flex>
+<md-content layout="row" flex layout-align="center start" pxg-scroll-bottom-loading pxg-load-action="loadData()">
+    <md-content layout="row" layout-align="start start" style="overflow: initial;"
+                flex flex-gt-md="50" flex-md="80" flex-sm="90" flex-xs="100">
+         <!--flex flex-gt-md="70" flex-md="80" flex-sm="90" flex-xs="100">-->
+        <md-content flex>
             <md-card class="padding-10" layout="row" layout-align="start none">
                 <div class="avator">
                     <md-icon ng-style="{'font-size': 100 + 'px', height: 100 + 'px', width: 100 + 'px'}"
@@ -10,22 +12,24 @@
                     <img ng-if="user.avatarPath" ng-src="{{user.avatarPath}}">
                 </div>
                 <div flex>
-                    <div layout="row">
+                    <div layout="row" layout-align="start center">
                         <h1>{{user.username}}</h1>
                         <span flex></span>
                         <md-button class="md-primary md-raised" ng-click="follow(user)" ng-if="!user.attention">关注</md-button>
                         <md-button class="md-raised" ng-click="follow(user)" ng-if="user.attention">取消关注</md-button>
+                        <md-button class="md-icon-button" ng-click="toggleRight()" hide-gt-md>
+                            <md-icon>menu</md-icon>
+                        </md-button>
                     </div>
                     <span>关注：{{attentionsNum}}</span>
                     <span>粉丝：{{fansNum}}</span>
                     <span>文章：{{articlesNum}}</span>
                     <!--<span>收获的赞</span>-->
-                    <md-button ng-click="toggleRight()">toggle</md-button>
                 </div>
             </md-card>
             <!---->
             <div ng-cloak>
-                <md-tabs md-border-bottom md-dynamic-height>
+                <md-tabs md-border-bottom md-dynamic-height md-selected="selectItem">
                     <md-tab label="文章">
                         <md-content class="md-padding">
                             <div class="md-list-item-text" layout="column" ng-repeat="article in articles">
@@ -39,8 +43,13 @@
                                     <pxg-chips-show chips-data="article.labels" chips-style="chipsStyle"></pxg-chips-show>
                                 </div>
                                 <span style="padding-bottom: 5px;" class="md-hue-1">时间、喜欢数量、评论数量....</span>
+                                <!--<hr style="border-style: dotted; color: #b0b0b0; width: 100%">-->
                             </div>
-                            <hr style="border-style: dotted; color: #b0b0b0">
+                            <div layout="row" layout-align="space-around" class="padding-10">
+                                <md-progress-circular md-mode="indeterminate" md-diameter="30px" ng-if="showLoadGif"></md-progress-circular>
+                                <span ng-if="!showLoadGif && showBottomTip">别扯了, 到底了</span>
+                            </div>
+                            <!--<md-button ng-click="loadData()">loading</md-button>-->
                         </md-content>
                     </md-tab>
                     <md-tab label="关注">
@@ -108,9 +117,11 @@
                 </md-tabs>
             </div>
             <!--<div style="height: 1000px; background: red"></div>-->
-        </div>
-        <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right"
-                    md-is-locked-open="true" style="width: 300px;" class="padding-10">
+    </md-content>
+    </md-content>
+    <md-sidenav layout="column" class="md-sidenav-right" md-component-id="right"
+                md-is-locked-open="$mdMedia('gt-md')" md-whiteframe="4">
+        <md-card class="padding-10">
             <div style="">
                 <label>个人介绍：</label>
                 <div class="padding-10 margin-top-bottom-5" style="border: 1px solid #b0b0b0; border-radius: 10px;">内容</div>
@@ -126,6 +137,6 @@
                     </ul>
                 </div>
             </div>
-        </md-sidenav>
-    </div>
-</div>
+        </md-card>
+    </md-sidenav>
+</md-content>
