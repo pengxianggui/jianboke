@@ -5,11 +5,12 @@
         <md-content flex layout="column" layout-align="start center" style="overflow: hidden">
             <div md-theme="{{ showDarkTheme ? 'pxg-dark-theme' : 'default' }}" md-theme-watch>
                 <md-button class="md-fab md-warn" ng-click="goToDashboard()">
-                    <md-tooltip md-direction="right">首页</md-tooltip>
+                    <md-tooltip md-direction="right">个人中心</md-tooltip>
                     <md-icon>account_circle</md-icon>
                 </md-button>
             </div>
             <span flex></span>
+            <!-- todo
             <div md-theme="{{ showDarkTheme ? 'pxg-dark-theme' : 'default' }}" md-theme-watch>
                 <md-fab-speed-dial md-direction="up" md-open="shareOpen" ng-class="'md-fling'">
                     <md-fab-trigger>
@@ -38,6 +39,7 @@
                     <md-icon>send</md-icon>
                 </md-button>
             </div>
+            -->
             <div md-theme="{{ showDarkTheme ? 'pxg-dark-theme' : 'default' }}" md-theme-watch>
                 <md-button class="md-fab md-mini md-default" ng-class="{'md-warn': settings_hover}"
                            ng-mouseover="settings_hover=true" ng-mouseleave="settings_hover=false" ng-click="toggleRight()">

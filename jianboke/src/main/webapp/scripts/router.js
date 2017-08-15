@@ -150,7 +150,7 @@ angular.module('jianboke')
 //			    }
 //			}
 		})
-		.state('blog.addToBook', {
+		.state('addToBook', {
 		    url: '/addToBook/{id}',
 		    data: {
 		        access_level: [ACCESS_LEVELS.user],

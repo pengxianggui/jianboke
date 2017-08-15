@@ -199,7 +199,7 @@ angular.module('jianboke')
 
         // todo 归档变更
         $scope.addToBook = function(id) {
-            $state.go('blog.addToBook', {id: id});
+            $state.go('addToBook', {id: id});
         }
 
         // 批量删除文章

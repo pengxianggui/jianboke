@@ -19,12 +19,12 @@
                         </div>
                     </md-toolbar>
                     <md-content class="md-padding" flex ng-if="currentChapter.items && currentChapter.items.length > 0">
-                        对不起，当前章节下嵌套了其他章节，文章与章节无法共处同一层，因此您无法在此处归档《{{article.title}}》。
+                        当前章节下嵌套了其他章节，文章与章节无法共处同一层，因此您无法在此处归档《{{article.title}}》。
                     </md-content>
                     <md-content flex ng-if="!(currentChapter.items && currentChapter.items.length > 0)">
                         <md-list class="md-dense">
                             <md-list-item style="cursor: auto;" ng-repeat="a in articleModels | orderBy:'sortNum'">
-                                <md-button class="md-icon-button" ui-sref="blog.readblog({id: a.articleId})"
+                                <md-button class="md-icon-button" ui-sref="blog.readBlog({id: a.articleId})"
                                            target="_blank">
                                     <md-tooltip>查看</md-tooltip>
                                     <md-icon>remove_red_eye</md-icon>
