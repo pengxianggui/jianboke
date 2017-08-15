@@ -10,11 +10,17 @@
                     <img ng-if="user.avatarPath" ng-src="{{user.avatarPath}}">
                 </div>
                 <div flex>
-                    <h1>{{user.username}}</h1>
+                    <div layout="row">
+                        <h1>{{user.username}}</h1>
+                        <span flex></span>
+                        <md-button class="md-primary md-raised" ng-click="follow(user)" ng-if="!user.attention">关注</md-button>
+                        <md-button class="md-raised" ng-click="follow(user)" ng-if="user.attention">取消关注</md-button>
+                    </div>
                     <span>关注：{{attentionsNum}}</span>
                     <span>粉丝：{{fansNum}}</span>
                     <span>文章：{{articlesNum}}</span>
                     <!--<span>收获的赞</span>-->
+                    <md-button ng-click="toggleRight()">toggle</md-button>
                 </div>
             </md-card>
             <!---->
@@ -103,7 +109,8 @@
             </div>
             <!--<div style="height: 1000px; background: red"></div>-->
         </div>
-        <md-card style="width: 300px;" class="padding-10">
+        <md-sidenav class="md-sidenav-right md-whiteframe-4dp" md-component-id="right"
+                    md-is-locked-open="true" style="width: 300px;" class="padding-10">
             <div style="">
                 <label>个人介绍：</label>
                 <div class="padding-10 margin-top-bottom-5" style="border: 1px solid #b0b0b0; border-radius: 10px;">内容</div>
@@ -119,6 +126,6 @@
                     </ul>
                 </div>
             </div>
-        </md-card>
+        </md-sidenav>
     </div>
 </div>

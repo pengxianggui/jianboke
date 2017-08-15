@@ -53,7 +53,7 @@ public class PubAccountController {
         log.info("Pub Rest request to find author names of a article which id:{}", articleId);
         return articleRepository.findAuthorNameByArticleId(articleId)
                 .map(list -> ResponseEntity.ok().body(list))
-                .orElse(ResponseEntity.ok().body(new ArrayList<String>()));
+                .orElse(ResponseEntity.ok().body(new ArrayList<>()));
     }
 
     /**
@@ -65,21 +65,11 @@ public class PubAccountController {
     @RequestMapping(value = "/account/queryAll", method = RequestMethod.GET)
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Page<UsersModel> queryAll(@ModelAttribute AccountCriteria criteria, @PageableDefault Pageable pageable) {
-        User u = userService.getUserWithAuthorities();
-        log.info("The vistor search the users under the global with criteria:{}, user:{}", criteria, u);
+        log.info("The vistor search the users under the global with criteria:{}", criteria);
         Page<User> page = userRepository.findAll(new UserSpecification(criteria), pageable);
         List<UsersModel> list = new ArrayList<>();
-        page.getContent().forEach(t -> {
-            UsersModel model = usersMapper.entityToModel(t);
-            if (u != null) {
-                if (u.getAttentions().contains(t)) { // 已关注的
-                    model.setAttention(true);
-                } else {
-                    model.setAttention(false);
-                }
-            } else {
-                model.setAttention(false);
-            }
+        page.getContent().forEach(user -> {
+            UsersModel model = userService.judgeAttention(user);
             list.add(model);
         });
         return new PageImpl<>(list, pageable, page.getTotalElements());
@@ -93,18 +83,12 @@ public class PubAccountController {
     @RequestMapping(value = "/account/attentions/{username}", method = RequestMethod.GET)
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public ResponseEntity<RequestResult> queryAttentions(@PathVariable String username) {
-        User currentUser = userService.getUserWithAuthorities(); // 查询当前用户。null为游客
         List<UsersModel> models = new ArrayList<>();
         return userRepository.findOneByUsername(username).map(user -> {
             log.info("Pub get all attentions under the User:{}, username:{}", user, username);
             Set<User> hasAttentionsSet = userService.getAttentionsByUser(user);
             hasAttentionsSet.forEach(attentionUser -> {
-                UsersModel model = usersMapper.entityToModel(attentionUser);
-                if (currentUser != null && currentUser.getAttentions().contains(attentionUser)) { // 如果存在当前用户，则判断
-                    model.setAttention(true);
-                } else {
-                    model.setAttention(false);
-                }
+                UsersModel model = userService.judgeAttention(attentionUser);
                 models.add(model);
             });
             log.info("the attentions of user:{} are:{}", user, models);
@@ -120,18 +104,12 @@ public class PubAccountController {
     @RequestMapping(value = "/account/fans/{username}", method = RequestMethod.GET)
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public ResponseEntity<RequestResult> queryFans(@PathVariable String username) {
-        User currentUser = userService.getUserWithAuthorities(); // 查询当前用户。null为游客
         List<UsersModel> models = new ArrayList<>();
         return userRepository.findOneByUsername(username).map(user -> {
             log.info("Pub get all fans under the User:{}, username:{}", user, username);
             Set<User> hasFansSet = userService.getFansByUser(user);
             hasFansSet.forEach(fansUser -> {
-                UsersModel model = usersMapper.entityToModel(fansUser);
-                if (currentUser != null && currentUser.getAttentions().contains(fansUser)) { // 如果存在当前用户，则判断
-                    model.setAttention(true);
-                } else {
-                    model.setAttention(false);
-                }
+                UsersModel model = userService.judgeAttention(fansUser);
                 models.add(model);
             });
             log.info("the fans of user:{} are:{}", user, models);
@@ -145,7 +123,7 @@ public class PubAccountController {
         log.info("REST request to get a user by username:{}", username);
         return userRepository.findOneByUsername(username)
                 .map(user -> {
-                    UsersModel model = usersMapper.entityToModel(user);
+                    UsersModel model = userService.judgeAttention(user);
                     return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, model));
                 })
                 .orElse(ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_RESOURCE_NOT_FOUND)));

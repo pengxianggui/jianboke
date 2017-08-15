@@ -30,7 +30,7 @@
 			<div flex layout="row" layout="center center" class="md-toolbar-tools no-padding">
 				<span style="height: 100%;" pxg-slide-effect>
 					<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='index'}" style="height: 100%; margin: 0;" ng-click="goToState('index')">首页</md-button>
-					<md-button ng-if="isAuthenticated()" class="nav" ng-class="{'md-raised md-warn': stateBelong=='dashboard'}" style="height: 100%; margin: 0;" ng-click="goToState('dashboard.blogs')">个人主页</md-button>
+					<md-button ng-if="isAuthenticated()" class="nav" ng-class="{'md-raised md-warn': stateBelong=='accountCenter'}" style="height: 100%; margin: 0;" ng-click="goToState('accountCenter', {username:account.username})">个人主页</md-button>
 					<!--<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='attention'}" style="height: 100%; margin: 0;" ng-click="go('attention')">关注</md-button>-->
 				</span>
 				<span flex layout="row" layout-align="center center">
@@ -74,7 +74,7 @@
 						<md-icon>account_circle</md-icon>
 					</md-button> -->
 				</pxg-account-menu>
-				<div  ng-if="!isAuthenticated()">
+				<div  ng-if="!isAuthenticated()" style="font-size: 14px;">
 					<a ui-sref="login">登录</a> || <a ui-sref="register">注册</a>
 				</div>
 				<!-- <md-button ng-click="logout()">登出</md-button> -->

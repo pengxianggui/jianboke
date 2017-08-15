@@ -260,8 +260,8 @@ angular.module('jianboke')
 		    url: '/u/{username}',
 		    data: {
 		        access_level: [ACCESS_LEVELS.user, ACCESS_LEVELS.pub],
-		        title: '用户-',
-		        belong: 'index'
+		        title: '主页-',
+		        belong: 'accountCenter'
 		    },
 		    controller: 'AccountCenterCtrl',
 		    templateUrl: 'views/public/account.center.html',

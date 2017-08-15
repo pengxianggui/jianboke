@@ -2,7 +2,7 @@
 
 angular.module('jianboke')
     .controller('AccountCenterCtrl', function($scope, $stateParams, $state, PubAccount, PubArticle,
-            PubBook, userEntity, booksEntity, articlesEntity, Account) {
+            PubBook, userEntity, booksEntity, articlesEntity, Account, $rootScope, $mdSidenav) {
         console.log('AccountCenterCtrl');
 
         console.log(userEntity);
@@ -51,5 +51,18 @@ angular.module('jianboke')
             }, function() {
                 $rootScope.popMessage('操作失败, 请稍后重试', false);
             });
+        }
+
+
+        $scope.toggleRight = buildToggler('right');
+        function buildToggler(navID) {
+          return function() {
+            if (navID == 'left') {
+                $scope.toggleValue = !$scope.toggleValue;
+            }
+            $mdSidenav(navID).toggle().then(function() {
+                console.log('toggle over');
+            });
+          };
         }
     });

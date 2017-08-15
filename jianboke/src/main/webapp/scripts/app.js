@@ -42,8 +42,9 @@ angular.module('jianboke', [
         }
     });
 
-    $rootScope.goToState = function(stateName) {
-        $state.go(stateName);
+    $rootScope.goToState = function(stateName, param) {
+        console.log(param);
+        $state.go(stateName, param);
     }
 
 	$rootScope.goToDashboard = function() {

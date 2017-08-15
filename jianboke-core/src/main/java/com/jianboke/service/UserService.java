@@ -3,6 +3,7 @@ package com.jianboke.service;
 import com.jianboke.domain.FansRelation;
 import com.jianboke.domain.Mail;
 import com.jianboke.domain.VerificationCode;
+import com.jianboke.mapper.UsersMapper;
 import com.jianboke.model.ArticleModel;
 import com.jianboke.model.UsersModel;
 import com.jianboke.repository.FansRelationRepository;
@@ -40,6 +41,9 @@ public class UserService {
 
 	  @Autowired
 	  private FansRelationRepository fansRelationRepository;
+
+	  @Autowired
+	  private UsersMapper usersMapper;
 
 
 	  /**
@@ -198,6 +202,26 @@ public class UserService {
 		Set<User> set = new HashSet<>();
 		frList.forEach(fansRelation -> set.add(fansRelation.getToUser()));
 		return set;
+	}
+
+	/**
+	 * 传入一个user， 返回这个user对应的model，并判断该user是否已被当前用户关注
+	 * @param user
+	 * @return
+	 */
+	public UsersModel judgeAttention(User user) {
+		User u = getUserWithAuthorities(); // 当前登录的用户，若为游客，则为null
+		UsersModel model = usersMapper.entityToModel(user);
+		if (u != null) {
+			if (u.getAttentions().contains(user)) { // 已关注的
+				model.setAttention(true);
+			} else {
+				model.setAttention(false);
+			}
+		} else {
+			model.setAttention(false);
+		}
+		return model;
 	}
 
 }
