@@ -242,3 +242,82 @@ div.avator {
 .list-hover {
     background-color: rgba(158,158,158,0.2);
 }
+
+.bg-image {
+    background-image: url(../img/303408.jpg);
+    background-size: cover;
+}
+
+button .has-liked {
+    color: #ea6f5f;
+}
+button .has-unLiked {
+    color: #009688;
+}
+button .has-payed {
+    color: #1565c0;
+}
+.comment-block {
+    & > div {
+        margin: 10px 0;
+    };
+    &  .avator-block {
+        width: 50px;
+        height: 50px;
+        margin-right: 5px;
+    };
+    & .comment-text-area {
+        border-radius: 10px;
+    };
+    & textarea {
+        width: 100%;
+        height: 100%;
+        padding: 10px;
+        box-sizing: inherit;
+        background-color: #f0f0f0;
+        border: 0;
+        outline: none;
+        resize: none;
+        height: 100px;
+        font-family: 'Microsoft Yahei';
+    }
+}
+
+.pxg-pagination-block a {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    width: 10px;
+    height: 10px;
+    text-align: center;
+    line-height: 10px;
+    color: #666;
+    margin: 10px;
+}
+.pxg-pagination-block span {
+    display: inline-block;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    width: 60px;
+    height: 10px;
+    text-align: center;
+    line-height: 10px;
+    color: #666;
+    margin: 10px;
+    outline: none;
+}
+.pxg-pagination-block span.disabled {
+    background-color: #f1efef !important;
+    cursor: not-allowed !important;
+}
+.pxg-pagination-block a:hover, .pxg-pagination-block span:hover {
+    background-color: #dadada;
+    cursor: pointer;
+}
+.pxg-pagination-block a.active {
+    background-color: #bfbfbf !important;
+    cursor: auto;
+}
+

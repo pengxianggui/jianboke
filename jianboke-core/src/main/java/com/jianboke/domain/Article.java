@@ -7,6 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.jianboke.annotation.ColumnComment;
+import org.hibernate.annotations.Fetch;
 
 import java.util.Collection;
 import java.util.Set;
@@ -71,6 +72,10 @@ public class Article extends AbstractAuditingEntity {
 	@Column(name = "if_set_top")
 	@ColumnComment("是否在个人主页置顶")
 	private boolean ifSetTop = false; //默认false
+
+//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
+//	@OrderBy(value = "created_date ASC") // 按照创建时间升序排序
+//	private Set<Comment> comments;
 
 	@JsonIgnore
 	@ManyToMany
@@ -191,6 +196,14 @@ public class Article extends AbstractAuditingEntity {
 	public void setBooks(Set<Book> books) {
 		this.books = books;
 	}
+//
+//	public Set<Comment> getComments() {
+//		return comments;
+//	}
+//
+//	public void setComments(Set<Comment> comments) {
+//		this.comments = comments;
+//	}
 
 	@Override
 	public String toString() {

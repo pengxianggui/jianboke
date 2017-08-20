@@ -15,8 +15,10 @@
                     <div layout="row" layout-align="start center">
                         <h1>{{user.username}}</h1>
                         <span flex></span>
-                        <md-button class="md-primary md-raised" ng-click="follow(user)" ng-if="!user.attention">关注</md-button>
-                        <md-button class="md-raised" ng-click="follow(user)" ng-if="user.attention">取消关注</md-button>
+                        <span ng-if="account == null || account.username != user.username">
+                            <md-button class="md-primary md-raised" ng-click="follow(user)" ng-if="!user.attention">关注</md-button>
+                            <md-button class="md-raised" ng-click="follow(user)" ng-if="user.attention">取消关注</md-button>
+                        </span>
                         <md-button class="md-icon-button" ng-click="toggleRight()" hide-gt-md>
                             <md-icon>menu</md-icon>
                         </md-button>

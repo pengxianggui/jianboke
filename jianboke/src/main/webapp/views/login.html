@@ -1,37 +1,37 @@
-<md-content layout="column" flex>
+<md-content flex class="bg-image">
 	<div layout="row" flex layout-align="center center">
 		<md-card flex-sm="100" flex-gt-sm="60" flex-gt-md="40">
-		<form name="form" novalidate ng-submit="login($event)" autocomplete="off">
-			<md-card-content>
-				<h2 class="md-title" style="text-align: center">
-					<md-button style="background-color: #989ecb; color: #fff">登录</md-button>
-					<span>·</span>
-					<md-button ui-sref="register">注册</md-button>
-				</h2>
-				<p class="error" ng-show="authenticationError">用户登录失败，请检查输入</p>
-				<div class="inset"></div>
-				<md-input-container class="md-block"> <label>用户名</label>
-				<input type="text" name="jbk_username" ng-model="username" required>
-				<div ng-messages="form.jbk_username.$error">
-					<div ng-message="required">请输入用户名</div>
-				</div>
-				</md-input-container>
-				<md-input-container class="md-block"> 
-					<label>密码</label>
-					<input type="{{passwordType}}" onfocus="this.type = 'password'"
-						name="jbk_password" ng-model="password" required>
-				<div ng-messages="form.jbk_password.$error">
-					<div ng-message="required">请输入密码</div>
-				</div>
-				</md-input-container>
-			</md-card-content>
-			<md-card-actions layout="row" layout-padding layout-align="space-between center">
-				<md-checkbox ng-model="rememberMe" class="md-primary">保存登录凭据</md-checkbox>
-			 	<div layout="row" layout-align="end center">
-					<md-button type="submit" class="md-primary md-raised">登录</md-button>
-			 	</div>
-			</md-card-actions>
-		</form>
+			<form name="form" novalidate ng-submit="login($event)" autocomplete="off">
+				<md-card-content>
+					<h2 class="md-title" style="text-align: center">
+						<md-button style="background-color: #989ecb; color: #fff">登录</md-button>
+						<span>·</span>
+						<md-button ui-sref="register">注册</md-button>
+					</h2>
+					<p class="error" ng-show="authenticationError">用户登录失败，请检查输入</p>
+					<div class="inset"></div>
+					<md-input-container class="md-block"> <label>用户名</label>
+					<input type="text" name="jbk_username" ng-model="username" required>
+					<div ng-messages="form.jbk_username.$error">
+						<div ng-message="required">请输入用户名</div>
+					</div>
+					</md-input-container>
+					<md-input-container class="md-block">
+						<label>密码</label>
+						<input type="{{passwordType}}" onfocus="this.type = 'password'"
+							name="jbk_password" ng-model="password" required>
+					<div ng-messages="form.jbk_password.$error">
+						<div ng-message="required">请输入密码</div>
+					</div>
+					</md-input-container>
+				</md-card-content>
+				<md-card-actions layout="row" layout-padding layout-align="space-between center">
+					<md-checkbox ng-model="rememberMe" class="md-primary">保存登录凭据</md-checkbox>
+					<div layout="row" layout-align="end center">
+						<md-button type="submit" class="md-primary md-raised">登录</md-button>
+					</div>
+				</md-card-actions>
+			</form>
 		</md-card>
 	</div>
 	<h5 style="text-align: center;font-weight: normal;">Powered by dongfangyihaolan ©2016–2017</h5>

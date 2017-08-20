@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,user-scalable=no" />
 <title>首页</title>
 <!-- bower:css -->
 <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
@@ -29,8 +30,13 @@
 			</h2>
 			<div flex layout="row" layout="center center" class="md-toolbar-tools no-padding">
 				<span style="height: 100%;" pxg-slide-effect>
-					<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='index'}" style="height: 100%; margin: 0;" ng-click="goToState('index')">首页</md-button>
-					<md-button ng-if="isAuthenticated()" class="nav" ng-class="{'md-raised md-warn': stateBelong=='accountCenter'}" style="height: 100%; margin: 0;" ng-click="goToState('accountCenter', {username:account.username})">个人主页</md-button>
+					<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='index'}" style="height: 100%; margin: 0;" ng-click="goToState('index')">
+						首页
+					</md-button>
+					<md-button ng-if="isAuthenticated()" class="nav" ng-class="{'md-raised md-warn': stateBelong=='accountCenter'}"
+							   style="height: 100%; margin: 0;" ng-click="goToState('accountCenter', {username:account.username})">
+						个人主页
+					</md-button>
 					<!--<md-button class="nav" ng-class="{'md-raised md-warn': stateBelong=='attention'}" style="height: 100%; margin: 0;" ng-click="go('attention')">关注</md-button>-->
 				</span>
 				<span flex layout="row" layout-align="center center">
@@ -145,11 +151,14 @@
 	<script src="scripts/services/chapter.js"></script>
 	<script src="scripts/services/bookChapterArticle.js"></script>
 	<script src="scripts/services/accountDefaultSetting.js"></script>
+	<script src="scripts/services/comment.js"></script>
+	<script src="scripts/services/reply.js"></script>
 
 	<!-- public service -->
 	<script src="scripts/services/public/pub.article.js"></script>
 	<script src="scripts/services/public/pub.account.js"></script>
 	<script src="scripts/services/public/pub.book.js"></script>
+	<script src="scripts/services/public/pub.comment.js"></script>
 
 	<!-- controllers -->
 	<script src="scripts/controllers/dashboard.js"></script>

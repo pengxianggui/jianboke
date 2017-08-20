@@ -1,6 +1,6 @@
 <md-content layout="row" flex>
     <md-content layout="row" layout-align="center start" flex style="overflow: auto">
-        <md-content flex-xs="100" flex-sm="90" flex-gt-sm="80" class="padding-10" style="overflow: initial;">
+        <md-content layout-align="start center" flex-xs="100" flex-sm="90" flex-gt-sm="80" class="padding-10" style="overflow: initial;">
             <md-head layout="row" layout-align="start end" style="margin: 20px 0;">
                 <span class="title" ng-bind="article.title"></span>
                 <pxg-chips-show chips-data="article.labels" chips-style="chipsStyle"></pxg-chips-show>
@@ -15,6 +15,91 @@
             </md-head>
 
             <pxg-markdown-parse flex md-id="article_{{article.id}}" md-data="article.content"></pxg-markdown-parse>
+
+            <div class="comment-block" layout="column" layout-align="start stretch"
+                 flex-xs="100" flex-sm="80" flex-gt-sm="60" style="margin: 0 auto;">
+                <div flex layout="center start" class="like-pay-block">
+                    <md-button>
+                        <!--<md-icon class="has-liked" md-svg-src="/img/icons/heart.svg"></md-icon>-->
+                        <md-icon class="has-liked">favorite</md-icon>
+                        <span>给个好评</span>
+                        <span>(520)</span>
+                    </md-button>
+                    <span flex></span>
+                    <md-button>
+                        <!--<md-icon class="has-unLiked" md-svg-src="/img/icons/graduation-cap.svg"></md-icon>-->
+                        <md-icon class="has-unLiked">school</md-icon>
+                        <span>戴顶绿帽</span>
+                        <span>(69)</span>
+                    </md-button>
+                </div>
+                <!-- 未登录 -->
+                <div layout="row" ng-if="!isAuthenticated()">
+                    <div class="avator-block">
+                        <md-icon style="font-size: 50px;"> account_circle</md-icon>
+                    </div>
+                    <div flex class="comment-text-area" layout="row" layout-align="center center">
+                        <a class="md-raised md-primary md-button" ui-sref="login">登录</a>
+                        <span style="font-size: 14px;">后评论</span>
+                    </div>
+                </div>
+                <!-- 登录后 -->
+                <div layout="row" ng-if="isAuthenticated()">
+                    <form name="commentForm" ng-submit="saveComment($event)" flex layout="row">
+                        <div class="avator-block avator">
+                            <img ng-if="account.avatarPath" ng-src="{{account.avatarPath}}">
+                            <md-icon ng-if="!account.avatarPath" style="font-size: 50px;"> account_circle</md-icon>
+                        </div>
+                        <div flex class="comment-text-area" layout="column">
+                            <textarea placeholder="在此评论..." name="content" ng-model="comment.content" required></textarea>
+                            <div flex layout="row">
+                                <span flex></span>
+                                <md-button type="submit" class="md-raised md-primary" style="border-radius: 20px;">发送</md-button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div layout="column" class="comment-show">
+                    <div class="comment-sum" layout="row" style="margin: 10px 0;padding: 10px 0;border-bottom: 1px solid #ece7e7;">
+                        <span>共有{{commentsPage.totalElements}}条评论</span>
+                        <span flex></span>
+                        <span style="display: inline-block;border: 1px solid;border-radius: 15px;padding: 2px 8px; color:#999;">只看作者</span>
+                    </div>
+                    <div class="comment-item" ng-repeat="c in commentsPage.content" style="margin: 10px 0;padding: 10px 0;border-bottom: 1px solid #ece7e7;">
+                        <div class="comment-user-info" layout="row">
+                            <div class="avator-block avator">
+                                <img ng-if="c.fromUser.avatarPath" ng-src="{{c.fromUser.avatarPath}}">
+                                <md-icon ng-if="!c.fromUser.avatarPath" style="font-size: 50px;"> account_circle</md-icon>
+                            </div>
+                            <span>{{c.fromUser.username}}</span>
+                            <span flex></span>
+                            <span style="color: #999; font-size: 14px;">{{c.createdDate}}</span>
+                        </div>
+                        <p class="comment-content">{{c.content}}</p>
+                        <div class="comment-reply-action-block">
+                            <md-button class="md-icon-button">
+                                <md-icon>favorite</md-icon>
+                            </md-button>
+                            <md-button class="md-icon-button">
+                                <md-icon>comment</md-icon>
+                            </md-button>
+                        </div>
+                        <ul class="comment-reply-block">
+                            <li ng-repeat="reply in c.replys">
+                                我是回复
+                            </li>
+                        </ul>
+                    </div>
+                    <pxg-pagination pxg-limit="query.size" pxg-page="query.page" pxg-total="{{commentsPage.totalElements}}"
+                                    pxg-page-action="pageRefresh()" pxg-total-page="{{commentsPage.totalPages}}" pxg-page-num="4"
+                                    ng-if="commentsPage.totalElements > commentsPage.numberOfElements">
+                    </pxg-pagination>
+                </div>
+
+            </div>
+
+            <md-content style="height: 200px; background-color: #666;"></md-content>
+
         </md-content>
     </md-content>
     <div class="lock-size nail-float-write" ng-if="isAuthenticated()" ng-if="article.authorId == account.id">

@@ -26,6 +26,7 @@ public class ArticleModel extends BaseModel{
     private boolean ifAllowSecondAuthor;
     private boolean ifSetTop = false;
     private Set<BookModel> books;
+//    private Set<CommentModel> comments;
 
     public String getTitle() {
         return title;
@@ -130,6 +131,14 @@ public class ArticleModel extends BaseModel{
     public void setBooks(Set<BookModel> books) {
         this.books = books;
     }
+//
+//    public Set<CommentModel> getComments() {
+//        return comments;
+//    }
+//
+//    public void setComments(Set<CommentModel> comments) {
+//        this.comments = comments;
+//    }
 
     @Override
     public String toString() {
@@ -146,6 +155,7 @@ public class ArticleModel extends BaseModel{
                 ", ifAllowSecondAuthor=" + ifAllowSecondAuthor +
                 ", ifSetTop=" + ifSetTop +
                 ", books=" + books +
+//                ", books=" + comments +
                 '}';
     }
 }

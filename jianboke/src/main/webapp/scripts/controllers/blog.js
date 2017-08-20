@@ -77,12 +77,10 @@ angular.module('jianboke')
 
         $scope.authorNameArr = [];
         var getAuthorName = function(article) {
-//            $scope.authorNameArr.push($rootScope.account.username);
-            if (article.secondAuthorId) {
-                PubAccount.getAuthorNameByArticleId({id: article.id}).$promise.then(function(result) {
-                    $scope.authorNameArr.push(result.data);
-                }).catch(function(httpResponse){});
-            }
+            PubAccount.getAuthorNameByArticleId({id: article.id}).$promise.then(function(result) {
+                console.log(result);
+                $scope.authorNameArr.push(result);
+            }).catch(function(httpResponse){});
         }
         getAuthorName($scope.article);
 

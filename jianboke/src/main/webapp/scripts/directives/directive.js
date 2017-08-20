@@ -224,4 +224,59 @@ angular.module('jianboke')
         }
     }
 })
+.directive('pxgPagination', function($timeout) {
+    return {
+        restrict: 'EA',
+        scope: {
+            pxgLimit: '=',
+            pxgPage: '=',
+            pxgTotal: '@',
+            pxgTotalPage: '@',
+            pxgPageNum: '@',
+            pxgPageAction: '&'
+        },
+        template: '<div class="pxg-pagination-block" layout="row" layout-align="center start">' +
+                    '<span ng-class="{disabled: pxgPage == 1}" ng-click="beforePage(pxgPage == 1)">上一页</span>' +
+                    '<a ng-repeat="i in arr track by $index" ' +
+                        'ng-class="{active: pxgPage == ((batch - 1) * length + ($index + 1))}" ng-click="chosePage((batch - 1) * length + ($index + 1))">{{(batch - 1) * length + ($index + 1)}}</a>' +
+                    '<span ng-class="{disabled: pxgPage == pxgTotalPage}" ng-click="nextPage(pxgPage == pxgTotalPage)">下一页</span>' +
+                  '</div>',
+        link: function(scope, ele, attrs) {
+            scope.length = scope.pxgPageNum - 0;
+            var batchSum = Math.ceil(scope.pxgTotalPage / scope.length);
+            console.log(scope.length);
+
+            scope.nextPage = function(param) {
+                if (param) return;
+                scope.pxgPage++;
+                $timeout(scope.pxgPageAction, 0);
+            }
+            scope.beforePage = function(param) {
+                if (param) return;
+                scope.pxgPage--;
+                $timeout(scope.pxgPageAction, 0);
+            }
+            scope.chosePage = function(index) {
+                if (scope.pxgPage == index) return;
+                scope.pxgPage = index;
+                $timeout(scope.pxgPageAction, 0);
+            }
+//            scope.changeToPage = function(index) {
+//                return (index + 1) * n
+//            }
+            scope.$watch('pxgPage', function(newValue, oldValue) {
+                console.log('scope.length: ' + scope.length);
+                scope.batch = Math.ceil(scope.pxgPage / scope.length);
+
+//                scope.arr = new Array(scope.batch < batchSum ? scope.length : scope.pxgTotalPage % scope.length);
+                scope.arr = new Array(scope.batch < batchSum ? scope.length : (scope.pxgTotalPage % scope.length == 0 ? scope.length : scope.pxgTotalPage % scope.length));
+
+                console.log('page: ' + scope.pxgPage);
+                console.log('batch: ' + scope.batch);
+                console.log('batchSum: ' + batchSum);
+                console.log('arr.length: ' + scope.arr.length);
+            });
+        }
+    }
+})
 ;

@@ -11,14 +11,14 @@ angular.module('jianboke')
 				 * 且不包含'/api/authenentication'-------------------？
 				 * 才执行拦截器的定向到login页面的功能
 				 */
-				 console.log(response.data.path);
+				console.log(response.data.path);
+                var Auth = $injector.get('Auth'), //显式获取Auth服务
+                    $state = $injector.get('$state');
 				if (response.status === 401
 				        && response.data.path !== undefined
 						&& response.data.path !== '/api/account'
 						&& response.data.path.indexOf('/api/authentication') === -1
 						){
-					var Auth = $injector.get('Auth'), //显式获取Auth服务
-			          	$state = $injector.get('$state');
 					var to = $rootScope.toState,
 						params = $rootScope.toStateParams;
 
@@ -26,6 +26,12 @@ angular.module('jianboke')
 					$rootScope.previousStateNameParams = params;
 			        console.log('interceptor will redirect to login state');
 			        $state.go('login');
+				} else {
+//					var to = $rootScope.toState,
+//						params = $rootScope.toStateParams;
+//					$rootScope.previousStateName = to.name;
+//					$rootScope.previousStateNameParams = params;
+//					$state.go(to);
 				}
 				return $q.reject(response); //---关闭响应？？?
 			}
