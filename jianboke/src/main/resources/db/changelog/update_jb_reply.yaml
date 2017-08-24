@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: update_jb_reply
+      author: pengxg
+      changes:
+      - renameColumn:
+          tableName: replys
+          columnDataType: bigint
+          newColumnName: to_uid
+          oldColumnName: to_uid
+          remarks: 评论的指向人
+          constraints:
+            unique: false
+            nullable: true

@@ -2,25 +2,22 @@ package com.jianboke.web;
 
 import com.jianboke.domain.Comment;
 import com.jianboke.domain.User;
+import com.jianboke.enumeration.ResourceName;
 import com.jianboke.mapper.CommentMapper;
 import com.jianboke.mapper.UsersMapper;
-import com.jianboke.model.ChapterModel;
 import com.jianboke.model.CommentModel;
 import com.jianboke.repository.CommentRepository;
+import com.jianboke.repository.ReplyRepository;
+import com.jianboke.service.UserAuhtorityService;
 import com.jianboke.service.UserService;
-import com.jianboke.utils.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
@@ -44,6 +41,12 @@ public class CommentController {
     @Autowired
     private UsersMapper usersMapper;
 
+    @Autowired
+    private UserAuhtorityService userAuhtorityService;
+
+    @Autowired
+    private ReplyRepository replyRepository;
+
     /**
      * 创建一个评论
      * @param model
@@ -58,10 +61,22 @@ public class CommentController {
         }
         User user = userService.getUserWithAuthorities();
         model.setFromUser(usersMapper.entityToModel(user));
-        Comment c = commentMapper.modelToEntity(model);
-        Comment result = commentRepository.saveAndFlush(c);
-        return ResponseEntity.created(new URI("/api/productGroup/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert("chapter", result.getId().toString()))
-                .body(commentMapper.entityToModel(result));
+        Comment result = commentRepository.saveAndFlush(commentMapper.modelToEntity(model));
+        return ResponseEntity.ok().body(commentMapper.entityToModel(result));
+    }
+
+    @javax.transaction.Transactional
+    @RequestMapping(value = "/comment/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public CommentModel remove(@PathVariable Long id) {
+        log.info("request to delete a comment which id is :{}", id);
+        // TODO 权限校验
+        if (userAuhtorityService.ifHasAuthority(ResourceName.COMMENT, id)) {
+            Comment comment = commentRepository.findOne(id);
+            replyRepository.delete(comment.getReplys());
+            commentRepository.delete(comment);
+            return commentMapper.entityToModel(comment);
+        } else {
+            return null;
+        }
     }
 }

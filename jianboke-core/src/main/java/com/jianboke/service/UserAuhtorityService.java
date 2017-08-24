@@ -1,12 +1,8 @@
 package com.jianboke.service;
 
-import com.jianboke.domain.Article;
-import com.jianboke.domain.Book;
-import com.jianboke.domain.User;
+import com.jianboke.domain.*;
 import com.jianboke.enumeration.ResourceName;
-import com.jianboke.repository.ArticleRepository;
-import com.jianboke.repository.BookRepository;
-import com.jianboke.repository.ChapterRepository;
+import com.jianboke.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +32,12 @@ public class UserAuhtorityService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ReplyRepository replyRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
     /**
      * 传入资源名，如："ARTICLE", 资源id, 如: 1，判断当前登录的用户是否具有id为1的文章表的权限(权限依据为是否属于该用户)
      * @param resourceName
@@ -53,10 +55,34 @@ public class UserAuhtorityService {
             case "CHAPTER": {
                 return ifHasChapterAuthority(resourceId);
             }
+            case "COMMENT": {
+                return ifHasCommentAuthority(resourceId);
+            }
+            case "REPLY": {
+                return ifHasReplyAuthority(resourceId);
+            }
             default: {
                 return false;
             }
         }
+    }
+
+    private boolean ifHasReplyAuthority(Long resourceId) {
+        Reply reply = replyRepository.findOne(resourceId);
+        User currentUser = userService.getUserWithAuthorities();
+        if (currentUser.getId().toString().equals(reply.getFromUid().toString())) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean ifHasCommentAuthority(Long resourceId) {
+        Comment comment = commentRepository.findOne(resourceId);
+        User currentUser = userService.getUserWithAuthorities();
+        if (currentUser.getId().toString().equals(comment.getFromUid().toString())) {
+            return true;
+        }
+        return false;
     }
 
     private boolean ifHasChapterAuthority(Long resourceId) {

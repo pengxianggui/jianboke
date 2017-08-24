@@ -38,8 +38,6 @@ public class CommentSpecification extends AbstractSpecification {
         List<Order> orders = new ArrayList<>();
         if (criteria.getOrderBy() == null) { // 默认按照created_date降序
             orders.add(cb.desc(root.get(Comment_.createdDate)));
-        } else if (criteria.getOrderBy().equals("replySum")) { // 根据评论数降序
-            orders.add(cb.desc(root.get(Comment_.replys)));
         }
         query.orderBy(orders);
         return query.getRestriction();

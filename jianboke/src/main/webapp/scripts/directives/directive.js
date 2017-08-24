@@ -214,9 +214,6 @@ angular.module('jianboke')
         link: function(scope, ele, attrs) {
             $(ele).scroll(function() {
                 var _this = $(this);
-//                console.log('可见高度:' + _this.height());
-//                console.log('内容高度:' + _this.get(0).scrollHeight);
-//                console.log('滚动高度:' + _this.scrollTop());
                 if (_this.scrollTop() / (_this.get(0).scrollHeight -_this.height()) > 0.99999) { // 滚动条逼近底部时，加载
                     scope.pxgLoadAction();
                 }
@@ -224,58 +221,73 @@ angular.module('jianboke')
         }
     }
 })
-.directive('pxgPagination', function($timeout) {
+/**
+ * 分页页码
+ * pxg-page: 当前页码
+ * pxg-total-page: 可分页的页码总数
+ * pxg-page-num: 每次显示的页码标签数量
+ * pxg-page-action: 切换页码时触发的分页查询方法
+ */
+ .directive('pxgPagination', function($timeout) {
     return {
         restrict: 'EA',
         scope: {
-            pxgLimit: '=',
             pxgPage: '=',
-            pxgTotal: '@',
-            pxgTotalPage: '@',
+            pxgTotalPage: '=',
             pxgPageNum: '@',
             pxgPageAction: '&'
         },
         template: '<div class="pxg-pagination-block" layout="row" layout-align="center start">' +
                     '<span ng-class="{disabled: pxgPage == 1}" ng-click="beforePage(pxgPage == 1)">上一页</span>' +
-                    '<a ng-repeat="i in arr track by $index" ' +
-                        'ng-class="{active: pxgPage == ((batch - 1) * length + ($index + 1))}" ng-click="chosePage((batch - 1) * length + ($index + 1))">{{(batch - 1) * length + ($index + 1)}}</a>' +
+                    '<a ng-repeat="i in arr track by $index" ng-class="{active: pxgPage == (sumOfBefore + ($index + 1))}"' +
+                        ' ng-click="chosePage(sumOfBefore + ($index + 1))">{{sumOfBefore + ($index + 1)}}</a>' +
                     '<span ng-class="{disabled: pxgPage == pxgTotalPage}" ng-click="nextPage(pxgPage == pxgTotalPage)">下一页</span>' +
                   '</div>',
         link: function(scope, ele, attrs) {
             scope.length = scope.pxgPageNum - 0;
-            var batchSum = Math.ceil(scope.pxgTotalPage / scope.length);
-            console.log(scope.length);
-
             scope.nextPage = function(param) {
                 if (param) return;
                 scope.pxgPage++;
+                refreshPagination();
                 $timeout(scope.pxgPageAction, 0);
             }
             scope.beforePage = function(param) {
                 if (param) return;
                 scope.pxgPage--;
+                refreshPagination();
                 $timeout(scope.pxgPageAction, 0);
             }
             scope.chosePage = function(index) {
                 if (scope.pxgPage == index) return;
                 scope.pxgPage = index;
+                refreshPagination();
                 $timeout(scope.pxgPageAction, 0);
             }
-//            scope.changeToPage = function(index) {
-//                return (index + 1) * n
-//            }
-            scope.$watch('pxgPage', function(newValue, oldValue) {
-                console.log('scope.length: ' + scope.length);
+
+            var refreshPagination = function() {
+                var batchSum = Math.ceil(scope.pxgTotalPage / scope.length);
+                var remainder = scope.pxgTotalPage % scope.length; // 页码分组的余数
                 scope.batch = Math.ceil(scope.pxgPage / scope.length);
-
-//                scope.arr = new Array(scope.batch < batchSum ? scope.length : scope.pxgTotalPage % scope.length);
-                scope.arr = new Array(scope.batch < batchSum ? scope.length : (scope.pxgTotalPage % scope.length == 0 ? scope.length : scope.pxgTotalPage % scope.length));
-
+                scope.sumOfBefore = (scope.batch - 1) * scope.length;
+                var arrLength = scope.batch < batchSum ? scope.length : (remainder == 0 ? scope.length : remainder);
+                scope.arr = new Array(arrLength);
+                console.log('scope.length: ' + scope.length);
                 console.log('page: ' + scope.pxgPage);
                 console.log('batch: ' + scope.batch);
                 console.log('batchSum: ' + batchSum);
                 console.log('arr.length: ' + scope.arr.length);
-            });
+                console.log('pxgTotalPage: ' + scope.pxgTotalPage);
+                console.log('remainder: ' + remainder);
+            }
+//            scope.$watch('pxgPage', function(newValue, oldValue) {
+//                refreshPagination();
+//            });
+            refreshPagination();
+            scope.$watch('pxgTotalPage', function(newValue, oldValue) {
+                if (newValue != oldValue) {
+                    refreshPagination();
+                }
+            })
         }
     }
 })

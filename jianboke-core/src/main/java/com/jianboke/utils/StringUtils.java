@@ -5,6 +5,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by pengxg on 2017/4/22.
@@ -40,6 +42,21 @@ public class StringUtils {
             }
             return result;
         }
+    }
+
+    /**
+     * 从一段字符串内容中截取 ‘ @username ’ 中的username，并返回
+     * @param content
+     * @return
+     */
+    public static String regexUsername(String content) {
+        Pattern pattern = Pattern.compile("^@\\S+\\s"); // 匹配 “@xxx ” @开头，空格结尾
+        Matcher matcher = pattern.matcher(content);
+        if (matcher.find()) {
+            String username = matcher.group(0);
+            return username.substring(1);
+        }
+        return null;
     }
 
 }

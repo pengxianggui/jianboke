@@ -32,3 +32,6 @@ databaseChangeLog:
   - include:
       file: classpath:db/changelog/create_jb_reply.yaml
       relativeToChangelogFile: false
+  - include:
+      file: classpath:db/changelog/update_jb_reply.yaml
+      relativeToChangelogFile: false

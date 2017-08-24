@@ -27,8 +27,9 @@ public class Comment extends AbstractAuditingEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comment")
-    @OrderBy(value = "created_date ASC") // 按照创建时间升序排序
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "comment_id") // 此时joinColumn的列是加到reply中，在Reply中也要声明
+    @OrderBy("created_date ASC") // 按照创建时间升序排序
     private Set<Reply> replys;
 
     public Long getArticleId() {
@@ -38,15 +39,6 @@ public class Comment extends AbstractAuditingEntity {
     public void setArticleId(Long articleId) {
         this.articleId = articleId;
     }
-
-    //
-//    public Article getArticle() {
-//        return article;
-//    }
-//
-//    public void setArticle(Article article) {
-//        this.article = article;
-//    }
 
     public Long getFromUid() {
         return fromUid;

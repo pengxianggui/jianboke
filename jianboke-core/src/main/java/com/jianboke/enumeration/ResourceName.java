@@ -7,5 +7,7 @@ public enum ResourceName {
     ARTICLE,
     BOOK,
     CHAPTER,
+    COMMENT,
+    REPLY,
     ;
 }

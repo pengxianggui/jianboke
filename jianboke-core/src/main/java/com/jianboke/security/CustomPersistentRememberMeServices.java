@@ -67,7 +67,9 @@ public class CustomPersistentRememberMeServices extends AbstractRememberMeServic
     log.debug("Refreshing persistent login token for user '{}', series '{}'", username,
         login.getSeries());
     login.setLastUsed(LocalDateTime.now());
-    login.setToken(generateTokenData());
+    String newToken = generateTokenData();
+    login.setToken(newToken);
+    log.info("new token is:{}", newToken);
     login.setIpAddress(request.getRemoteAddr());
     login.setUserAgent(request.getHeader("User-Agent"));
     try {

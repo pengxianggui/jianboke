@@ -7,7 +7,8 @@ $material-font-path: "../fonts";
 "book",
 "dashboard-style",
 "my-font",
-"article-style";
+"article-style",
+"pxg-pagination";
 
 // 全局css定义
 html, body {
@@ -261,12 +262,48 @@ button .has-payed {
     & > div {
         margin: 10px 0;
     };
+    & .article-like-block {
+        & .article-like {
+            border: 1px solid #ea6f5f;
+            border-radius: 20px;
+            color: #ea6f5f;
+            overflow: hidden;
+            & div {
+                border-radius: 20px;
+            }
+        };
+        & .article-unlike {
+            border: 1px solid #009688;
+            border-radius: 20px;
+            color: #009688;
+            overflow: hidden;
+            & div {
+                border-radius: 20px;
+            }
+        };
+        & .article-like-active {
+            background-color: #ea6f5f !important;
+            & * {
+                color: #fff !important;
+            }
+        };
+        & .article-unlike-active {
+            background-color: #009688 !important;
+            & * {
+                color: #fff !important;
+            }
+        }
+    };
     &  .avator-block {
         width: 50px;
         height: 50px;
         margin-right: 5px;
     };
     & .comment-text-area {
+        border-radius: 10px;
+    };
+    & .reply-text-area {
+        padding: 10px 0;
         border-radius: 10px;
     };
     & textarea {
@@ -280,44 +317,96 @@ button .has-payed {
         resize: none;
         height: 100px;
         font-family: 'Microsoft Yahei';
-    }
+    };
+    & .comment-sum {
+        margin: 10px 0;
+        padding: 10px 0;
+        border-bottom: 1px solid #ece7e7;
+        color: #999;
+        & .filter {
+            display: inline-block;
+            border: 1px solid;
+            border-radius: 15px;
+            padding: 2px 8px;
+            font-size: 14px;
+            cursor: pointer;
+            &:hover {
+                color: #ea6f5f;
+            }
+        };
+        & a.active {
+            background-color: #ea6f5f;
+            color: #fff !important;
+        }
+    };
+    & .comment-item {
+        margin: 10px 0;
+        border-bottom: 1px solid #ece7e7;
+        & .time-block {
+            color: #999;
+            font-size: 12px;
+        };
+        & .comment-reply-action-block {
+            &:hover {
+                & .delete-comment-action {
+                    display:inline !important;
+                }
+            }
+        };
+        & .comment-reply-block {
+            border-left: 2px solid #d9d9d9;
+            list-style: none;
+            padding: 0 10px;
+            font-size: 14px;
+            & .reply-item {
+                margin-bottom: 15px;
+                padding-bottom: 15px;
+                border-bottom: 1px dashed #d9d9d9;
+                &:hover {
+                    & .delete-reply-action {
+                        display: inline !important;
+                    }
+                }
+            };
+            & .reply-from-username, & .reply-to-username {
+                color: #3194d0;
+                text-decoration: none;
+                cursor: pointer;
+            };
+            & .reply-text-action {
+                color: #999;
+                cursor: pointer;
+                font-size: 12px;
+                margin: 5px;
+                display: inline-block;
+                &:hover {
+                    & * {
+                        color: #000 !important;
+                    };
+                };
+                & md-icon {
+                    font-size: 16px;
+                    line-height: 24px;
+                    text-align: center;
+                }
+            }
+        }
+    };
+    & a.text-action {
+        cursor: pointer;
+        margin: 5px;
+        display: inline-block;
+        color: #999;
+        font-size: 14px;
+        &:hover {
+            & * {
+                color: #000 !important;
+            };
+        };
+        & md-icon {
+            font-size: 18px;
+            line-height: 24px;
+            text-align: center;
+        }
+    };
 }
-
-.pxg-pagination-block a {
-    display: inline-block;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 16px;
-    width: 10px;
-    height: 10px;
-    text-align: center;
-    line-height: 10px;
-    color: #666;
-    margin: 10px;
-}
-.pxg-pagination-block span {
-    display: inline-block;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 16px;
-    width: 60px;
-    height: 10px;
-    text-align: center;
-    line-height: 10px;
-    color: #666;
-    margin: 10px;
-    outline: none;
-}
-.pxg-pagination-block span.disabled {
-    background-color: #f1efef !important;
-    cursor: not-allowed !important;
-}
-.pxg-pagination-block a:hover, .pxg-pagination-block span:hover {
-    background-color: #dadada;
-    cursor: pointer;
-}
-.pxg-pagination-block a.active {
-    background-color: #bfbfbf !important;
-    cursor: auto;
-}
-

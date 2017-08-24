@@ -15,43 +15,40 @@ import javax.persistence.*;
 @Table(name = "replys")
 public class Reply extends AbstractAuditingEntity {
 
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "comment_id", nullable = false)
-    private Comment comment; // 回复的评论
+    @Column(name = "comment_id", nullable = false)
+    private Long commentId; // 回复的评论
 
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "from_uid", nullable = false)
-    private User fromUser; // 当前回复的发起者
+    @Column(name = "from_uid", nullable = false)
+    private Long fromUid; // 当前回复的发起者
 
-    @ManyToOne(cascade = {CascadeType.REFRESH})
-    @JoinColumn(name = "to_uid", nullable = false)
-    private User toUser; // 当前回复评论的回复对象
+    @Column(name = "to_uid")
+    private Long toUid; // 当前回复评论的回复对象
 
     @Column(name = "content", nullable = false)
     private String content; // 内容
 
-    public Comment getComment() {
-        return comment;
+    public Long getCommentId() {
+        return commentId;
     }
 
-    public void setComment(Comment comment) {
-        this.comment = comment;
+    public void setCommentId(Long commentId) {
+        this.commentId = commentId;
     }
 
-    public User getFromUser() {
-        return fromUser;
+    public Long getFromUid() {
+        return fromUid;
     }
 
-    public void setFromUser(User fromUser) {
-        this.fromUser = fromUser;
+    public void setFromUid(Long fromUid) {
+        this.fromUid = fromUid;
     }
 
-    public User getToUser() {
-        return toUser;
+    public Long getToUid() {
+        return toUid;
     }
 
-    public void setToUser(User toUser) {
-        this.toUser = toUser;
+    public void setToUid(Long toUid) {
+        this.toUid = toUid;
     }
 
     public String getContent() {
