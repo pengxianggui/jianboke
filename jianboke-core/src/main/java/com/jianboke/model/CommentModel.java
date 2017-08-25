@@ -22,6 +22,8 @@ public class CommentModel extends BaseModel {
 
     private Set<ReplyModel> replys;
 
+    private Set<CommentLikeModel> likes;
+
     public Long getArticleId() {
         return articleId;
     }
@@ -52,6 +54,14 @@ public class CommentModel extends BaseModel {
 
     public void setReplys(Set<ReplyModel> replys) {
         this.replys = replys;
+    }
+
+    public Set<CommentLikeModel> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<CommentLikeModel> likes) {
+        this.likes = likes;
     }
 
     @Override

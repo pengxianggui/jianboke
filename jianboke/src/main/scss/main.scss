@@ -198,7 +198,7 @@ div.avator {
 }
 
 .setTop td:first-child{
-    background-image: url(/png/setTop.png);
+    background-image: url(/img/icons/setTop.png);
     background-repeat: no-repeat;
 }
 
@@ -350,6 +350,11 @@ button .has-payed {
             &:hover {
                 & .delete-comment-action {
                     display:inline !important;
+                }
+            };
+            & .comment-like-active {
+                & * {
+                    color: #ea6f5f;
                 }
             }
         };

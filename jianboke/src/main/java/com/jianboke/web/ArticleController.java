@@ -6,16 +6,19 @@ import java.util.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.jianboke.domain.ArticleLike;
 import com.jianboke.domain.criteria.ArticleCriteria;
 import com.jianboke.domain.criteria.ArticleCriteriaJDBC;
 import com.jianboke.domain.specification.ArticleSpecification;
 import com.jianboke.enumeration.HttpReturnCode;
 import com.jianboke.enumeration.ResourceName;
+import com.jianboke.mapper.ArticleLikeMapper;
 import com.jianboke.mapper.ArticleMapper;
+import com.jianboke.model.ArticleLikeModel;
 import com.jianboke.model.ArticleModel;
 import com.jianboke.model.RequestResult;
 import com.jianboke.model.ValidationResult;
-import com.jianboke.repository.BookRepository;
+import com.jianboke.repository.*;
 import com.jianboke.service.ArticleService;
 import com.jianboke.service.BookChapterArticleService;
 import com.jianboke.service.UserAuhtorityService;
@@ -32,12 +35,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import com.jianboke.domain.Article;
 import com.jianboke.domain.User;
-import com.jianboke.repository.ArticleRepository;
 import com.jianboke.service.UserService;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,6 +72,15 @@ public class ArticleController {
 
 	@Autowired
 	private BookRepository bookRepository;
+
+	@Autowired
+	private ArticleLikeRepository articleLikeRepository;
+
+	@Autowired
+	private ArticleLikeMapper articleLikeMapper;
+
+	@Autowired
+	private CommentRepository commentRepository;
 
 //	@RequestMapping(value = "/article", method = RequestMethod.GET)
 //	@Transactional(readOnly = true)
@@ -238,8 +250,7 @@ public class ArticleController {
 		// TODO 权限校验
 		if (userAuhtorityService.ifHasAuthority(ResourceName.ARTICLE, id)) {
 			Article article = articleRepository.findOne(id);
-			bookChapterArticleService.deleteByArticleId(id);
-			articleRepository.delete(article);
+			articleService.deleteArticle(article);
 			return article;
 		} else {
 			return null;
@@ -265,12 +276,26 @@ public class ArticleController {
 		return ResponseEntity.ok().body(Boolean.TRUE);
 	}
 
-//	@RequestMapping(value = "/article/ifPublic", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<HttpReturnCode> ifPublicSave(@RequestParam("id") Long id,
-//													   @RequestParam("ifPublic") boolean ifPublic) {
-//		log.info("rest request to update ifPublic:{} of article:{}", ifPublic, id);
-//		System.out.println(id);
-//		System.out.println(ifPublic);
-//		return null;
-//	}
+	// 喜欢一篇文章/取消喜爱
+	@RequestMapping(value = "/article/like", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<RequestResult> modifyArticleLike(@RequestParam("articleId") Long articleId) {
+		log.info("REST request to modify a like to article:{}", articleId);
+		User user = userService.getUserWithAuthorities();
+		return articleLikeRepository.findByArticleIdAndFromUid(articleId, user.getId())
+				.map(articleLike -> { // 取消喜欢
+					articleLikeRepository.delete(articleLike);
+					ArticleLikeModel model = articleLikeMapper.entityToModel(articleLike);
+					model.setLiked(false);
+					return ResponseEntity.ok().body(
+							RequestResult.create(HttpReturnCode.JBK_SUCCESS, model)
+					);
+				}).orElseGet(() -> { // 喜欢
+					ArticleLike like = new ArticleLike();
+					like.setFromUid(user.getId());
+					like.setArticleId(articleId);
+					ArticleLikeModel model = articleLikeMapper.entityToModel(articleLikeRepository.saveAndFlush(like));
+					model.setLiked(true);
+					return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, model));
+				});
+	}
 }

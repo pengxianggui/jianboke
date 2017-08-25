@@ -46,3 +46,14 @@ angular.module('jianboke')
         controller: 'BlogSetCtrl'
     }
 })
+.directive('pxgComment', function() {
+    return {
+        restrict: 'AE',
+        scope: {
+            article: '=pxgData'
+        },
+        replace: true,
+        templateUrl: 'views/template/comment.html',
+        controller: 'CommentCtrl'
+    }
+})

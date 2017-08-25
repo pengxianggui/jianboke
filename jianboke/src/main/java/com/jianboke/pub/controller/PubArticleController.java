@@ -1,13 +1,17 @@
 package com.jianboke.pub.controller;
 
 import com.jianboke.domain.Article;
+import com.jianboke.domain.ArticleLike;
 import com.jianboke.domain.criteria.ArticleCriteria;
 import com.jianboke.domain.specification.ArticleSpecification;
 import com.jianboke.enumeration.HttpReturnCode;
 import com.jianboke.enumeration.ResourceName;
+import com.jianboke.mapper.ArticleLikeMapper;
 import com.jianboke.mapper.ArticleMapper;
+import com.jianboke.model.ArticleLikeModel;
 import com.jianboke.model.ArticleModel;
 import com.jianboke.model.RequestResult;
+import com.jianboke.repository.ArticleLikeRepository;
 import com.jianboke.repository.ArticleRepository;
 import com.jianboke.repository.UserRepository;
 import com.jianboke.service.UserAuhtorityService;
@@ -50,6 +54,12 @@ public class PubArticleController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ArticleLikeRepository articleLikeRepository;
+
+    @Autowired
+    private ArticleLikeMapper articleLikeMapper;
 
     @RequestMapping(value = "/article/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RequestResult> get(@PathVariable Long id) {
@@ -97,5 +107,17 @@ public class PubArticleController {
                     return new PageImpl<>(list, pageable, page.getTotalElements());
                 })
                 .orElseGet(null);
+    }
+
+    @RequestMapping(value = "/article/queryAllLikesByArticleId/{articleId}", method = RequestMethod.GET)
+    @Transactional(readOnly = true)
+    public List<ArticleLikeModel> queryAllLikesByArticleId(@PathVariable Long articleId) {
+        log.info("Rest request to query all likes by articleId:{}", articleId);
+        List<ArticleLikeModel> models = new ArrayList<>();
+        return articleLikeRepository.findAllByArticleId(articleId)
+                .map(articleLikes -> {
+                    articleLikes.forEach(articleLike -> models.add(articleLikeMapper.entityToModel(articleLike)));
+                    return models;
+                }).orElseGet(() -> models);
     }
 }

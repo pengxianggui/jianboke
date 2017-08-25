@@ -1,13 +1,19 @@
 package com.jianboke.web;
 
+import com.jianboke.domain.Article;
 import com.jianboke.domain.Comment;
+import com.jianboke.domain.CommentLike;
 import com.jianboke.domain.User;
+import com.jianboke.enumeration.HttpReturnCode;
 import com.jianboke.enumeration.ResourceName;
+import com.jianboke.mapper.CommentLikeMapper;
 import com.jianboke.mapper.CommentMapper;
 import com.jianboke.mapper.UsersMapper;
+import com.jianboke.model.CommentLikeModel;
 import com.jianboke.model.CommentModel;
-import com.jianboke.repository.CommentRepository;
-import com.jianboke.repository.ReplyRepository;
+import com.jianboke.model.RequestResult;
+import com.jianboke.repository.*;
+import com.jianboke.service.CommentService;
 import com.jianboke.service.UserAuhtorityService;
 import com.jianboke.service.UserService;
 import org.slf4j.Logger;
@@ -45,7 +51,14 @@ public class CommentController {
     private UserAuhtorityService userAuhtorityService;
 
     @Autowired
-    private ReplyRepository replyRepository;
+    private CommentLikeRepository commentLikeRepository;
+    @Autowired
+    private CommentLikeMapper commentLikeMapper;
+
+    @Autowired
+    private ArticleRepository articleRepository;
+    @Autowired
+    private CommentService commentService;
 
     /**
      * 创建一个评论
@@ -56,8 +69,12 @@ public class CommentController {
     public ResponseEntity<CommentModel> create(@Valid @RequestBody CommentModel model) throws URISyntaxException {
         log.info("Save a comment:{}", model);
         // TODO 保存chapter，并以model形式返回该chapter
-        if (model.getId() != null) {
-            return ResponseEntity.ok(null); // 评论无法编辑
+        if (model.getId() != null || model.getArticleId() == null) {
+            return ResponseEntity.ok(null); // 评论无法编辑, articleId不为空
+        }
+        Article article = articleRepository.findOne(model.getArticleId());
+        if (!article.isIfPublic() || !article.isIfAllowComment()) { // 不允许评论
+            return ResponseEntity.ok(null);
         }
         User user = userService.getUserWithAuthorities();
         model.setFromUser(usersMapper.entityToModel(user));
@@ -65,18 +82,41 @@ public class CommentController {
         return ResponseEntity.ok().body(commentMapper.entityToModel(result));
     }
 
-    @javax.transaction.Transactional
+
     @RequestMapping(value = "/comment/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public CommentModel remove(@PathVariable Long id) {
         log.info("request to delete a comment which id is :{}", id);
         // TODO 权限校验
         if (userAuhtorityService.ifHasAuthority(ResourceName.COMMENT, id)) {
             Comment comment = commentRepository.findOne(id);
-            replyRepository.delete(comment.getReplys());
-            commentRepository.delete(comment);
-            return commentMapper.entityToModel(comment);
+            CommentModel model = commentMapper.entityToModel(comment);
+            commentService.deleteComment(comment);
+            return model;
         } else {
             return null;
         }
+    }
+
+    // 喜欢一个评论/取消喜爱
+    @RequestMapping(value = "/comment/like", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RequestResult> modifyCommentLike(@RequestParam("commentId") Long commentId) {
+        log.info("REST request to modify a like to commentId:{}", commentId);
+        User user = userService.getUserWithAuthorities();
+        return commentLikeRepository.findByCommentIdAndFromUid(commentId, user.getId())
+                .map(commentLike -> { // 取消喜欢
+                    commentLikeRepository.delete(commentLike);
+                    CommentLikeModel model = commentLikeMapper.entityToModel(commentLike);
+                    model.setLiked(false);
+                    return ResponseEntity.ok().body(
+                            RequestResult.create(HttpReturnCode.JBK_SUCCESS, model)
+                    );
+                }).orElseGet(() -> { // 喜欢
+                    CommentLike like = new CommentLike();
+                    like.setFromUid(user.getId());
+                    like.setCommentId(commentId);
+                    CommentLikeModel model = commentLikeMapper.entityToModel(commentLikeRepository.saveAndFlush(like));
+                    model.setLiked(true);
+                    return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, model));
+                });
     }
 }

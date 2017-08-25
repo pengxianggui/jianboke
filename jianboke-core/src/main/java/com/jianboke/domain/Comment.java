@@ -2,6 +2,7 @@ package com.jianboke.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -27,10 +28,15 @@ public class Comment extends AbstractAuditingEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany
     @JoinColumn(name = "comment_id") // 此时joinColumn的列是加到reply中，在Reply中也要声明
     @OrderBy("created_date ASC") // 按照创建时间升序排序
     private Set<Reply> replys;
+
+    @OneToMany
+    @JoinColumn(name = "comment_id")
+    @OrderBy("created_date ASC")
+    private Set<CommentLike> likes; // 评论的喜欢
 
     public Long getArticleId() {
         return articleId;
@@ -62,6 +68,14 @@ public class Comment extends AbstractAuditingEntity {
 
     public void setReplys(Set<Reply> replys) {
         this.replys = replys;
+    }
+
+    public Set<CommentLike> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<CommentLike> likes) {
+        this.likes = likes;
     }
 
     @Override

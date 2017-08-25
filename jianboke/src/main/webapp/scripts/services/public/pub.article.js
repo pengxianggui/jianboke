@@ -10,6 +10,11 @@ angular.module('jianboke')
             queryAllByUsername: {
                 url: 'pub/article/queryAllByUsername/:username',
                 method: 'GET'
+            },
+            queryAllLikesByArticleId: {
+                url: 'pub/article/queryAllLikesByArticleId/:articleId',
+                method: 'GET',
+                isArray: true
             }
 		})
 	})

@@ -5,9 +5,7 @@ import com.jianboke.domain.Article;
 import com.jianboke.domain.BookChapterArticle;
 import com.jianboke.domain.criteria.ArticleCriteriaJDBC;
 import com.jianboke.model.ArticleModel;
-import com.jianboke.repository.AccountDefaultSettingRepository;
-import com.jianboke.repository.ArticleRepository;
-import com.jianboke.repository.BookChapterArticleRepository;
+import com.jianboke.repository.*;
 import com.jianboke.security.SecurityUtils;
 import com.jianboke.utils.DBConfigUtils;
 import com.jianboke.utils.DateTimeUtils;
@@ -19,6 +17,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.transaction.Transactional;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,6 +49,15 @@ public class ArticleService {
 
     @Autowired
     private AccountDefaultSettingRepository accountDefaultSettingRepository;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private ArticleLikeRepository articleLikeRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     private Connection conn = null;
     private PreparedStatement stmt = null;
@@ -191,5 +199,17 @@ public class ArticleService {
             return model;
         });
 
+    }
+
+    /**
+     * 删除文章，手动级联删除
+     * @param article
+     */
+    public void deleteArticle(Article article) {
+        bookChapterArticleService.deleteByArticleId(article.getId());
+        articleLikeRepository.deleteByArticleId(article.getId());
+        commentRepository.findAllByArticleId(article.getId()).forEach(comment ->
+                commentService.deleteComment(comment));
+        articleRepository.delete(article);
     }
 }

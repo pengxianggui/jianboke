@@ -30,6 +30,13 @@ angular.module('jianboke')
             queryAll: {
                 url: 'api/article/queryAll',
                 method: 'GET'
+            },
+            like: {
+                url: 'api/article/like',
+                method: 'POST',
+                params: {
+                    articleId: "@articleId"
+                }
             }
 		})
 	})

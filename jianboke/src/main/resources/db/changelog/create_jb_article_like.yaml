@@ -1,0 +1,75 @@
+databaseChangeLog:
+  - property:
+      name: autoIncrement
+      value: true
+      dbms: mysql,h2,postgresql,sqlserver
+  - property:
+      name: now
+      value: now()
+      dbms: mysql, h2
+  - property:
+      name: now
+      value: sysdate
+      dbms: oracle
+  - property:
+      name: now
+      value: getdate()
+      dbms: sqlserver
+  - changeSet:
+      id: create_jb_article_like
+      author: pengxg
+      changes:
+        - createTable:
+            tableName: article_likes
+            remarks: 文章喜欢
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: ${autoIncrement}
+                  remarks: 标识
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: article_id
+                  type: bigint
+                  remarks: 文章id
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: from_uid
+                  type: bigint
+                  remarks: 发起者
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: timestamp
+                  defaultValueDate: ${now}
+                  remarks: 创建时间
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: timestamp
+                  remarks: 最后修改时间
+    # 添加外键约束
+  - changeSet:
+      id: fk_article_like
+      author: pengxg
+      changes:
+      - addForeignKeyConstraint:
+          baseColumnNames: article_id
+          baseTableName: article_likes
+          constraintName: fd_article_like_article_id
+          referencedColumnNames: id
+          referencedTableName: articles
+      - addForeignKeyConstraint:
+          baseColumnNames: from_uid
+          baseTableName: article_likes
+          constraintName: fd_article_like_from_uid
+          referencedColumnNames: id
+          referencedTableName: users

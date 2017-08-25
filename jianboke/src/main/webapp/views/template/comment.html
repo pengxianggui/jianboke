@@ -1,0 +1,134 @@
+<div class="comment-block" layout="column" layout-align="start stretch"
+     flex-xs="100" flex-sm="80" flex-gt-sm="60" style="margin: 0 auto;">
+
+    <div flex layout="center start" class="article-like-block">
+        <md-button class="article-like" ng-click="likeArticle(article)"
+                   ng-class="{'article-like-active': hasMyLike(articleLikes)}">
+            <!--<md-icon class="has-liked" md-svg-src="/img/icons/heart.svg"></md-icon>-->
+            <md-icon class="has-liked">favorite</md-icon>
+            <span>给个好评</span>
+            <span>({{articleLikes.length}})</span>
+        </md-button>
+        <span flex></span>
+        <!--
+        <md-button class="article-unlike article-unlike-active">
+            <md-icon class="has-unLiked">school</md-icon>
+            <span>戴顶绿帽</span>
+            <span>(69)</span>
+        </md-button>
+        -->
+    </div>
+    <!-- 未登录 -->
+    <div layout="row" ng-if="!isAuthenticated()">
+        <div class="avator-block">
+            <md-icon style="font-size: 50px;">account_circle</md-icon>
+        </div>
+        <div flex class="comment-text-area" layout="row" layout-align="center center">
+            <a class="md-raised md-primary md-button" ui-sref="login">登录</a>
+            <span style="font-size: 14px;">后评论</span>
+        </div>
+    </div>
+    <!-- 登录后 -->
+    <div layout="row" ng-if="isAuthenticated()">
+        <form name="commentForm" ng-submit="saveComment($event)" flex layout="row">
+            <div class="avator-block avator">
+                <img ng-if="account.avatarPath" ng-src="{{account.avatarPath}}">
+                <md-icon ng-if="!account.avatarPath" style="font-size: 50px;"> account_circle</md-icon>
+            </div>
+            <div flex class="comment-text-area" layout="column" ng-if="article.ifAllowComment">
+                <textarea placeholder="在此评论..." name="content" ng-model="comment.content" required></textarea>
+                <div flex layout="row" layout-align="start center">
+                    <a class="text-action" ng-if="article.authorId == account.id" ng-click="modifyArticleCommentAuth(false)">关闭评论</a>
+                    <span flex></span>
+                    <md-button type="submit" class="md-raised md-primary" style="border-radius: 20px;">发送</md-button>
+                </div>
+            </div>
+            <div flex class="comment-text-area" layout="row" layout-align="start center" ng-if="!article.ifAllowComment">
+                <p>作者已禁止评论</p>
+                <span flex></span>
+                <a class="text-action" ng-if="article.authorId == account.id" ng-click="modifyArticleCommentAuth(true)">开启评论</a>
+            </div>
+        </form>
+    </div>
+    <div layout="column" class="comment-show">
+        <div class="comment-sum" layout="row">
+            <span>共有{{commentsPage.totalElements}}条评论</span>
+            <span flex></span>
+            <a class="filter" ng-class="{'active': query.fromUid}" ng-click="filterCommentByFromUid()">只看作者</a>
+        </div>
+        <div class="comment-item" ng-repeat="c in commentsPage.content">
+            <div class="comment-user-info" layout="row">
+                <div class="avator-block avator">
+                    <img ng-if="c.fromUser.avatarPath" ng-src="{{c.fromUser.avatarPath}}">
+                    <md-icon ng-if="!c.fromUser.avatarPath" style="font-size: 50px;"> account_circle</md-icon>
+                </div>
+                <div layout="column" layout-align="center start">
+                    <span>{{c.fromUser.username}}</span>
+                    <span class="time-block">{{c.createdDate}}</span>
+                </div>
+            </div>
+            <p class="comment-content">{{c.content}}</p>
+            <div class="comment-reply-action-block" layout="row" layout-align="start center">
+                <a class="text-action" ng-class="{'comment-like-active' : hasMyLike(c.likes)}"
+                   ng-click="likeComment(c)">
+                    <md-icon>favorite</md-icon>
+                    <span>喜欢</span>
+                </a>
+                <a class="text-action" ng-click="openReply(c)">
+                    <md-icon>chat_bubble_outline</md-icon>
+                    <span>回复</span>
+                </a>
+                <span flex></span>
+                <a class="text-action delete-comment-action" ng-click="deleteComment(c)"
+                   ng-if="c.fromUser.id==account.id" style="display: none">
+                    <span>删除</span>
+                </a>
+            </div>
+            <ul class="comment-reply-block" ng-if="c.replys.length > 0 || c.isOpenReply">
+                <li ng-repeat="r in c.replys | orderBy: 'createdDate'" class="reply-item">
+                    <div>
+                        <a class="reply-from-username" ui-sref="accountCenter({username: r.fromUserModel.username})"
+                           target="_blank">
+                            {{r.fromUserModel.username}}
+                        </a>
+                        <span>:</span>
+                        <a class="reply-to-username" ui-sref="accountCenter({username: r.toUserModel.username})"
+                           target="_blank" ng-if="r.toUserModel">
+                            @{{r.toUserModel.username}}
+                        </a>
+                        <span class="reply-content">{{r.content}}</span>
+                    </div>
+                    <span class="time-block" layout="row" layout-align="start center" flex>
+                                    <span>{{r.createdDate}}</span>
+                                    <a class="reply-text-action" ng-click="openReply(c, r)">
+                                        <md-icon>chat_bubble_outline</md-icon>
+                                        <span>回复</span>
+                                    </a>
+                                    <span flex></span>
+                                    <a class="reply-text-action delete-reply-action" ng-click="deleteReply(c, r)"
+                                       ng-if="r.fromUserModel.id==account.id" style="display: none">
+                                        <span>删除</span>
+                                    </a>
+                                </span>
+                </li>
+                <a class="text-action" ng-click="openReply(c)"><md-icon>edit</md-icon>添加新评论</a>
+                <li class="reply-form-block" ng-if="c.isOpenReply">
+                    <form name="replyForm_{{c.id}}" ng-submit="saveReply(c)" flex layout="row">
+                        <div flex class="reply-text-area" layout="column">
+                            <textarea placeholder="在此回复..." name="replyContent" ng-model="c.newReply.content" required></textarea>
+                            <div flex layout="row" layout-align="start center">
+                                <span flex></span>
+                                <a class="text-action" ng-click="openReply(c)">取消</a>
+                                <md-button type="submit" class="md-raised md-primary" style="border-radius: 20px;">发送</md-button>
+                            </div>
+                        </div>
+                    </form>
+                </li>
+            </ul>
+        </div>
+        <pxg-pagination pxg-page="query.page" pxg-page-action="pageRefresh()" pxg-total-page="commentsPage.totalPages"
+                        pxg-page-num="4" ng-if="commentsPage.totalElements > commentsPage.numberOfElements">
+        </pxg-pagination>
+    </div>
+
+</div>
