@@ -22,7 +22,7 @@ angular.module('jianboke')
             $scope.goState = function(item) {
                 $scope.showMenu = false;
                 if (item.state === undefined && item.title == 'exit') {
-                    console.log('exit');
+//                    console.log('exit');
                     var title = '确定要退出？',
                         content = '';
                     $rootScope.confirmMessage(title, content).then(function() {

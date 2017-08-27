@@ -415,3 +415,17 @@ button .has-payed {
         }
     };
 }
+
+.introduce-text-block {
+    min-height: 100px;
+    & #introduce-text {
+        padding: 10px;
+        box-sizing: inherit;
+        background-color: #f0f0f0;
+        border: 0;
+        outline: none;
+        resize: none;
+        height: 100px;
+        font-family: 'Microsoft Yahei';
+    }
+}

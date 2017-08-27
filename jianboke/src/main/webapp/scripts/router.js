@@ -2,7 +2,7 @@
 
 angular.module('jianboke')
 	.config(function($stateProvider, $urlRouterProvider, ACCESS_LEVELS) {
-	    console.log('router.js');
+//	    console.log('router.js');
 //		$urlRouterProvider.otherwise('/mine/dashboard');
 		$urlRouterProvider.otherwise('/');
 		$stateProvider
@@ -190,7 +190,7 @@ angular.module('jianboke')
 		    templateUrl: 'views/book.content.html',
 		    resolve: {
 		        entity: function($stateParams, PubArticle, PubChapter) {
-		            console.log($stateParams.type);
+//		            console.log($stateParams.type);
 		            if ($stateParams.type === 'article') {
 		                return PubArticle.get({id: $stateParams.resourceId}).$promise;
 		            } else {

@@ -68,7 +68,7 @@ public class BookController {
 	 * @return
 	 */
 	@RequestMapping(value = "/book/cover", method = RequestMethod.POST)
-	public Map<String, String> ulpoadCover(@RequestParam("file") MultipartFile file) {
+	public Map<String, String> uploadCover(@RequestParam("file") MultipartFile file) {
 		return fileUploadUtils.uploadBookCover(file);
 	}
 	

@@ -1,5 +1,5 @@
 <md-content flex layout="column">
-    <md-card layout="row" layout-align="center center" ng-show="selected.length == 0">
+    <md-card layout="row" layout-align="center center" ng-show="selected.length == 0" style="min-height: 52px;">
         <md-button ng-click="toggleLeft()"
                    class="md-primary md-icon-button" hide-gt-md style="margin: auto 4px">
             <md-icon>menu</md-icon>
@@ -26,20 +26,23 @@
                 </md-select>
             </md-input-container>
             <md-input-container md-no-float class="no-margin margin-left-right-10" style="padding: 0 10px">
-                <md-select ng-model="query.advancedSearchIfAllowReprint" placeholder="是否允许转载">
-                    <md-option value="true">是</md-option>
-                    <md-option value="false">否</md-option>
-                </md-select>
-            </md-input-container>
-            <md-input-container md-no-float class="no-margin margin-left-right-10" style="padding: 0 10px">
                 <md-select ng-model="query.advancedSearchIfAllowComment" placeholder="是否允许评论">
                     <md-option value="true">是</md-option>
                     <md-option value="false">否</md-option>
                 </md-select>
             </md-input-container>
+            <md-input-container md-no-float class="no-margin margin-left-right-10" style="padding: 0 10px">
+                <md-select ng-model="query.advancedSearchIfAllowReprint" placeholder="是否允许转载">
+                    <md-option value="true">是</md-option>
+                    <md-option value="false">否</md-option>
+                </md-select>
+            </md-input-container>
+            <md-button class="md-icon-button" ng-click="advancedSearchSave($event)">
+                <md-icon>search</md-icon>
+            </md-button>
         </span>
         <span flex></span>
-        <form name="search" ng-submit="refreshArticleList()">
+        <form name="search" ng-submit="refreshArticleList()" ng-show="!advancedSearchFlag">
             <md-input-container style="margin: 4px;" md-no-float>
                 <input id="article-flex-input" placeholder="搜索..." type="search" name="search" ng-model="query.filter">
                 <md-button class="md-icon-button" ng-if="query.filter" ng-click="clearFilter();">
@@ -50,12 +53,12 @@
                 </md-button>
             </md-input-container>
         </form>
-        <!-- todo 如何设计高级搜索的页面呈现方式
+        <!-- todo 如何设计高级搜索的页面呈现方式-->
         <md-button class="md-icon-button" ng-click="advancedSearchToggle(advancedSearchFlag)">
             <md-tooltip>高级搜索</md-tooltip>
             <md-icon>{{advancedSearchFlag ? 'gps_fixed' : 'location_searching'}}</md-icon>
         </md-button>
-        --->
+
     </md-card>
     <md-card layout="row" layout-align="center center" ng-show="selected.length > 0">
         <md-button ng-click="toggleLeft()"

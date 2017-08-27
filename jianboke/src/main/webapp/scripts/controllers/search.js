@@ -2,17 +2,17 @@
 
 angular.module('jianboke')
     .controller('SearchCtrl', function($scope, $rootScope, $state, articles, users, books, $stateParams, Article, Account) {
-        console.log('SearchCtrl');
+//        console.log('SearchCtrl');
         $scope.queryUser = { // 搜索的条件
             keyWord: $stateParams.keyWord,
             page: 1,
             size: 10
         }
         $scope.queryArticle = angular.copy($scope.queryUser);
-        console.log(articles);
+//        console.log(articles);
         $scope.articles = articles;
         $scope.users = users;
-        console.log($scope.users);
+//        console.log($scope.users);
         $scope.books = books; // 不加入
 
         $scope.active = 'article'; // article(default)、user、book
@@ -38,13 +38,13 @@ angular.module('jianboke')
                 keyWord: $stateParams.keyWord
             }, function(data, responseHeaders) {
                 $scope.users = data;
-                console.log($scope.users);
+//                console.log($scope.users);
             }).$promise;
         }
 
         // 关注 or 取消关注
         $scope.follow = function(param) {
-            console.log(param);
+//            console.log(param);
             Account.follow({userId: param.id}).$promise.then(function(resp) {
                 if (resp.code == '0000') {
                     $rootScope.popMessage('操作成功', true);

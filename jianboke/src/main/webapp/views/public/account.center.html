@@ -126,7 +126,10 @@
         <md-card class="padding-10">
             <div style="">
                 <label>个人介绍：</label>
-                <div class="padding-10 margin-top-bottom-5" style="border: 1px solid #b0b0b0; border-radius: 10px;">内容</div>
+                <div class="padding-10 margin-top-bottom-5" style="border: 1px solid #b0b0b0; border-radius: 10px;">
+                    <span ng-if="account.introduce">{{account.introduce}}</span>
+                    <span ng-if="!account.introduce">这个人很懒, 啥也没留下</span>
+                </div>
             </div>
             <div style="">
                 <label>作品：</label>

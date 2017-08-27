@@ -22,7 +22,7 @@
 								</md-button>
 							</span>
 						</span>
-						<span layout="column">
+						<span layout="column" layout-align="space-around center">
 							<md-button class="md-icon-button" ng-click="goToState('dashboard.blogs');setChoseItem('blogs')"
 									   ng-class="{'chose-item':(choseItem=='blogs'), '':false}">
 								<md-tooltip md-direction="right">文章</md-tooltip>
@@ -33,6 +33,7 @@
 								<md-tooltip md-direction="right">关注</md-tooltip>
 								<md-icon>face</md-icon>
 							</md-button>
+							<!--
 							<md-button class="md-icon-button" ng-click="goToState('dashboard.collection');setChoseItem('collection')"
 									   ng-class="{'chose-item':(choseItem=='collection'), '':false}">
 								<md-tooltip md-direction="right">收藏</md-tooltip>
@@ -43,6 +44,7 @@
 								<md-tooltip md-direction="right">消息</md-tooltip>
 								<md-icon>notifications</md-icon>
 							</md-button>
+							-->
 						</span>
 					</md-content>
 				</md-card>

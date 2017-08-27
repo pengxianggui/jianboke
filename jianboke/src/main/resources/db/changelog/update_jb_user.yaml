@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: update_jb_user
+      author: pengxg
+      changes:
+      - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: introduce
+                  type: varchar(1000)
+                  remarks: 个人介绍

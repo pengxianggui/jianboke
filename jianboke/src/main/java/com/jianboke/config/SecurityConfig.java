@@ -106,12 +106,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.antMatchers("/favicon.ico");
 	}
 	
-//	@Override
-//    protected void configure(AuthenticationManagerBuilder auth)
-//            throws Exception {
-//        auth.userDetailsService(userDetailsService);
-////				.passwordEncoder(passwordEncoder()); // 暂时先屏蔽密码加密
-//    }
+	@Override
+    protected void configure(AuthenticationManagerBuilder auth)
+            throws Exception {
+        auth.userDetailsService(userDetailsService)
+				.passwordEncoder(passwordEncoder()); // 暂时先屏蔽密码加密
+    }
 	
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -123,6 +123,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //			.withUser("admin")
 //			.password("password")
 //			.roles("ADMIN", "USER");
-		auth.userDetailsService(userDetailsService);//.passwordEncoder(passwordEncoder());
+		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 	}
 }

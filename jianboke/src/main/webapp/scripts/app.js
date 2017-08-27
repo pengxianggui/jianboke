@@ -21,7 +21,7 @@ angular.module('jianboke', [
     'md.data.table',
      "mdPickers"
 ]).run(function($rootScope, $state, $templateCache, Auth, $window, $mdDialog, $mdToast, Account) {
-    console.log('run.js');
+//    console.log('run.js');
 //    $rootScope.showDarkTheme = false;
 	$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options) { 
         $templateCache.remove(toState.templateUrl); //清除路由缓存
@@ -43,7 +43,7 @@ angular.module('jianboke', [
     });
 
     $rootScope.goToState = function(stateName, param) {
-        console.log(param);
+//        console.log(param);
         $state.go(stateName, param);
     }
 
@@ -139,7 +139,7 @@ angular.module('jianboke', [
     };
 })
 .controller('HeaderCtrl', function($scope, $rootScope, $state, Account) {
-    console.log('HeaderCtrl');
+//    console.log('HeaderCtrl');
     $scope.searchKey;
     $rootScope.showDarkTheme = false;
     $scope.changeTheme = function(param) {
@@ -149,7 +149,7 @@ angular.module('jianboke', [
 
     // 全局搜索
     $scope.searchAll = function(searchKey) {
-        console.log(searchKey);
+//        console.log(searchKey);
         if (searchKey) {
 //            var url = $state.href('searchAll', {keyWord : searchKey});
 //            window.open(url, "_blank");

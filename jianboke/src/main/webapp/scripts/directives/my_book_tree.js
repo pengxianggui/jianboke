@@ -19,7 +19,7 @@ angular.module('jianboke')
 //				$scope.articleId = $scope.pxgArticleId;
 				if ($scope.book) {
 				    $scope.selectedBook = $scope.book;
-				    console.log($scope.selectedBook);
+//				    console.log($scope.selectedBook);
 				}
 				$scope.nodes = [];
 				Book.query().$promise.then(function(data) {
@@ -229,7 +229,7 @@ angular.module('jianboke')
                       "bookId": $scope.selectedBook.id,
                       "articleId": $scope.articleId?$scope.articleId:-1
                   }).$promise.then(function (value, responseHeaders) {
-			        console.log(value);
+//			        console.log(value);
 			        $scope.nodes = value;
 			        IntegralUITreeViewService.suspendLayout($scope.treeName);
 			        clearList();
@@ -304,7 +304,7 @@ angular.module('jianboke')
                     $scope.articleModels = [];
                     $scope.currentChapter = IntegralUITreeViewService.findItemById($scope.treeName, node.id);
                     Chapter.getArticlesById({id: node.id.split('-')[0]}).$promise.then(function (value) {
-                        console.log(value);
+//                        console.log(value);
                         $scope.articleModels = value;
                     })
                 };
@@ -475,7 +475,7 @@ angular.module('jianboke')
                     }
                     var resourceId;
                     if (e.item.isArticle) {
-                        console.log('m2pm2pm2p.......');
+//                        console.log('m2pm2pm2p.......');
                         dataType = 'article';
                         $scope.articleId = e.item.id.split('-')[0];
 //                        $scope.currentchapOrArt = PubArticle.get({id: $scope.articleId});
@@ -530,7 +530,7 @@ angular.module('jianboke')
                       "bookId": $scope.selectedBook.id,
                       "articleId": $scope.articleId?$scope.articleId:-1
                     }).$promise.then(function (value, responseHeaders) {
-                        console.log(value);
+//                        console.log(value);
                         $scope.nodes = value;
                         IntegralUITreeViewService.suspendLayout($scope.treeName);
                         clearList();

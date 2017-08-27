@@ -2,6 +2,6 @@
 
 angular.module('jianboke')
     .controller('IndexCtrl', function($scope, $rootScope) {
-        console.log('IndexCtrl');
+//        console.log('IndexCtrl');
 
     });

@@ -4,7 +4,7 @@ angular.module('jianboke')
     .controller('CommentCtrl', function($scope, $rootScope, $state, PubAccount, Article, Comment, Reply, PubComment, PubArticle) { // 文章归档
 
 //    $scope.article;
-    console.log($scope.article);
+//    console.log($scope.article);
     $scope.authorNameArr = [];
     $scope.articleLikes = [];
     $scope.isAuthenticated = $rootScope.isAuthenticated;
@@ -24,7 +24,7 @@ angular.module('jianboke')
     // 获取文章所有的评论, 包含回复
     var getComments = function(article) {
         // 分页获取，实现排序过滤等功能
-        console.log("page-----:" + $scope.query.page);
+//        console.log("page-----:" + $scope.query.page);
         PubComment.pageQuery({
             page: $scope.query.page - 1,
             size: $scope.query.size,
@@ -32,7 +32,7 @@ angular.module('jianboke')
             orderBy: null,
             fromUid: $scope.query.fromUid
         }).$promise.then(function(data) {
-            console.log(data);
+//            console.log(data);
             $scope.commentsPage = data;
         });
     }
@@ -40,7 +40,7 @@ angular.module('jianboke')
     // 获取文章所有的喜欢
     var getArticleLike = function(article) {
         PubArticle.queryAllLikesByArticleId({ articleId: article.id }).$promise.then(function(data) {
-            console.log(data);
+//            console.log(data);
             $scope.articleLikes = data;
         })
     }
@@ -58,8 +58,8 @@ angular.module('jianboke')
 
     // 评论翻页
     $scope.pageRefresh = function() {
-        console.log("page:");
-        console.log($scope.query.page);
+//        console.log("page:");
+//        console.log($scope.query.page);
         getComments($scope.article);
     }
 
@@ -92,11 +92,14 @@ angular.module('jianboke')
             $state.go('login');
             return;
         }
-        console.log($scope.comment);
-        Comment.save($scope.comment).$promise.then(function(data) {
-            console.log('保存结果');
-            console.log(data);
-            initComment($scope.article);
+//        console.log($scope.comment);
+        Comment.save($scope.comment).$promise.then(function(resp) {
+            if (resp.code == '0000') {
+                $rootScope.popMessage('评论成功', true);
+                initComment($scope.article);
+            } else {
+                $rootScope.popMessage(resp.data ? resp.data : resp.detail, false);
+            }
             $scope.pageRefresh();
         });
     }
@@ -111,14 +114,14 @@ angular.module('jianboke')
 
         $rootScope.confirmMessage("提示", "确定要删除此评论吗？", true).then(function() {
             Comment.delete({id: comment.id}).$promise.then(function(data) {
-                console.log(data);
+//                console.log(data);
                 if (data && data.id) {
                     $scope.commentsPage.content.splice(index, 1);
                     $rootScope.popMessage("删除成功！", true);
                 }
             })
         }, function() {
-            console.log('你取消了');
+//            console.log('你取消了');
         });
     }
 
@@ -128,7 +131,7 @@ angular.module('jianboke')
             $state.go('login');
             return;
         }
-        console.log(comment);
+//        console.log(comment);
         comment.isOpenReply = !comment.isOpenReply;
         comment.newReply = initReply(comment);
         if (reply) { // 回复别人的回复，需要加上 @username ,后端判断'@username',确定回复的对象
@@ -142,13 +145,13 @@ angular.module('jianboke')
             $state.go('login');
             return;
         }
-        console.log(comment);
+//        console.log(comment);
         if (!comment.newReply.commentId || !comment.newReply.content) {
             $rootScope.popMessage('提交数据不正确，请刷新后重试!', false);
             return;
         }
         Reply.save(comment.newReply).$promise.then(function(data) {
-            console.log(data);
+//            console.log(data);
             comment.replys.push(data);
             $scope.openReply(comment);
             $rootScope.popMessage('回复成功！', true);
@@ -166,14 +169,14 @@ angular.module('jianboke')
         var index = comment.replys.indexOf(reply);
         $rootScope.confirmMessage("提示", "确定要删除此回复吗？", true).then(function() {
             Reply.delete({id: reply.id}).$promise.then(function(data) {
-                console.log(data);
+//                console.log(data);
                 if (data && data.id) {
                     comment.replys.splice(index, 1);
                     $rootScope.popMessage("删除成功！", true);
                 }
             })
         }, function() {
-            console.log('你取消了');
+//            console.log('你取消了');
         });
     }
 

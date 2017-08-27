@@ -12,13 +12,13 @@ angular.module('jianboke')
         function buildToggler(navID) {
           return function() {
             $mdSidenav(navID).toggle().then(function() {
-                console.log('toggle over');
+//                console.log('toggle over');
             });
           };
         }
 	})
 	.controller('NewBlogCtrl', function($scope, $element, $mdConstant, Book, $mdDialog, Article, $rootScope, $state) {
-      		console.log('NewBlogCtrl');
+//      		console.log('NewBlogCtrl');
 //            $scope.article = entity;
       		if ($state.params.id != 'new') {
       		    if ($scope.article == null || $scope.article.labels == null) {
@@ -45,7 +45,7 @@ angular.module('jianboke')
       			} else {
       			    $scope.article.labels = $scope.labels;
       			}
-      			console.log($scope.article);
+//      			console.log($scope.article);
       			Article.save($scope.article).$promise.then(function(resp) {
                       // 保存成功后提示用户去选择要归入Book的章节，跳转页面去进行操作。如果用户没有选择归类书籍，则直接在点击保存的时候提示用户即可。
                       if ($state.params.id != 'new') { //编辑
@@ -53,11 +53,11 @@ angular.module('jianboke')
                       } else { // 新建
                         $rootScope.confirmMessage('温馨提示: ', '保存成功！是否去归档此文章？', false, '是', '否', null)
                           .then(function() { // 去归档
-                            console.log('是');
-                            console.log(resp);
+//                            console.log('是');
+//                            console.log(resp);
                             $state.go('blog.addToBook', {id: resp.data.id});
                           }, function() { // 不归档，查看
-                            console.log('否');
+//                            console.log('否');
                             $state.go('blog.readBlog', {id: resp.data.id});
                           });
                       }
@@ -65,7 +65,7 @@ angular.module('jianboke')
       		}
       	})
     .controller('ReadBlogCtrl', function($rootScope, $scope, Article, Book, PubAccount, $mdSidenav) {
-        console.log('ReadBlogCtrl');
+//        console.log('ReadBlogCtrl');
 //        $scope.shareOpen = false; // 分享
 //        $scope.toggleRight = buildToggler('right');
 //        $scope.isOpenRight = function(){
@@ -78,7 +78,7 @@ angular.module('jianboke')
         $scope.authorNameArr = [];
         var getAuthorName = function(article) {
             PubAccount.getAuthorNameByArticleId({id: article.id}).$promise.then(function(result) {
-                console.log(result);
+//                console.log(result);
                 $scope.authorNameArr.push(result);
             }).catch(function(httpResponse){});
         }
@@ -93,8 +93,8 @@ angular.module('jianboke')
 //        }
     })
     .controller('BlogSetCtrl', function ($scope, $rootScope, Article, $state) {
-        console.log('BlogSetCtrl');
-        console.log($scope.article);
+//        console.log('BlogSetCtrl');
+//        console.log($scope.article);
         var articleTemp = angular.copy($scope.article);
         $scope.saveArticle = function() {
             if ($scope.article.id == null || $scope.article.id == '') {

@@ -2,7 +2,7 @@
 
 angular.module('jianboke')
     .controller('RegisterCtrl', function($scope, $rootScope, $state, Auth, Account, $q) {
-        console.log('RegisterCtrl');
+//        console.log('RegisterCtrl');
         $scope.emailValide = false; // 邮箱已通过验证
         $scope.sendEmailed = false; // 已发送邮件
 
@@ -45,12 +45,12 @@ angular.module('jianboke')
 
         // 发送邮箱验证码
         $scope.sendEmailVerificationCode = function() {
-            console.log('sendEmailVerificationCode');
+//            console.log('sendEmailVerificationCode');
             var obj = {};
             obj.username = $scope.username;
             obj.email = $scope.email;
             Account.sendEmailValidCode(obj).$promise.then(function(result) {
-                console.log(result);
+//                console.log(result);
                 if (result.valid)
                     $rootScope.popMessage("验证码发送成功", true);
                 else
@@ -67,14 +67,14 @@ angular.module('jianboke')
                 field.$setTouched();
             });
             if ($scope.form.$valid) {
-                console.log($scope.validCode);
+//                console.log($scope.validCode);
                 Auth.register({
                     'username': $scope.username,
                     'email': $scope.email,
                     'validCode': $scope.validCode,
                     'password': $scope.password
                 }).then(function(result) {
-                    console.log(result);
+//                    console.log(result);
                     if (result.code == '0000') { // 成功
                         Auth.login({
                           email: result.data.email,
@@ -82,7 +82,7 @@ angular.module('jianboke')
                           rememberMe: false
                         }).then(function(data) {
                             //提示登录成功，并定向到dashboard路由；
-                            console.log(data);
+//                            console.log(data);
                             $rootScope.popMessage("登录成功", true);
                             $state.go('dashboard');
                         }).catch(function() {

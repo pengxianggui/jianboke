@@ -40,6 +40,22 @@
                                     <md-button class="md-secondary" ng-click="updateEmail()">更改</md-button>
                                 </md-content>
                             </md-list-item>
+                            <md-list-item>
+                                <md-content class="md-padding" layout="row" flex style="overflow: hidden;">
+                                    <span style="display: inline-block;" class="margin-right-30">个人介绍:</span>
+                                    <span flex style="display: inline-block" layout="column">
+                                        <!--<textarea flex id="introduce-text" name="introduce" placeholder="你那么有深度，不介绍一下对得起自己？"></textarea>-->
+                                        <!--<md-button ng-click="updateIntroduce()">保存</md-button>-->
+                                        <div flex class="introduce-text-block" layout="column">
+                                            <md-input-container flex md-no-float>
+                                                <textarea flex id="introduce-text" name="introduce" ng-model="account.introduce"
+                                                      placeholder="你那么有深度，不介绍一下对得起自己？" md-maxlength="500"></textarea>
+                                            </md-input-container>
+                                        </div>
+                                        <md-button class="md-secondary" ng-click="updateIntro()">保存</md-button>
+                                    </span>
+                                </md-content>
+                            </md-list-item>
                         </md-list>
                     </form>
                 </md-content>
@@ -84,6 +100,7 @@
                     </md-list>
                 </md-content>
             </md-tab>
+            <!--
             <md-tab label="推送设置">
                 <md-content class="md-padding">
                     <md-list class="md-dense" >
@@ -116,12 +133,10 @@
                                 </div>
                             </div>
                         </md-list-item>
-                        <!--<md-list-item>-->
-                            <!--<md-button class="md-primary md-secondary md-raised">保存</md-button>-->
-                        <!--</md-list-item>-->
                     </md-list>
                 </md-content>
             </md-tab>
+            -->
             <!--
             <md-tab label="赞赏设置">
                 <md-content class="md-padding">

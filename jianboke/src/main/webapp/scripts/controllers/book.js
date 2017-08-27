@@ -2,22 +2,22 @@
 
 angular.module('jianboke')
 	.controller('AddToBookCtrl', function($scope, entity, IntegralUITreeViewService) { // 文章归档
-	    console.log('AddToBookCtrl');
+//	    console.log('AddToBookCtrl');
 	    $scope.article = entity;
-	    console.log(entity);
+//	    console.log(entity);
 	    $scope.book = entity.books[0];
 	    $scope.articleId = entity.id;
 	})
 	.controller('BookAddCtrl', function($scope, $mdDialog, Upload, $timeout, Entity, Book, $rootScope, $state) { // 添加一本书
-		console.log('BookAddCtrl');
+//		console.log('BookAddCtrl');
 		$scope.book = Entity;
-		console.log($scope.book);
+//		console.log($scope.book);
 		$scope.cancel = function() {
 			$mdDialog.cancel();
 		}
 
 		$scope.selectImage = function(file) {
-			console.log(file);
+//			console.log(file);
 			$scope.picFile = file;
 		}
 
@@ -31,7 +31,7 @@ angular.module('jianboke')
 		$scope.saveBook = function() {
 			var saveBookAction = function(book) {
 				// 调用Book服务的save方法
-				console.log(book);
+//				console.log(book);
 				Book.save(book).$promise.then(function(resp){
 					// book 保存成功
 					$rootScope.popMessage('保存成功', true);
@@ -43,13 +43,13 @@ angular.module('jianboke')
 				});
 			}
 			if ($scope.picFile && $scope.picFile.size > 0) { // 存在$scope.coverPic
-				console.log($scope.picFile);
+//				console.log($scope.picFile);
 				uploadPic().then(function(resp) {
-					console.log('上传成功');
+//					console.log('上传成功');
 					$scope.book.bookCoverPath = resp.data.path;
 					saveBookAction($scope.book);
 				}, function(resp) {
-					console.log('上传失败');
+//					console.log('上传失败');
 					saveBookAction($scope.book);
 				});
 			} else {
@@ -60,7 +60,7 @@ angular.module('jianboke')
 	.controller('BookCtrl', function($scope, entity, Book, $timeout, $mdSidenav, $log, $state, $stateParams, $location, Chapter, Article, $mdMedia) {
 	    var dataType; // markdown解析的是chapter还是article
 	    $scope.book = entity.data;
-	    console.log('BookCtrl');
+//	    console.log('BookCtrl');
         $scope.toggleLeft = buildToggler('left');
         $scope.toggleRight = buildToggler('right');
         $scope.treeName = 'bookTree';
@@ -110,7 +110,7 @@ angular.module('jianboke')
                 $scope.toggleValue = !$scope.toggleValue;
             }
             $mdSidenav(navID).toggle().then(function() {
-                console.log('toggle over');
+//                console.log('toggle over');
             });
           };
         }
@@ -146,9 +146,9 @@ angular.module('jianboke')
         };
     })
     .controller('BookContentCtrl', function ($scope, entity, $stateParams, $state) {
-        console.log('BookContentCtrl');
+//        console.log('BookContentCtrl');
         $scope.datType = $stateParams.type;
-        console.log(entity);
+//        console.log(entity);
         if ($scope.datType === 'chapter') {
             $scope.content = entity.description;
         } else {

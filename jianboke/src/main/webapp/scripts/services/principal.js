@@ -21,16 +21,16 @@ angular.module('jianboke')
 		        }
 		        // 否则，向后端查询
 		        Account.get().$promise.then(function(account) { //查询
-		        	console.log(account);
+//		        	console.log(account);
 		        	_identity = account;
 		        	_authenticated = true;// 已认证
 		        	deferred.resolve(_identity);
-		        	console.log('认证成功');
+//		        	console.log('认证成功');
 		        }).catch(function() { //查询账户失败
 		        	_identity = null;
 		        	_authenticated = false;
 		        	deferred.resolve(_identity);
-		        	console.log('认证失败');
+//		        	console.log('认证失败');
 		        });
 		        return deferred.promise;
 			},

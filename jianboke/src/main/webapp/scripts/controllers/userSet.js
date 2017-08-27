@@ -2,9 +2,9 @@
 
 angular.module('jianboke')
     .controller('UserSetCtrl', function($scope, $rootScope, $state, Auth, Account, Upload, entity, AccountDefaultSetting, $q, $timeout, $mdConstant) {
-        console.log('UserSetCtrl');
+//        console.log('UserSetCtrl');
         $scope.accountDefaultSetting = entity;
-        console.log($scope.accountDefaultSetting);
+//        console.log($scope.accountDefaultSetting);
         // 处理labels
         if ($scope.accountDefaultSetting == null || $scope.accountDefaultSetting.hobbyLabels == null ||  $scope.accountDefaultSetting.hobbyLabels == '') {
             $scope.hobbyLabels = [];
@@ -27,7 +27,7 @@ angular.module('jianboke')
                 url: 'api/account/avator',
                 data: {file: $scope.picFile}
             }).then(function(resp) {
-                console.log(resp);
+//                console.log(resp);
                 if (resp.data.code == '0000') {
                     $rootScope.popMessage('上传成功！', true);
                     $rootScope.account.avatarPath = resp.data.data;
@@ -46,10 +46,21 @@ angular.module('jianboke')
             $rootScope.tipMessage("暂未开通此功能，请谅解！");
         }
 
+        // 更新介绍
+        $scope.updateIntro = function() {
+            Account.updateIntro({
+                id: $rootScope.account.id,
+                intro: $rootScope.account.introduce
+            }).$promise.then(function(resp) {
+                if (resp.code == '0000') $rootScope.popMessage("保存成功", true);
+                else $rootScope.popMessage(resp.detail, false);
+            });
+        }
+
         $scope.accountName;
         $timeout(function() {
             $scope.accountName = $rootScope.account.username;
-            console.log(JSON.stringify($rootScope.account));
+//            console.log(JSON.stringify($rootScope.account));
         },0)
         // 验证用户名是否已被占用的方法
         $scope.usernameExist = function(value) {
@@ -117,7 +128,7 @@ angular.module('jianboke')
                 $scope.accountDefaultSetting.hobbyLabels = $scope.hobbyLabels.join(',');
             }
             AccountDefaultSetting.save($scope.accountDefaultSetting).$promise.then(function(resp) {
-                console.log(resp);
+//                console.log(resp);
                 if (resp.code == '0000') {
                     $rootScope.popMessage('保存成功！', true);
                 } else {

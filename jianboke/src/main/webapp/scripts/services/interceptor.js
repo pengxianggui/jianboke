@@ -11,7 +11,7 @@ angular.module('jianboke')
 				 * 且不包含'/api/authenentication'-------------------？
 				 * 才执行拦截器的定向到login页面的功能
 				 */
-				console.log(response.data.path);
+//				console.log(response.data.path);
                 var Auth = $injector.get('Auth'), //显式获取Auth服务
                     $state = $injector.get('$state');
 				if (response.status === 401
@@ -24,7 +24,7 @@ angular.module('jianboke')
 
 					$rootScope.previousStateName = to.name;
 					$rootScope.previousStateNameParams = params;
-			        console.log('interceptor will redirect to login state');
+//			        console.log('interceptor will redirect to login state');
 			        $state.go('login');
 				} else {
 //					var to = $rootScope.toState,

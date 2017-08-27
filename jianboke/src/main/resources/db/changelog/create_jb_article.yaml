@@ -81,10 +81,10 @@ databaseChangeLog:
                   name: last_modified_date
                   type: timestamp
                   remarks: 最后修改时间
-        - loadData: 
-            encoding: UTF-8
-            file: db/data/jb_articles.csv
-            tableName: articles
+#        - loadData:
+#            encoding: UTF-8
+#            file: db/data/jb_articles.csv
+#            tableName: articles
     # 添加外键约束
   - changeSet:
       id: fk_article

@@ -2,7 +2,7 @@
 
 angular.module('jianboke')
 	.controller('DashBoardCtrl', function($scope, $timeout, $mdSidenav, $log, $state, $mdDialog, Book, Article, $rootScope) {
-		console.log('DashBoardCtrl');
+//		console.log('DashBoardCtrl');
 		$scope.state = $state.current.name;
 		$scope.setChoseItem = function(param) {
 		    $scope.choseItem = param;
@@ -80,6 +80,10 @@ angular.module('jianboke')
         $scope.advancedSearchFlag = false; // 高级搜索区域默认隐藏
         $scope.advancedSearchToggle = function(flag) {
           $scope.advancedSearchFlag = !flag;
+          $scope.query.advancedSearchIfPublic = null;
+          $scope.query.advancedSearchIfAllowReprint = null;
+          $scope.query.advancedSearchIfAllowComment = null;
+          $scope.pageRefresh();
         }
 
         // 查询条件变更时触发搜索
@@ -100,7 +104,7 @@ angular.module('jianboke')
 //            sort: sort
           }, function(value, responseHeaders) {
             $scope.data = value;
-            console.log($scope.data.content);
+//            console.log($scope.data.content);
           }).$promise;
         }
 
@@ -119,6 +123,7 @@ angular.module('jianboke')
           var params = {
               page: $scope.query.page - 1,
               size: $scope.query.size,
+              bookId: $scope.query.bookId,
 //              sort:sort,
               ifPublic: $scope.query.advancedSearchIfPublic,
               ifAllowReprint:$scope.query.advancedSearchIfAllowReprint,
@@ -193,7 +198,7 @@ angular.module('jianboke')
                 parent: angular.element(document.body),
                 clickOutsideToClose: true
             }).then(function(){},function() {
-                $scope.refresh();
+                $scope.pageRefresh();
             });
         }
 
@@ -229,7 +234,7 @@ angular.module('jianboke')
 	})
 	.controller('AttentionCtrl', function($scope, $timeout, $state, $mdSidenav, $log, $mdDialog, Account, $rootScope){
 	    var bookmark;
-	    console.log('AttentionCtrl');
+//	    console.log('AttentionCtrl');
         $scope.query = {
             findBy: 'attentions'
         }
@@ -239,7 +244,7 @@ angular.module('jianboke')
             findBy: $scope.query.findBy
           }, function(resp, responseHeaders) {
             $scope.users = resp.data;
-            console.log($scope.users);
+//            console.log($scope.users);
           }).$promise;
         }
 
@@ -251,7 +256,7 @@ angular.module('jianboke')
 
         // 关注 or 取消关注
         $scope.follow = function(param) {
-            console.log(param);
+//            console.log(param);
             Account.follow({userId: param.id}).$promise.then(function(resp) {
                 if (resp.code == '0000') {
                     $rootScope.popMessage('操作成功', true);
@@ -264,8 +269,8 @@ angular.module('jianboke')
         }
 	})
 	.controller('CollectionCtrl', function($scope, $timeout, $state, $mdSidenav, $log, $mdDialog){
-	    console.log('CollectionCtrl');
+//	    console.log('CollectionCtrl');
 	})
 	.controller('MessageCtrl', function($scope, $timeout, $state, $mdSidenav, $log, $mdDialog){
-	    console.log('MessageCtrl');
+//	    console.log('MessageCtrl');
 	})

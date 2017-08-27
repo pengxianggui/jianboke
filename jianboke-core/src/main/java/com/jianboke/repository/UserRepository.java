@@ -25,6 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 	@Query(value = "SELECT COUNT(*) FROM `fans_relation` WHERE to_user_id =:id", nativeQuery = true)
 	Integer getNumOfFans(@Param("id") Long id);
 
-	@Query(value = "SELECT COUNT(*) FROM `articles` WHERE author_id =:id OR second_author_id =:id", nativeQuery = true)
+	@Query(value = "SELECT COUNT(*) FROM `articles` WHERE (author_id =:id OR second_author_id =:id) AND if_public = TRUE", nativeQuery = true)
 	Integer getNumOfArticles(@Param("id") Long id);
 }

@@ -2,7 +2,7 @@
 
 angular.module('jianboke')
     .controller('PubReadBlogCtrl', function($scope, $rootScope, $state, entity, PubAccount, Article, Comment, Reply, PubComment, PubArticle) {
-    console.log('PubReadBlogCtrl');
+//    console.log('PubReadBlogCtrl');
 
     $scope.article;
     $scope.authorNameArr = [];
@@ -10,7 +10,7 @@ angular.module('jianboke')
     // 获取文章所有的作者
     var getAuthorName = function(article) {
         PubAccount.getAuthorNameByArticleId({id: article.id}).$promise.then(function(result) {
-            console.log(result);
+//            console.log(result);
             $scope.authorNameArr.push(result);
         }).catch(function(httpResponse){});
     }

@@ -1,5 +1,6 @@
 package com.jianboke.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -22,6 +23,7 @@ public class UsersModel extends BaseModel {
     private String avatarPath;
     private String validCode; // 验证码
     private boolean isAttention; // 是否已关注
+    private String introduce; // 介绍
 
     public String getUsername() {
         return username;
@@ -77,6 +79,14 @@ public class UsersModel extends BaseModel {
 
     public void setAttention(boolean attention) {
         isAttention = attention;
+    }
+
+    public String getIntroduce() {
+        return introduce;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
     }
 
     @Override

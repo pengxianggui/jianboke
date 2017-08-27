@@ -42,6 +42,14 @@ angular.module('jianboke')
         follow: {
             url: 'api/account/follow/:userId',
             method: 'GET'
+        },
+        updateIntro: {
+            url: 'api/account/updateIntro',
+            method: 'POST',
+            params: {
+                id: '@id',
+                intro: "@intro"
+            }
         }
     });
   });

@@ -2,7 +2,7 @@
 
 angular.module('jianboke')
 	.controller('LoginCtrl', function($scope, $cookies, Auth, $state, $rootScope) {
-		console.log('LoginCtrl');
+//		console.log('LoginCtrl');
 		$scope.user = {};
 	    $scope.errors = {};
 	    $scope.rememberMe = true;
@@ -23,7 +23,7 @@ angular.module('jianboke')
 	      $scope.passwordType = 'text';
 	     }
 	    } catch (e) {
-	      console.log(e.name + ": " + e.message);
+//	      console.log(e.name + ": " + e.message);
 	    }
 
 	    $scope.login = function(event) {
@@ -39,14 +39,14 @@ angular.module('jianboke')
 	          rememberMe: $scope.rememberMe
 	        }).then(function(data) {
 	          //提示登录成功，并定向到dashboard路由；
-	        	console.log(data);
+//	        	console.log(data);
                 $scope.authenticationError = false;
 	        	$rootScope.popMessage("登录成功", true);
-	        	console.log($rootScope.previousStateName);
+//	        	console.log($rootScope.previousStateName);
 	        	if ($rootScope.previousStateName === 'login' || $rootScope.previousStateName === undefined) {
                    $state.go('dashboard');
                 } else {
-                   console.log($rootScope);
+//                   console.log($rootScope);
                    $state.go($rootScope.previousStateName);
                 }
 	        	try {
@@ -61,7 +61,7 @@ angular.module('jianboke')
                         $cookies.remove("jbk-loginCookies");
                     }
                 } catch (e) {
-                    console.log(e.name + ": " + e.message);
+//                    console.log(e.name + ": " + e.message);
                 }
 	        }).catch(function() {
 	        	$scope.authenticationError = true;

@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - property:
+      name: autoIncrement
+      value: true
+      dbms: mysql,h2,postgresql,sqlserver
+  - property:
+      name: now
+      value: now()
+      dbms: mysql, h2
+  - property:
+      name: now
+      value: sysdate
+      dbms: oracle
+  - property:
+      name: now
+      value: getdate()
+      dbms: sqlserver
+  - changeSet:
+      id: create_jb_persistent_logins
+      author: pengxg
+      changes:
+        - createTable:
+            tableName: persistent_logins
+            remarks: 登录持久化记录
+            columns:
+              - column:
+                  name: series
+                  type: varchar(255)
+                  remarks: 用户名
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint(20)
+                  remarks:
+                  constraints:
+                    nullable: false
+              - column:
+                  name: token
+                  type: varchar(255)
+                  remarks: 令牌
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_used
+                  type: timestamp
+                  defaultValueDate: ${now}
+                  remarks:
+                  constraints:
+                    nullable: true
+              - column:
+                  name: ip_address
+                  type: varchar(255)
+                  remarks: IP地址
+                  constraints:
+                    nullable: true
+              - column:
+                  name: user_agent
+                  type: varchar(255)
+                  remarks: 用户代理
+                  constraints:
+                    nullable: true

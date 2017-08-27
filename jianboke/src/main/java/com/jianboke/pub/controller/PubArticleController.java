@@ -100,7 +100,7 @@ public class PubArticleController {
                     List<ArticleModel> list = new ArrayList<>();
                     page.getContent().forEach(t -> {
                         // 公开的文章才显示在个人主页，否则判断权限
-                        if(t.isIfPublic()  || userAuhtorityService.ifHasAuthority(ResourceName.ARTICLE, t.getId())) {
+                        if(t.isIfPublic()) {
                             list.add(articleMapper.entityToModel(t));
                         }
                     });

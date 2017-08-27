@@ -45,6 +45,10 @@ public class User extends AbstractAuditingEntity implements UserDetails {
 	@ColumnComment("头像存储路径")
 	private String avatarPath;
 
+	@Column
+	@ColumnComment("个人介绍")
+	private String introduce;
+
 	@JsonIgnore
 	@ManyToMany
 	@JoinTable( name = "fans_relation",
@@ -109,7 +113,15 @@ public class User extends AbstractAuditingEntity implements UserDetails {
 		this.attentions = attentions;
 	}
 
-	//
+	public String getIntroduce() {
+		return introduce;
+	}
+
+	public void setIntroduce(String introduce) {
+		this.introduce = introduce;
+	}
+
+//
 //	@Override
 //	public String toString() {
 //		return "User [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email

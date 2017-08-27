@@ -44,7 +44,8 @@ angular.module('jianboke')
                   '</md-content>',
         replace: true,
         scope: {
-            content: '=ngModel'
+            content: '=ngModel',
+            imgUrl: '@pxgImgUrl'
         },
         link: function(scope, iElement, iAttrs) {
             scope.editor = editormd({
@@ -67,7 +68,7 @@ angular.module('jianboke')
                 },
                 imageUpload    : true,
                 imageFormats   : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
-                imageUploadURL : "./api/article/img",
+                imageUploadURL : "./" + scope.imgUrl,
             });
 
             scope.getValue = function() {
@@ -271,13 +272,13 @@ angular.module('jianboke')
                 scope.sumOfBefore = (scope.batch - 1) * scope.length;
                 var arrLength = scope.batch < batchSum ? scope.length : (remainder == 0 ? scope.length : remainder);
                 scope.arr = new Array(arrLength);
-                console.log('scope.length: ' + scope.length);
-                console.log('page: ' + scope.pxgPage);
-                console.log('batch: ' + scope.batch);
-                console.log('batchSum: ' + batchSum);
-                console.log('arr.length: ' + scope.arr.length);
-                console.log('pxgTotalPage: ' + scope.pxgTotalPage);
-                console.log('remainder: ' + remainder);
+//                console.log('scope.length: ' + scope.length);
+//                console.log('page: ' + scope.pxgPage);
+//                console.log('batch: ' + scope.batch);
+//                console.log('batchSum: ' + batchSum);
+//                console.log('arr.length: ' + scope.arr.length);
+//                console.log('pxgTotalPage: ' + scope.pxgTotalPage);
+//                console.log('remainder: ' + remainder);
             }
 //            scope.$watch('pxgPage', function(newValue, oldValue) {
 //                refreshPagination();

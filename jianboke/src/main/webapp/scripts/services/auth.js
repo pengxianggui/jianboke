@@ -6,9 +6,9 @@ angular.module('jianboke')
 			login: function(credentials) { //登录方法
 				var deferred = $q.defer();
 				AuthServerProvider.login(credentials).then(function(data) {
-				    console.log('AuthServerProvider.login.then...');
+//				    console.log('AuthServerProvider.login.then...');
 					Principal.identity(true).then(function(account) {
-						console.log(account);
+//						console.log(account);
 						deferred.resolve(data);
 					})
 				}).catch(function(error) {
@@ -35,23 +35,23 @@ angular.module('jianboke')
 				return Account.register(account).$promise;
 			},
 			authorize: function() { //授权验证，判断是否认证(登录)。每次路由改变都会触发验证
-			    console.log('authorize');
+//			    console.log('authorize');
 				return Principal.identity().then(function(account) {
-				    console.log('sbsbsbsbs');
+//				    console.log('sbsbsbsbs');
 					$rootScope.account = account; //将账号信息保存到$rootScope中
 		            $rootScope.isAuthenticated = Principal.isAuthenticated; //相当于把获取“是否已经认证的get方法”放到$rootScope下，方便使用
 		            var isAuthenticated = Principal.isAuthenticated(); //获取是否已经认证的boolean值
 		            if (isAuthenticated && $rootScope.toState.name === 'login') { // 已经有认证(登录)的不能到登录页面
 		            	$state.go('dashboard');
 		            }
-		            console.log($rootScope.toState);
-		            console.log(isAuthenticated);
+//		            console.log($rootScope.toState);
+//		            console.log(isAuthenticated);
 			        if (!isAuthenticated) { //如果没有认证(登录)，则定向到登录路由；
 			            // 不含有pub权限级别
 		                if ($rootScope.toState.data.access_level.indexOf(ACCESS_LEVELS.pub) === -1) {
 			            	 $rootScope.previousStateName = $rootScope.toState.name;
 			                 $rootScope.previousStateNameParams = $rootScope.toStateParams;
-			            	console.log('定向到login');
+//			            	console.log('定向到login');
 			            	$state.go('login');
 			            }
 		            }

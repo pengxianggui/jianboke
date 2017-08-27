@@ -41,3 +41,9 @@ databaseChangeLog:
   - include:
       file: classpath:db/changelog/create_jb_comment_like.yaml
       relativeToChangelogFile: false
+  - include:
+      file: classpath:db/changelog/update_jb_user.yaml
+      relativeToChangelogFile: false
+  - include:
+      file: classpath:db/changelog/create_jb_persistent_logins.yaml
+      relativeToChangelogFile: false

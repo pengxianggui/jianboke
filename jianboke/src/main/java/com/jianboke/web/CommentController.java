@@ -66,20 +66,20 @@ public class CommentController {
      * @return
      */
     @RequestMapping(value = "/comment", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<CommentModel> create(@Valid @RequestBody CommentModel model) throws URISyntaxException {
+    public ResponseEntity<RequestResult> create(@Valid @RequestBody CommentModel model) throws URISyntaxException {
         log.info("Save a comment:{}", model);
         // TODO 保存chapter，并以model形式返回该chapter
         if (model.getId() != null || model.getArticleId() == null) {
-            return ResponseEntity.ok(null); // 评论无法编辑, articleId不为空
+            return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_PARAM_WRONG)); // 评论无法编辑, articleId不为空
         }
         Article article = articleRepository.findOne(model.getArticleId());
         if (!article.isIfPublic() || !article.isIfAllowComment()) { // 不允许评论
-            return ResponseEntity.ok(null);
+            return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_WITHOUT_AUTHORITY, "操作无权限，作者已禁止评论"));
         }
         User user = userService.getUserWithAuthorities();
         model.setFromUser(usersMapper.entityToModel(user));
         Comment result = commentRepository.saveAndFlush(commentMapper.modelToEntity(model));
-        return ResponseEntity.ok().body(commentMapper.entityToModel(result));
+        return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS, commentMapper.entityToModel(result)));
     }
 
 

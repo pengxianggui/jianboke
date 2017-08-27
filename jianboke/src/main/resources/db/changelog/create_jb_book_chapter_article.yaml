@@ -67,10 +67,10 @@ databaseChangeLog:
                   type: timestamp
                   remarks: 最后修改时间
           # 初始数据
-        - loadData:
-            encoding: UTF-8
-            file: db/data/jb_book_chapter_articles.csv
-            tableName: book_chapter_articles
+#        - loadData:
+#            encoding: UTF-8
+#            file: db/data/jb_book_chapter_articles.csv
+#            tableName: book_chapter_articles
     # 添加外键约束
   - changeSet:
       id: fk_book_chapter_article

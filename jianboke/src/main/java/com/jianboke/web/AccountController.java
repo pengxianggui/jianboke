@@ -69,10 +69,10 @@ public class AccountController {
     
     @RequestMapping(value = "/account", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> getAccount() {
+    public ResponseEntity<UsersModel> getAccount() {
     	log.info("用户权限信息获取");
     	return Optional.ofNullable(userService.getUserWithAuthorities())
-                .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+                .map(user -> new ResponseEntity<>(usersMapper.entityToModel(user), HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
@@ -259,5 +259,16 @@ public class AccountController {
         }
         userRepository.saveAndFlush(fromU);
         return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS));
+    }
+
+    @RequestMapping(value = "/account/updateIntro", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<RequestResult> updateIntro(@RequestParam("id") Long id, @RequestParam("intro") String intro) {
+        log.info("REST request to update intro of users:{}, the intro is:{}", id, intro);
+        if (id == null) return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_PARAM_WRONG));
+        User u = userRepository.findOne(id);
+        u.setIntroduce(intro);
+        userRepository.saveAndFlush(u);
+        return ResponseEntity.ok().body(RequestResult.create(HttpReturnCode.JBK_SUCCESS));
+
     }
 }
