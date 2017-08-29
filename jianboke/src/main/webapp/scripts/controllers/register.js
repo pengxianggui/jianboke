@@ -77,7 +77,7 @@ angular.module('jianboke')
 //                    console.log(result);
                     if (result.code == '0000') { // 成功
                         Auth.login({
-                          email: result.data.email,
+                          username: result.data.username,
                           password: result.data.password,
                           rememberMe: false
                         }).then(function(data) {

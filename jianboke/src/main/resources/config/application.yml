@@ -1,14 +1,14 @@
 server:
   port: 6969
-#  session:
-#    cookie:
-#      name: SSID
-#  tomcat:
-#    remote-ip-header: X-Forwarded-For
-#    protocol-header: X-Forwarded-Proto
-#  compression:
-#    enabled: true
-#    mime-types: application/x-java-serialized-object,application/json,application/xml,text/html,text/xml,text/plain
+  session:
+    cookie:
+      name: SSID
+  tomcat:
+    remote-ip-header: X-Forwarded-For
+    protocol-header: X-Forwarded-Proto
+  compression:
+    enabled: true
+    mime-types: application/x-java-serialized-object,application/json,application/xml,text/html,text/xml,text/plain
 info:
   build:
     artifact: "@project.artifactId@"
@@ -20,7 +20,7 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/jianboke?autoReconnect=true
     driverClassName: com.mysql.jdbc.Driver
     username: root
-    password: 123456
+    password:
     validation-query: SELECT 1
     test-on-borrow: true
 logging:
@@ -41,10 +41,11 @@ data:
     mdImgRootPath: http://localhost:6969/
   email:
     host: smtp.aliyun.com
+    port: 465
     sender: jianboke@aliyun.com
-    nickname: 简博客
     username: jianboke@aliyun.com
-    password: jianboke,0919
+    password:
+    nickname: 简博客
     subject:
     receiver:
     message:

@@ -6,7 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class MailConfig {
 	public static final String ENCODEING = "UTF-8";  
 	  
-    private String host; // 服务器地址  
+    private String host; // 服务器地址
+
+    private int port; // 端口
   
     private String sender; // 发件人的邮箱  
   
@@ -49,9 +51,17 @@ public class MailConfig {
   
     public void setHost(String host) {  
         this.host = host;  
-    }  
-  
-    public String getSender() {  
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getSender() {
         return sender;  
     }  
   

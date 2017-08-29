@@ -23,6 +23,9 @@ public class MailUtil extends MailConfig {
 		try {
 			// 这里是SMTP发送服务器的名字：163的如下："smtp.163.com"
 			email.setHostName(mail.getHost());
+			// 端口
+			email.setSslSmtpPort(String.valueOf(mail.getPort()));
+			email.setSSLOnConnect(true);
 			// 字符编码集的设置
 			email.setCharset(Mail.ENCODEING);
 			// 收件人的邮箱
@@ -50,7 +53,7 @@ public class MailUtil extends MailConfig {
 	}
 
 	public Mail getMail() {
-		Mail mail = new Mail(this.getHost(), this.getSender(), this.getNickname(), this.getUsername(),
+		Mail mail = new Mail(this.getHost(), this.getPort(), this.getSender(), this.getNickname(), this.getUsername(),
 				this.getPassword(), this.getSubject());
 		return mail;
 	}

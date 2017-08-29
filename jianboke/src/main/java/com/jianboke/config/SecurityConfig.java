@@ -27,14 +27,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private AjaxAuthenticationSuccessHandler ajaxAuthenticationSuccessHandler;
 
 	@Autowired
-	private AjaxAuthenticationFailureHandler ajaxAuthenticationFailureHandler;  
-	
+	private AjaxAuthenticationFailureHandler ajaxAuthenticationFailureHandler;
+
 	@Autowired
 	private AjaxLogoutSuccessHandler ajaxLogoutSuccessHandler;
-	
+
 	@Autowired
 	private Http401UnauthorizedEntryPoint authenticationEntryPoint;
-	
+
 	@Autowired
 	private UserDetailsService userDetailsService;
 
@@ -89,7 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/api/account/sendEmailValidCode").permitAll()
 			.antMatchers("/api/account/register").permitAll()
 			.antMatchers("/pub/**").permitAll() // 公开资源：无需登录
-			.anyRequest().authenticated(); // 其他路径都会被加上权限拦截;
+			.antMatchers("/api/**").authenticated(); // 其他路径都会被加上权限拦截;
 	}
 	
 	@Override
@@ -109,20 +109,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
     protected void configure(AuthenticationManagerBuilder auth)
             throws Exception {
-        auth.userDetailsService(userDetailsService)
-				.passwordEncoder(passwordEncoder()); // 暂时先屏蔽密码加密
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder()); // 暂时先屏蔽密码加密
     }
 	
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//		auth.inMemoryAuthentication()
-//			.withUser("user")
-//			.password("password")
-//			.roles("USER")
-//		.and()
-//			.withUser("admin")
-//			.password("password")
-//			.roles("ADMIN", "USER");
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-	}
+//	@Autowired
+//	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+////		auth.inMemoryAuthentication()
+////			.withUser("user")
+////			.password("password")
+////			.roles("USER")
+////		.and()
+////			.withUser("admin")
+////			.password("password")
+////			.roles("ADMIN", "USER");
+//		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+//	}
 }
